@@ -6,10 +6,10 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
    	<string name="hello">Hello World, Todo!</string>
-  	<string name="no_todos">Currently there are no Todo items maintained</string>
+  	<string name="no_events">Currently there are no Todo items maintained</string>
   	<string name="menu_insert">Add Item</string>
   	<string name="menu_delete">Delete Event</string>
-  	<string name="todo_description">Delete Event</string>
-  	<string name="todo_edit_description">Description</string>
-  	<string name="todo_edit_confirm">Confirm</string>
+  	<string name="event_description">Delete Event</string>
+  	<string name="event_edit_description">Description</string>
+  	<string name="event_edit_confirm">Confirm</string>
 </resources>
