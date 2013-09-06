@@ -1,4 +1,4 @@
-package com.synaptian.smokingtracker;
+package de.vogella.android.todos.contentprovider;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,36 +12,38 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import de.vogella.android.todos.database.TodoDatabaseHelper;
+import de.vogella.android.todos.database.TodoTable;
 
-public class EventContentProvider extends ContentProvider {
+public class MyTodoContentProvider extends ContentProvider {
 
   // database
-  private EventDatabaseHelper database;
+  private TodoDatabaseHelper database;
 
   // Used for the UriMacher
-  private static final int EventS = 10;
-  private static final int Event_ID = 20;
+  private static final int TODOS = 10;
+  private static final int TODO_ID = 20;
 
-  private static final String AUTHORITY = "com.synaptian.android.events.contentprovider";
+  private static final String AUTHORITY = "de.vogella.android.todos.contentprovider";
 
-  private static final String BASE_PATH = "Events";
+  private static final String BASE_PATH = "todos";
   public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
       + "/" + BASE_PATH);
 
   public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
-      + "/Events";
+      + "/todos";
   public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
-      + "/Event";
+      + "/todo";
 
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
-    sURIMatcher.addURI(AUTHORITY, BASE_PATH, EventS);
-    sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", Event_ID);
+    sURIMatcher.addURI(AUTHORITY, BASE_PATH, TODOS);
+    sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", TODO_ID);
   }
 
   @Override
   public boolean onCreate() {
-    database = new EventDatabaseHelper(getContext());
+    database = new TodoDatabaseHelper(getContext());
     return false;
   }
 
@@ -56,15 +58,15 @@ public class EventContentProvider extends ContentProvider {
     checkColumns(projection);
 
     // Set the table
-    queryBuilder.setTables(EventTable.TABLE_EVENT);
+    queryBuilder.setTables(TodoTable.TABLE_TODO);
 
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
-    case EventS:
+    case TODOS:
       break;
-    case Event_ID:
+    case TODO_ID:
       // Adding the ID to the original query
-      queryBuilder.appendWhere(EventTable.COLUMN_ID + "="
+      queryBuilder.appendWhere(TodoTable.COLUMN_ID + "="
           + uri.getLastPathSegment());
       break;
     default:
@@ -89,12 +91,11 @@ public class EventContentProvider extends ContentProvider {
   public Uri insert(Uri uri, ContentValues values) {
     int uriType = sURIMatcher.match(uri);
     SQLiteDatabase sqlDB = database.getWritableDatabase();
-    @SuppressWarnings("unused")
-	int rowsDeleted = 0;
+    int rowsDeleted = 0;
     long id = 0;
     switch (uriType) {
-    case EventS:
-      id = sqlDB.insert(EventTable.TABLE_EVENT, null, values);
+    case TODOS:
+      id = sqlDB.insert(TodoTable.TABLE_TODO, null, values);
       break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -109,19 +110,19 @@ public class EventContentProvider extends ContentProvider {
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     int rowsDeleted = 0;
     switch (uriType) {
-    case EventS:
-      rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, selection,
+    case TODOS:
+      rowsDeleted = sqlDB.delete(TodoTable.TABLE_TODO, selection,
           selectionArgs);
       break;
-    case Event_ID:
+    case TODO_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
-        rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT,
-            EventTable.COLUMN_ID + "=" + id, 
+        rowsDeleted = sqlDB.delete(TodoTable.TABLE_TODO,
+            TodoTable.COLUMN_ID + "=" + id, 
             null);
       } else {
-        rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT,
-            EventTable.COLUMN_ID + "=" + id 
+        rowsDeleted = sqlDB.delete(TodoTable.TABLE_TODO,
+            TodoTable.COLUMN_ID + "=" + id 
             + " and " + selection,
             selectionArgs);
       }
@@ -141,23 +142,23 @@ public class EventContentProvider extends ContentProvider {
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     int rowsUpdated = 0;
     switch (uriType) {
-    case EventS:
-      rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, 
+    case TODOS:
+      rowsUpdated = sqlDB.update(TodoTable.TABLE_TODO, 
           values, 
           selection,
           selectionArgs);
       break;
-    case Event_ID:
+    case TODO_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
-        rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, 
+        rowsUpdated = sqlDB.update(TodoTable.TABLE_TODO, 
             values,
-            EventTable.COLUMN_ID + "=" + id, 
+            TodoTable.COLUMN_ID + "=" + id, 
             null);
       } else {
-        rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, 
+        rowsUpdated = sqlDB.update(TodoTable.TABLE_TODO, 
             values,
-            EventTable.COLUMN_ID + "=" + id 
+            TodoTable.COLUMN_ID + "=" + id 
             + " and " 
             + selection,
             selectionArgs);
@@ -171,8 +172,9 @@ public class EventContentProvider extends ContentProvider {
   }
 
   private void checkColumns(String[] projection) {
-    String[] available = { EventTable.COLUMN_CATEGORY,
-        EventTable.COLUMN_DESCRIPTION, EventTable.COLUMN_ID };
+    String[] available = { TodoTable.COLUMN_CATEGORY,
+        TodoTable.COLUMN_SUMMARY, TodoTable.COLUMN_DESCRIPTION,
+        TodoTable.COLUMN_ID };
     if (projection != null) {
       HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
       HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
@@ -182,5 +184,4 @@ public class EventContentProvider extends ContentProvider {
       }
     }
   }
-
-} 
+}

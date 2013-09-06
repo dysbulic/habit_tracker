@@ -1,40 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.synaptian.smokingtracker"
+    package="de.vogella.android.todos"
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="17" />
+    <uses-sdk android:minSdkVersion="15" />
 
     <application
-        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:label="@string/app_name" >
         <activity
-            android:name=".EventsOverviewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme" >
+            android:name=".TodosOverviewActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TodoDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
+        </activity>
 
-	    <activity
-    		android:name=".EventDetailActivity"
-       		android:windowSoftInputMode="stateVisible|adjustResize" >
-    	</activity>
-    
-  		<provider
-    		android:name=".contentprovider.EventContentProvider"
-      		android:authorities="com.synaptian.android.events.contentprovider" >
-   		</provider>
-	</application> 
+        <provider
+            android:name=".contentprovider.MyTodoContentProvider"
+            android:authorities="de.vogella.android.todos.contentprovider" >
+        </provider>
+    </application>
 
 </manifest>
-
