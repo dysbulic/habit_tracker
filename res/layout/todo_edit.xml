@@ -11,6 +11,16 @@
         android:entries="@array/priorities" >
     </Spinner>
 
+    <TimePicker
+        android:id="@+id/timePicker1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <DatePicker
+        android:id="@+id/datePicker1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:id="@+id/LinearLayout01"
         android:layout_width="match_parent"

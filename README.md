@@ -1,4 +1,4 @@
-smoke_tracker
-=============
+ToDo Example
+============
 
-Android app for tracking smoking habits
+From: http://www.vogella.com/articles/AndroidSQLite/article.html
