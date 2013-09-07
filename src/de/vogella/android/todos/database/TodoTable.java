@@ -10,6 +10,7 @@ public class TodoTable {
   public static final String COLUMN_ID = "_id";
   public static final String COLUMN_CATEGORY = "category";
   public static final String COLUMN_SUMMARY = "summary";
+  public static final String COLUMN_TIME = "time";
   public static final String COLUMN_DESCRIPTION = "description";
 
   // Database creation SQL statement
@@ -18,9 +19,9 @@ public class TodoTable {
       + "(" 
       + COLUMN_ID + " integer primary key autoincrement, " 
       + COLUMN_CATEGORY + " text not null, " 
-      + COLUMN_SUMMARY + " text not null," 
-      + COLUMN_DESCRIPTION
-      + " text not null" 
+      + COLUMN_SUMMARY + " text not null,"
+      + COLUMN_TIME + " integer,"
+      + COLUMN_DESCRIPTION + " text not null" 
       + ");";
 
   public static void onCreate(SQLiteDatabase database) {

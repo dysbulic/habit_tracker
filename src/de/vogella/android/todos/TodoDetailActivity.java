@@ -1,6 +1,7 @@
 package de.vogella.android.todos;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -72,7 +73,7 @@ public class TodoDetailActivity extends Activity {
   }
 
   private void fillData(Uri uri) {
-    String[] projection = { TodoTable.COLUMN_SUMMARY,
+    String[] projection = { TodoTable.COLUMN_SUMMARY, TodoTable.COLUMN_TIME,
         TodoTable.COLUMN_DESCRIPTION, TodoTable.COLUMN_CATEGORY };
     Cursor cursor = getContentResolver().query(uri, projection, null, null,
         null);
@@ -94,6 +95,14 @@ public class TodoDetailActivity extends Activity {
       mBodyText.setText(cursor.getString(cursor
           .getColumnIndexOrThrow(TodoTable.COLUMN_DESCRIPTION)));
 
+      Calendar eventTime = Calendar.getInstance();
+      eventTime.setTimeInMillis(cursor.getInt(cursor
+          .getColumnIndexOrThrow(TodoTable.COLUMN_TIME)));
+      mEventDate.updateDate(eventTime.get(Calendar.YEAR),
+    		  eventTime.get(Calendar.MONTH),
+    		  eventTime.get(Calendar.DAY_OF_MONTH));
+      mEventTime.setCurrentHour(eventTime.get(Calendar.HOUR_OF_DAY));
+      mEventTime.setCurrentMinute(eventTime.get(Calendar.MINUTE));
       // Always close the cursor
       cursor.close();
     }
@@ -116,6 +125,13 @@ public class TodoDetailActivity extends Activity {
     String summary = mTitleText.getText().toString();
     String description = mBodyText.getText().toString();
 
+    Calendar eventTime = Calendar.getInstance();
+    eventTime.set(mEventDate.getYear(),
+    			  mEventDate.getMonth(),
+    			  mEventDate.getDayOfMonth(),
+    			  mEventTime.getCurrentHour(),
+    			  mEventTime.getCurrentMinute());
+
     // Only save if either summary or description
     // is available
 
@@ -126,6 +142,7 @@ public class TodoDetailActivity extends Activity {
     ContentValues values = new ContentValues();
     values.put(TodoTable.COLUMN_CATEGORY, category);
     values.put(TodoTable.COLUMN_SUMMARY, summary);
+    values.put(TodoTable.COLUMN_TIME, eventTime.getTimeInMillis());
     values.put(TodoTable.COLUMN_DESCRIPTION, description);
 
     if (todoUri == null) {
@@ -136,14 +153,8 @@ public class TodoDetailActivity extends Activity {
       getContentResolver().update(todoUri, values, null, null);
     }
 
-    Calendar eventDate = Calendar.getInstance();
-    eventDate.set(mEventDate.getYear(),
-    			  mEventDate.getMonth(),
-    			  mEventDate.getDayOfMonth(),
-    			  mEventTime.getCurrentHour(),
-    			  mEventTime.getCurrentMinute());
     Log.w(TodoDetailActivity.class.getName(),
-            "Event Time: " + eventDate);    
+            "Event Time: " + eventTime);
   }
 
   private void makeToast() {
