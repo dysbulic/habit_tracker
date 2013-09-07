@@ -1,5 +1,7 @@
 package de.vogella.android.todos;
 
+import java.util.Calendar;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -8,9 +10,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
+import android.util.Log;
 import de.vogella.android.todos.contentprovider.MyTodoContentProvider;
 import de.vogella.android.todos.database.TodoTable;
 
@@ -22,6 +27,8 @@ public class TodoDetailActivity extends Activity {
   private Spinner mCategory;
   private EditText mTitleText;
   private EditText mBodyText;
+  private TimePicker mEventTime;
+  private DatePicker mEventDate;
 
   private Uri todoUri;
 
@@ -31,6 +38,8 @@ public class TodoDetailActivity extends Activity {
     setContentView(R.layout.todo_edit);
 
     mCategory = (Spinner) findViewById(R.id.category);
+    mEventTime = (TimePicker) findViewById(R.id.event_time);
+    mEventDate = (DatePicker) findViewById(R.id.event_date);
     mTitleText = (EditText) findViewById(R.id.todo_edit_summary);
     mBodyText = (EditText) findViewById(R.id.todo_edit_description);
     Button confirmButton = (Button) findViewById(R.id.todo_edit_button);
@@ -69,8 +78,8 @@ public class TodoDetailActivity extends Activity {
         null);
     if (cursor != null) {
       cursor.moveToFirst();
-      String category = cursor.getString(cursor
-          .getColumnIndexOrThrow(TodoTable.COLUMN_CATEGORY));
+      String category = cursor.getString(
+    	cursor.getColumnIndexOrThrow(TodoTable.COLUMN_CATEGORY));
 
       for (int i = 0; i < mCategory.getCount(); i++) {
 
@@ -126,6 +135,15 @@ public class TodoDetailActivity extends Activity {
       // Update todo
       getContentResolver().update(todoUri, values, null, null);
     }
+
+    Calendar eventDate = Calendar.getInstance();
+    eventDate.set(mEventDate.getYear(),
+    			  mEventDate.getMonth(),
+    			  mEventDate.getDayOfMonth(),
+    			  mEventTime.getCurrentHour(),
+    			  mEventTime.getCurrentMinute());
+    Log.w(TodoDetailActivity.class.getName(),
+            "Event Time: " + eventDate);    
   }
 
   private void makeToast() {
