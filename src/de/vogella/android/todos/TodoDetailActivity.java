@@ -1,7 +1,6 @@
 package de.vogella.android.todos;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -98,6 +97,9 @@ public class TodoDetailActivity extends Activity {
       Calendar eventTime = Calendar.getInstance();
       eventTime.setTimeInMillis(cursor.getInt(cursor
           .getColumnIndexOrThrow(TodoTable.COLUMN_TIME)));
+      
+      mBodyText.setText(eventTime.toString());
+      
       mEventDate.updateDate(eventTime.get(Calendar.YEAR),
     		  eventTime.get(Calendar.MONTH),
     		  eventTime.get(Calendar.DAY_OF_MONTH));
@@ -131,6 +133,10 @@ public class TodoDetailActivity extends Activity {
     			  mEventDate.getDayOfMonth(),
     			  mEventTime.getCurrentHour(),
     			  mEventTime.getCurrentMinute());
+    
+    Toast.makeText(getApplicationContext(),
+    		eventTime.toString(),
+    		Toast.LENGTH_LONG).show();
 
     // Only save if either summary or description
     // is available
