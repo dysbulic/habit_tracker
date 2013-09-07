@@ -19,7 +19,8 @@
     <DatePicker
         android:id="@+id/event_date"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:calendarViewShown="false" />
 
     <LinearLayout
         android:id="@+id/LinearLayout01"
