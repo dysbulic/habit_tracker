@@ -95,9 +95,14 @@ public class TodoDetailActivity extends Activity {
           .getColumnIndexOrThrow(TodoTable.COLUMN_DESCRIPTION)));
 
       Calendar eventTime = Calendar.getInstance();
-      eventTime.setTimeInMillis(cursor.getInt(cursor
-          .getColumnIndexOrThrow(TodoTable.COLUMN_TIME)));
+      long seconds = cursor.getInt(cursor.getColumnIndexOrThrow(TodoTable.COLUMN_TIME));
+      eventTime.setTimeInMillis(seconds * 1000);
       
+      Toast.makeText(getApplicationContext(),
+    		  "fillData MS:" + cursor.getInt(cursor
+    		          .getColumnIndexOrThrow(TodoTable.COLUMN_TIME)),
+      		Toast.LENGTH_LONG).show();
+
       mBodyText.setText(eventTime.toString());
       
       mEventDate.updateDate(eventTime.get(Calendar.YEAR),
@@ -105,6 +110,7 @@ public class TodoDetailActivity extends Activity {
     		  eventTime.get(Calendar.DAY_OF_MONTH));
       mEventTime.setCurrentHour(eventTime.get(Calendar.HOUR_OF_DAY));
       mEventTime.setCurrentMinute(eventTime.get(Calendar.MINUTE));
+      
       // Always close the cursor
       cursor.close();
     }
@@ -135,7 +141,7 @@ public class TodoDetailActivity extends Activity {
     			  mEventTime.getCurrentMinute());
     
     Toast.makeText(getApplicationContext(),
-    		eventTime.toString(),
+    		"saveState: MS:" + eventTime.getTimeInMillis(),
     		Toast.LENGTH_LONG).show();
 
     // Only save if either summary or description
@@ -145,10 +151,11 @@ public class TodoDetailActivity extends Activity {
       return;
     }
 
-    ContentValues values = new ContentValues();
+    ContentValues values = new ContentValues();	
     values.put(TodoTable.COLUMN_CATEGORY, category);
     values.put(TodoTable.COLUMN_SUMMARY, summary);
-    values.put(TodoTable.COLUMN_TIME, eventTime.getTimeInMillis());
+    values.put(TodoTable.COLUMN_TIME,
+    		Math.floor(eventTime.getTimeInMillis() / 1000));
     values.put(TodoTable.COLUMN_DESCRIPTION, description);
 
     if (todoUri == null) {
