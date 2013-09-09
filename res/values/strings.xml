@@ -20,4 +20,6 @@
   	<string name="todo_edit_summary">Summary</string>
   	<string name="todo_edit_description">Description</string>
   	<string name="todo_edit_confirm">Confirm</string>
+  	
+  	<string name="action_insert">Insert</string>
 </resources>

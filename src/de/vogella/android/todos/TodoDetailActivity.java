@@ -98,13 +98,6 @@ public class TodoDetailActivity extends Activity {
       long seconds = cursor.getInt(cursor.getColumnIndexOrThrow(TodoTable.COLUMN_TIME));
       eventTime.setTimeInMillis(seconds * 1000);
       
-      Toast.makeText(getApplicationContext(),
-    		  "fillData MS:" + cursor.getInt(cursor
-    		          .getColumnIndexOrThrow(TodoTable.COLUMN_TIME)),
-      		Toast.LENGTH_LONG).show();
-
-      mBodyText.setText(eventTime.toString());
-      
       mEventDate.updateDate(eventTime.get(Calendar.YEAR),
     		  eventTime.get(Calendar.MONTH),
     		  eventTime.get(Calendar.DAY_OF_MONTH));
@@ -140,10 +133,6 @@ public class TodoDetailActivity extends Activity {
     			  mEventTime.getCurrentHour(),
     			  mEventTime.getCurrentMinute());
     
-    Toast.makeText(getApplicationContext(),
-    		"saveState: MS:" + eventTime.getTimeInMillis(),
-    		Toast.LENGTH_LONG).show();
-
     // Only save if either summary or description
     // is available
 
