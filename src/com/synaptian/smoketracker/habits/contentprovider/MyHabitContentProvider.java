@@ -24,7 +24,7 @@ public class MyHabitContentProvider extends ContentProvider {
   private static final int HABITS = 10;
   private static final int HABIT_ID = 20;
 
-  private static final String AUTHORITY = "de.vogella.android.habits.contentprovider";
+  private static final String AUTHORITY = "com.synaptian.smoketracker.habits.contentprovider";
 
   private static final String BASE_PATH = "habits";
   public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY

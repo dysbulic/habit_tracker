@@ -1,4 +1,4 @@
-package de.vogella.android.habits.database;
+package com.synaptian.smoketracker.habits.database;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
