@@ -1,4 +1,4 @@
-package de.vogella.android.habits;
+package com.synaptian.smoketracker.habits;
 
 import java.util.Calendar;
 
@@ -15,8 +15,8 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.util.Log;
-import de.vogella.android.habits.contentprovider.MyHabitContentProvider;
-import de.vogella.android.habits.database.HabitTable;
+import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.database.HabitTable;
 
 /*
  * HabitDetailActivity allows to enter a new habit item 

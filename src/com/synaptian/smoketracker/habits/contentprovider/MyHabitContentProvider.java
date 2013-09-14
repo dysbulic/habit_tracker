@@ -1,4 +1,4 @@
-package com.synaptian.smokingtracker;
+package com.synaptian.smoketracker.habits.contentprovider;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,36 +12,38 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import com.synaptian.smoketracker.habits.database.HabitDatabaseHelper;
+import com.synaptian.smoketracker.habits.database.HabitTable;
 
-public class EventContentProvider extends ContentProvider {
+public class MyHabitContentProvider extends ContentProvider {
 
   // database
-  private EventDatabaseHelper database;
+  private HabitDatabaseHelper database;
 
   // Used for the UriMacher
-  private static final int EventS = 10;
-  private static final int Event_ID = 20;
+  private static final int HABITS = 10;
+  private static final int HABIT_ID = 20;
 
-  private static final String AUTHORITY = "com.synaptian.android.events.contentprovider";
+  private static final String AUTHORITY = "de.vogella.android.habits.contentprovider";
 
-  private static final String BASE_PATH = "Events";
+  private static final String BASE_PATH = "habits";
   public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
       + "/" + BASE_PATH);
 
   public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
-      + "/Events";
+      + "/habits";
   public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
-      + "/Event";
+      + "/habit";
 
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
-    sURIMatcher.addURI(AUTHORITY, BASE_PATH, EventS);
-    sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", Event_ID);
+    sURIMatcher.addURI(AUTHORITY, BASE_PATH, HABITS);
+    sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", HABIT_ID);
   }
 
   @Override
   public boolean onCreate() {
-    database = new EventDatabaseHelper(getContext());
+    database = new HabitDatabaseHelper(getContext());
     return false;
   }
 
@@ -56,15 +58,15 @@ public class EventContentProvider extends ContentProvider {
     checkColumns(projection);
 
     // Set the table
-    queryBuilder.setTables(EventTable.TABLE_EVENT);
+    queryBuilder.setTables(HabitTable.TABLE_HABIT);
 
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
-    case EventS:
+    case HABITS:
       break;
-    case Event_ID:
+    case HABIT_ID:
       // Adding the ID to the original query
-      queryBuilder.appendWhere(EventTable.COLUMN_ID + "="
+      queryBuilder.appendWhere(HabitTable.COLUMN_ID + "="
           + uri.getLastPathSegment());
       break;
     default:
@@ -89,12 +91,10 @@ public class EventContentProvider extends ContentProvider {
   public Uri insert(Uri uri, ContentValues values) {
     int uriType = sURIMatcher.match(uri);
     SQLiteDatabase sqlDB = database.getWritableDatabase();
-    @SuppressWarnings("unused")
-	int rowsDeleted = 0;
     long id = 0;
     switch (uriType) {
-    case EventS:
-      id = sqlDB.insert(EventTable.TABLE_EVENT, null, values);
+    case HABITS:
+      id = sqlDB.insert(HabitTable.TABLE_HABIT, null, values);
       break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -109,19 +109,19 @@ public class EventContentProvider extends ContentProvider {
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     int rowsDeleted = 0;
     switch (uriType) {
-    case EventS:
-      rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, selection,
+    case HABITS:
+      rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, selection,
           selectionArgs);
       break;
-    case Event_ID:
+    case HABIT_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
-        rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT,
-            EventTable.COLUMN_ID + "=" + id, 
+        rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT,
+            HabitTable.COLUMN_ID + "=" + id, 
             null);
       } else {
-        rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT,
-            EventTable.COLUMN_ID + "=" + id 
+        rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT,
+            HabitTable.COLUMN_ID + "=" + id 
             + " and " + selection,
             selectionArgs);
       }
@@ -141,23 +141,23 @@ public class EventContentProvider extends ContentProvider {
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     int rowsUpdated = 0;
     switch (uriType) {
-    case EventS:
-      rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, 
+    case HABITS:
+      rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, 
           values, 
           selection,
           selectionArgs);
       break;
-    case Event_ID:
+    case HABIT_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
-        rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, 
+        rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, 
             values,
-            EventTable.COLUMN_ID + "=" + id, 
+            HabitTable.COLUMN_ID + "=" + id, 
             null);
       } else {
-        rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, 
+        rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, 
             values,
-            EventTable.COLUMN_ID + "=" + id 
+            HabitTable.COLUMN_ID + "=" + id 
             + " and " 
             + selection,
             selectionArgs);
@@ -171,8 +171,9 @@ public class EventContentProvider extends ContentProvider {
   }
 
   private void checkColumns(String[] projection) {
-    String[] available = { EventTable.COLUMN_CATEGORY,
-        EventTable.COLUMN_DESCRIPTION, EventTable.COLUMN_ID };
+    String[] available = {
+        HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME,
+        HabitTable.COLUMN_DESCRIPTION, HabitTable.COLUMN_ID };
     if (projection != null) {
       HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
       HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
@@ -182,5 +183,4 @@ public class EventContentProvider extends ContentProvider {
       }
     }
   }
-
-} 
+}

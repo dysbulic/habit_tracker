@@ -1,4 +1,4 @@
-package de.vogella.android.habits;
+package com.synaptian.smoketracker.habits;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
@@ -17,8 +17,8 @@ import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import de.vogella.android.habits.contentprovider.MyHabitContentProvider;
-import de.vogella.android.habits.database.HabitTable;
+import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.database.HabitTable;
 
 /*
  * HabitsOverviewActivity displays the existing habit items
