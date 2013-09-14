@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class HabitTimeAdpter extends ArrayAdapter {
+public class HabitTimeAdapter extends ArrayAdapter {
 	private final Activity activity;
 	private final List<HabitTime> habitTimes;
 
-	public HabitTimeAdpter(Activity activity, List objects) {
+	public HabitTimeAdapter(Activity activity, List<HabitTime> objects) {
 		super(activity, R.layout.habit_row, objects);
 		this.activity = activity;
 		this.habitTimes = objects;
