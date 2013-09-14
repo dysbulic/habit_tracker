@@ -1,4 +1,4 @@
-package de.vogella.android.todos;
+package de.vogella.android.habits;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
@@ -17,18 +17,18 @@ import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import de.vogella.android.todos.contentprovider.MyTodoContentProvider;
-import de.vogella.android.todos.database.TodoTable;
+import de.vogella.android.habits.contentprovider.MyHabitContentProvider;
+import de.vogella.android.habits.database.HabitTable;
 
 /*
- * TodosOverviewActivity displays the existing todo items
+ * HabitsOverviewActivity displays the existing habit items
  * in a list
  * 
  * You can create new ones via the ActionBar entry "Insert"
  * You can delete existing ones via a long press on the item
  */
 
-public class TodosOverviewActivity extends ListActivity implements
+public class HabitsOverviewActivity extends ListActivity implements
     LoaderManager.LoaderCallbacks<Cursor> {
   private static final int ACTIVITY_CREATE = 0;
   private static final int ACTIVITY_EDIT = 1;
@@ -42,7 +42,7 @@ public class TodosOverviewActivity extends ListActivity implements
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.todo_list);
+    setContentView(R.layout.habit_list);
     this.getListView().setDividerHeight(2);
     fillData();
     registerForContextMenu(getListView());
@@ -61,7 +61,7 @@ public class TodosOverviewActivity extends ListActivity implements
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
     case R.id.insert:
-      createTodo();
+      createHabit();
       return true;
     }
     return super.onOptionsItemSelected(item);
@@ -73,7 +73,7 @@ public class TodosOverviewActivity extends ListActivity implements
     case DELETE_ID:
       AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
           .getMenuInfo();
-      Uri uri = Uri.parse(MyTodoContentProvider.CONTENT_URI + "/"
+      Uri uri = Uri.parse(MyHabitContentProvider.CONTENT_URI + "/"
           + info.id);
       getContentResolver().delete(uri, null, null);
       fillData();
@@ -82,8 +82,8 @@ public class TodosOverviewActivity extends ListActivity implements
     return super.onContextItemSelected(item);
   }
 
-  private void createTodo() {
-    Intent i = new Intent(this, TodoDetailActivity.class);
+  private void createHabit() {
+    Intent i = new Intent(this, HabitDetailActivity.class);
     startActivity(i);
   }
 
@@ -91,9 +91,9 @@ public class TodosOverviewActivity extends ListActivity implements
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
-    Intent i = new Intent(this, TodoDetailActivity.class);
-    Uri todoUri = Uri.parse(MyTodoContentProvider.CONTENT_URI + "/" + id);
-    i.putExtra(MyTodoContentProvider.CONTENT_ITEM_TYPE, todoUri);
+    Intent i = new Intent(this, HabitDetailActivity.class);
+    Uri habitUri = Uri.parse(MyHabitContentProvider.CONTENT_URI + "/" + id);
+    i.putExtra(MyHabitContentProvider.CONTENT_ITEM_TYPE, habitUri);
 
     startActivity(i);
   }
@@ -104,12 +104,12 @@ public class TodosOverviewActivity extends ListActivity implements
 
     // Fields from the database (projection)
     // Must include the _id column for the adapter to work
-    String[] from = new String[] { TodoTable.COLUMN_NAME };
+    String[] from = new String[] { HabitTable.COLUMN_NAME };
     // Fields on the UI to which we map
     int[] to = new int[] { R.id.label };
 
     getLoaderManager().initLoader(0, null, this);
-    adapter = new SimpleCursorAdapter(this, R.layout.todo_row, null, from,
+    adapter = new SimpleCursorAdapter(this, R.layout.habit_row, null, from,
         to, 0);
 
     setListAdapter(adapter);
@@ -125,9 +125,9 @@ public class TodosOverviewActivity extends ListActivity implements
   // Creates a new loader after the initLoader () call
   @Override
   public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-    String[] projection = { TodoTable.COLUMN_ID, TodoTable.COLUMN_NAME };
+    String[] projection = { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
     CursorLoader cursorLoader = new CursorLoader(this,
-        MyTodoContentProvider.CONTENT_URI, projection, null, null, null);
+        MyHabitContentProvider.CONTENT_URI, projection, null, null, null);
     return cursorLoader;
   }
 

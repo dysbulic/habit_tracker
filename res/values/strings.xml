@@ -10,16 +10,16 @@
     <string name="event_edit_confirm">Confirm</string>
     <string name="no_events">Currently there are no events maintained</string>
     
-  	<string name="hello">Hello World, Todo!</string>
-	<string name="app_name">Todo</string>
-  	<string name="no_todos">Currently there are no Todo items maintained</string>
+  	<string name="hello">Hello World, Habit!</string>
+	<string name="app_name">Habit</string>
+  	<string name="no_habits">Currently there are no Habit items maintained</string>
   	<string name="menu_insert">Add Item</string>
-  	<string name="menu_delete">Delete Todo</string>
-  	<string name="todo_summary">Summary</string>
-  	<string name="todo_description">Delete Todo</string>
-  	<string name="todo_edit_summary">Summary</string>
-  	<string name="todo_edit_description">Description</string>
-  	<string name="todo_edit_confirm">Confirm</string>
+  	<string name="menu_delete">Delete Habit</string>
+  	<string name="habit_summary">Summary</string>
+  	<string name="habit_description">Delete Habit</string>
+  	<string name="habit_edit_summary">Summary</string>
+  	<string name="habit_edit_description">Description</string>
+  	<string name="habit_edit_confirm">Confirm</string>
   	
   	<string name="action_insert">Insert</string>
 </resources>
