@@ -58,7 +58,8 @@ public class HabitDetailActivity extends Activity {
     confirmButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View view) {
         if (TextUtils.isEmpty(mTitleText.getText().toString())) {
-          makeToast();
+        	Toast.makeText(HabitDetailActivity.this, "Please provide a name",
+        			Toast.LENGTH_LONG).show();
         } else {
           setResult(RESULT_OK);
           finish();
@@ -144,10 +145,5 @@ public class HabitDetailActivity extends Activity {
 
     Log.w(HabitDetailActivity.class.getName(),
             "Event Time: " + eventTime);
-  }
-
-  private void makeToast() {
-    Toast.makeText(HabitDetailActivity.this, "Please provide a name",
-        Toast.LENGTH_LONG).show();
   }
 }

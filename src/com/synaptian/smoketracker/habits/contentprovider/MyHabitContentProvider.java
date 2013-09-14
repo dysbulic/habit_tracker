@@ -30,11 +30,11 @@ public class MyHabitContentProvider extends ContentProvider {
   public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
       + "/" + BASE_PATH);
 
-  public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+   public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
       + "/habits";
   public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
       + "/habit";
-
+  
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
     sURIMatcher.addURI(AUTHORITY, BASE_PATH, HABITS);
