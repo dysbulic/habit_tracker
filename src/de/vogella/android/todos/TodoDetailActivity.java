@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.util.Log;
@@ -24,7 +23,6 @@ import de.vogella.android.todos.database.TodoTable;
  * or to change an existing
  */
 public class TodoDetailActivity extends Activity {
-  private Spinner mCategory;
   private EditText mTitleText;
   private EditText mBodyText;
   private TimePicker mEventTime;
@@ -37,7 +35,6 @@ public class TodoDetailActivity extends Activity {
     super.onCreate(bundle);
     setContentView(R.layout.todo_edit);
 
-    mCategory = (Spinner) findViewById(R.id.category);
     mEventTime = (TimePicker) findViewById(R.id.event_time);
     mEventDate = (DatePicker) findViewById(R.id.event_date);
     mTitleText = (EditText) findViewById(R.id.todo_edit_summary);
@@ -72,28 +69,20 @@ public class TodoDetailActivity extends Activity {
   }
 
   private void fillData(Uri uri) {
-    String[] projection = { TodoTable.COLUMN_SUMMARY, TodoTable.COLUMN_TIME,
-        TodoTable.COLUMN_DESCRIPTION, TodoTable.COLUMN_CATEGORY };
+    String[] projection = { TodoTable.COLUMN_NAME, TodoTable.COLUMN_TIME,
+        TodoTable.COLUMN_DESCRIPTION };
     Cursor cursor = getContentResolver().query(uri, projection, null, null,
         null);
     if (cursor != null) {
       cursor.moveToFirst();
-      String category = cursor.getString(
-    	cursor.getColumnIndexOrThrow(TodoTable.COLUMN_CATEGORY));
-
-      for (int i = 0; i < mCategory.getCount(); i++) {
-
-        String s = (String) mCategory.getItemAtPosition(i);
-        if (s.equalsIgnoreCase(category)) {
-          mCategory.setSelection(i);
-        }
-      }
 
       mTitleText.setText(cursor.getString(cursor
-          .getColumnIndexOrThrow(TodoTable.COLUMN_SUMMARY)));
+          .getColumnIndexOrThrow(TodoTable.COLUMN_NAME)));
       mBodyText.setText(cursor.getString(cursor
           .getColumnIndexOrThrow(TodoTable.COLUMN_DESCRIPTION)));
 
+      mBodyText.setText(uri.toString());
+      
       Calendar eventTime = Calendar.getInstance();
       long seconds = cursor.getInt(cursor.getColumnIndexOrThrow(TodoTable.COLUMN_TIME));
       eventTime.setTimeInMillis(seconds * 1000);
@@ -122,7 +111,6 @@ public class TodoDetailActivity extends Activity {
   }
 
   private void saveState() {
-    String category = (String) mCategory.getSelectedItem();
     String summary = mTitleText.getText().toString();
     String description = mBodyText.getText().toString();
 
@@ -141,8 +129,7 @@ public class TodoDetailActivity extends Activity {
     }
 
     ContentValues values = new ContentValues();	
-    values.put(TodoTable.COLUMN_CATEGORY, category);
-    values.put(TodoTable.COLUMN_SUMMARY, summary);
+    values.put(TodoTable.COLUMN_NAME, summary);
     values.put(TodoTable.COLUMN_TIME,
     		Math.floor(eventTime.getTimeInMillis() / 1000));
     values.put(TodoTable.COLUMN_DESCRIPTION, description);
@@ -160,7 +147,7 @@ public class TodoDetailActivity extends Activity {
   }
 
   private void makeToast() {
-    Toast.makeText(TodoDetailActivity.this, "Please maintain a summary",
+    Toast.makeText(TodoDetailActivity.this, "Please provide a name",
         Toast.LENGTH_LONG).show();
   }
 }

@@ -104,7 +104,7 @@ public class TodosOverviewActivity extends ListActivity implements
 
     // Fields from the database (projection)
     // Must include the _id column for the adapter to work
-    String[] from = new String[] { TodoTable.COLUMN_SUMMARY };
+    String[] from = new String[] { TodoTable.COLUMN_NAME };
     // Fields on the UI to which we map
     int[] to = new int[] { R.id.label };
 
@@ -125,7 +125,7 @@ public class TodosOverviewActivity extends ListActivity implements
   // Creates a new loader after the initLoader () call
   @Override
   public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-    String[] projection = { TodoTable.COLUMN_ID, TodoTable.COLUMN_SUMMARY };
+    String[] projection = { TodoTable.COLUMN_ID, TodoTable.COLUMN_NAME };
     CursorLoader cursorLoader = new CursorLoader(this,
         MyTodoContentProvider.CONTENT_URI, projection, null, null, null);
     return cursorLoader;

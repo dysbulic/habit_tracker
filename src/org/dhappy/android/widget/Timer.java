@@ -124,6 +124,6 @@ public class Timer extends TextView {
 		long mins = elapsedTime % 60;
 		elapsedTime /= 60;
 		long hours = elapsedTime % 60;
-		return String.format("%02d:%02d:%02d.%03d", hours, mins, secs, millis);
+		return String.format("%02d:%02d:%02d", hours, mins, secs);
 	}
 }

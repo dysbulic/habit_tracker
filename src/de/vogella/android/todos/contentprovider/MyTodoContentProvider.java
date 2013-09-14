@@ -91,7 +91,6 @@ public class MyTodoContentProvider extends ContentProvider {
   public Uri insert(Uri uri, ContentValues values) {
     int uriType = sURIMatcher.match(uri);
     SQLiteDatabase sqlDB = database.getWritableDatabase();
-    int rowsDeleted = 0;
     long id = 0;
     switch (uriType) {
     case TODOS:
@@ -172,8 +171,8 @@ public class MyTodoContentProvider extends ContentProvider {
   }
 
   private void checkColumns(String[] projection) {
-    String[] available = { TodoTable.COLUMN_CATEGORY,
-        TodoTable.COLUMN_SUMMARY, TodoTable.COLUMN_TIME,
+    String[] available = {
+        TodoTable.COLUMN_NAME, TodoTable.COLUMN_TIME,
         TodoTable.COLUMN_DESCRIPTION, TodoTable.COLUMN_ID };
     if (projection != null) {
       HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));

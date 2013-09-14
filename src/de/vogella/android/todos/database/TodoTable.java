@@ -8,18 +8,16 @@ public class TodoTable {
   // Database table
   public static final String TABLE_TODO = "todo";
   public static final String COLUMN_ID = "_id";
-  public static final String COLUMN_CATEGORY = "category";
-  public static final String COLUMN_SUMMARY = "summary";
-  public static final String COLUMN_TIME = "time";
+  public static final String COLUMN_NAME = "name";
   public static final String COLUMN_DESCRIPTION = "description";
+  public static final String COLUMN_TIME = "time";
 
   // Database creation SQL statement
   private static final String DATABASE_CREATE = "create table " 
       + TABLE_TODO
       + "(" 
       + COLUMN_ID + " integer primary key autoincrement, " 
-      + COLUMN_CATEGORY + " text not null, " 
-      + COLUMN_SUMMARY + " text not null,"
+      + COLUMN_NAME + " text not null,"
       + COLUMN_TIME + " integer,"
       + COLUMN_DESCRIPTION + " text not null" 
       + ");";
