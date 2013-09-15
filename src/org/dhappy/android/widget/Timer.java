@@ -125,7 +125,7 @@ public class Timer extends TextView {
 		elapsedTime /= 60;
 		long hours = Math.abs(elapsedTime) % 24;
 		elapsedTime /= 24;
-		long days = elapsedTime % 100;
+		long days = elapsedTime;
 		return String.format("%01d:%02d:%02d:%02d", days, hours, mins, secs);
 	}
 }
