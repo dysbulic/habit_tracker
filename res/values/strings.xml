@@ -30,4 +30,11 @@
     <string name="fragment_arguments_msg">Demonstrates a fragment that takes arguments as a Bundle at runtime (on the right) or from attributes in a layout (on the left).</string>
     <string name="fragment_arguments_embedded">From Attributes</string>
   	<string name="hello_world"><b>Hello, <i>World!</i></b></string>
+	<string name="new_fragment">Push</string>
+    <string name="delete_fragment">Pop</string>
+	<string name="pick_result">Pick a result to send, or BACK to cancel.</string>
+    <string name="corky">Corky</string>
+    <string name="violet">Violet</string>
+    <string name="receive_result_instructions">Press the button to get an activity result, which will be displayed here:</string>
+    <string name="receive_result_result">Get Result</string>
 </resources>

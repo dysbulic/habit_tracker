@@ -1,11 +1,21 @@
-package com.synaptian.smoketracker.habits;
+/*
+ * Copyright (C) 2011 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.example.android.apis.app;
 
-import com.example.android.apis.app.FragmentArgumentsFragment;
-import com.example.android.apis.app.FragmentMenuFragment;
-import com.example.android.apis.app.FragmentStackFragment;
-import com.example.android.apis.app.FragmentTabsFragment;
-//import com.example.android.apis.app.FragmentNestingTabs.TabListener;
-
+//BEGIN_INCLUDE(complete)
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
@@ -18,7 +28,7 @@ import android.widget.Toast;
  * This demonstrates the use of action bar tabs and how they interact
  * with other action bar features.
  */
-public class MainActivity extends Activity {
+public class FragmentTabs extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,21 +38,21 @@ public class MainActivity extends Activity {
         bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
 
         bar.addTab(bar.newTab()
-                .setText("Menus")
-                .setTabListener(new TabListener<FragmentMenuFragment>(
-                        this, "menus", FragmentMenuFragment.class)));
+                .setText("Simple")
+                .setTabListener(new TabListener<FragmentStack.CountingFragment>(
+                        this, "simple", FragmentStack.CountingFragment.class)));
         bar.addTab(bar.newTab()
-                .setText("Args")
-                .setTabListener(new TabListener<FragmentArgumentsFragment>(
-                        this, "args", FragmentArgumentsFragment.class)));
+                .setText("Contacts")
+                .setTabListener(new TabListener<LoaderCursor.CursorLoaderListFragment>(
+                        this, "contacts", LoaderCursor.CursorLoaderListFragment.class)));
         bar.addTab(bar.newTab()
-                .setText("Stack")
-                .setTabListener(new TabListener<FragmentStackFragment>(
-                        this, "stack", FragmentStackFragment.class)));
+                .setText("Apps")
+                .setTabListener(new TabListener<LoaderCustom.AppListFragment>(
+                        this, "apps", LoaderCustom.AppListFragment.class)));
         bar.addTab(bar.newTab()
-                .setText("Tabs")
-                .setTabListener(new TabListener<FragmentTabsFragment>(
-                        this, "tabs", FragmentTabsFragment.class)));
+                .setText("Throttle")
+                .setTabListener(new TabListener<LoaderThrottle.ThrottledLoaderListFragment>(
+                        this, "throttle", LoaderThrottle.ThrottledLoaderListFragment.class)));
 
         if (savedInstanceState != null) {
             bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
@@ -103,3 +113,4 @@ public class MainActivity extends Activity {
         }
     }
 }
+//END_INCLUDE(complete)

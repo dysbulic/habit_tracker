@@ -4,6 +4,8 @@
     android:versionCode="1"
     android:versionName="1.1" >
 
+	<uses-permission android:name="android.permission.READ_CONTACTS" />
+    
     <uses-sdk android:minSdkVersion="17" />
 
     <application
