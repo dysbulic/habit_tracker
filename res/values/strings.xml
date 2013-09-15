@@ -22,4 +22,12 @@
   	<string name="habit_edit_confirm">Confirm</string>
   	
   	<string name="action_insert">New</string>
+  	
+  	<string name="fragment_menu_msg">Build menus from two fragments, allowing you to hide them to remove them..</string>
+  	<string name="fragment1menu">Show fragment 1 menu</string>
+    <string name="fragment2menu">Show fragment 2 menu</string>
+  	<string name="fragment_arguments_fragment_msg">Demonstrates two embedded fragments that are instantiated with arguments.</string>
+    <string name="fragment_arguments_msg">Demonstrates a fragment that takes arguments as a Bundle at runtime (on the right) or from attributes in a layout (on the left).</string>
+    <string name="fragment_arguments_embedded">From Attributes</string>
+  	<string name="hello_world"><b>Hello, <i>World!</i></b></string>
 </resources>

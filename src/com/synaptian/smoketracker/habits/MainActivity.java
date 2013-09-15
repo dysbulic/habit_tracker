@@ -1,5 +1,11 @@
 package com.synaptian.smoketracker.habits;
 
+import com.example.android.apis.app.FragmentArgumentsFragment;
+import com.example.android.apis.app.FragmentMenuFragment;
+//import com.example.android.apis.app.FragmentStackFragment;
+//import com.example.android.apis.app.FragmentTabsFragment;
+//import com.example.android.apis.app.FragmentNestingTabs.TabListener;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
@@ -22,22 +28,23 @@ public class MainActivity extends Activity {
         bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
 
         bar.addTab(bar.newTab()
-                .setText("Simple"));
-//                .setTabListener(new TabListener<FragmentStack.CountingFragment>(
-//                        this, "simple", FragmentStack.CountingFragment.class)));
+                .setText("Menus")
+                .setTabListener(new TabListener<FragmentMenuFragment>(
+                        this, "menus", FragmentMenuFragment.class)));
         bar.addTab(bar.newTab()
-                .setText("Contacts"));
-//                .setTabListener(new TabListener<LoaderCursor.CursorLoaderListFragment>(
-//                        this, "contacts", LoaderCursor.CursorLoaderListFragment.class)));
+                .setText("Args")
+                .setTabListener(new TabListener<FragmentArgumentsFragment>(
+                        this, "args", FragmentArgumentsFragment.class)));
+        /*
         bar.addTab(bar.newTab()
-                .setText("Apps"));
-//                .setTabListener(new TabListener<LoaderCustom.AppListFragment>(
-//                        this, "apps", LoaderCustom.AppListFragment.class)));
+                .setText("Stack")
+                .setTabListener(new TabListener<FragmentStackFragment>(
+                        this, "stack", FragmentStackFragment.class)));
         bar.addTab(bar.newTab()
-                .setText("Throttle"));
-//                .setTabListener(new TabListener<LoaderThrottle.ThrottledLoaderListFragment>(
-//                        this, "throttle", LoaderThrottle.ThrottledLoaderListFragment.class)));
-
+                .setText("Tabs")
+                .setTabListener(new TabListener<FragmentTabsFragment>(
+                        this, "tabs", FragmentTabsFragment.class)));
+*/
         if (savedInstanceState != null) {
             bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
         }
