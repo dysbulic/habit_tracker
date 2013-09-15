@@ -14,10 +14,10 @@ public class HabitTimeListActivity extends ListActivity {
         setContentView(R.layout.event_list);
 
         List habitTimes = new ArrayList();
-        habitTimes.add(new HabitTime("MSFT", 24));
-        habitTimes.add(new HabitTime("ORCL", 34));
-        habitTimes.add(new HabitTime("AMZN", 180));
-        habitTimes.add(new HabitTime("ERTS", 19));
+        habitTimes.add(new HabitTime("MSFT", 24 * 1000));
+        habitTimes.add(new HabitTime("ORCL", 34 * 1000));
+        habitTimes.add(new HabitTime("AMZN", 180 * 1000));
+        habitTimes.add(new HabitTime("ERTS", 19 * 1000));
 
         setListAdapter(new HabitTimeAdapter(this, habitTimes));
     }

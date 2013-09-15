@@ -98,8 +98,6 @@ public class HabitsOverviewActivity extends ListActivity implements
     startActivity(i);
   }
 
-  
-
   private void fillData() {
 
     // Fields from the database (projection)

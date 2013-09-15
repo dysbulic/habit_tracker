@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import org.dhappy.android.widget.Timer;
 
 public class HabitTimeAdapter extends ArrayAdapter {
 	private final Activity activity;
@@ -34,7 +35,7 @@ public class HabitTimeAdapter extends ArrayAdapter {
 			// so they don't need to be re-fetched
 			htView = new HabitTimeView();
 			htView.name = (TextView) rowView.findViewById(R.id.label);
-			htView.timer = (TextView) rowView.findViewById(R.id.timer);
+			htView.timer = (Timer) rowView.findViewById(R.id.timer);
 
 			// Cache the view objects in the tag,
 			// so they can be re-accessed later
@@ -47,13 +48,13 @@ public class HabitTimeAdapter extends ArrayAdapter {
 		// to the view objects
 		HabitTime currentTime = habitTimes.get(position);
 		htView.name.setText(currentTime.getName());
-		htView.timer.setText(String.valueOf(currentTime.getTime()));
+		htView.timer.setStartingTime(currentTime.getTime());
 
 		return rowView;
 	}
 
 	protected static class HabitTimeView {
 		protected TextView name;
-		protected TextView timer;
+		protected Timer timer;
 	}
 }
