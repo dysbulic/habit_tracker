@@ -117,13 +117,15 @@ public class Timer extends TextView {
 	}
 
 	private static String getTimerText(long elapsedTime) {
-		long millis = elapsedTime % 1000;
+		long millis = Math.abs(elapsedTime % 1000);
 		elapsedTime /= 1000;
-		long secs = elapsedTime % 60;
+		long secs = Math.abs(elapsedTime) % 60;
 		elapsedTime /= 60;
-		long mins = elapsedTime % 60;
+		long mins = Math.abs(elapsedTime) % 60;
 		elapsedTime /= 60;
-		long hours = elapsedTime % 60;
-		return String.format("%02d:%02d:%02d", hours, mins, secs);
+		long hours = Math.abs(elapsedTime) % 24;
+		elapsedTime /= 24;
+		long days = elapsedTime % 100;
+		return String.format("%01d:%02d:%02d:%02d", days, hours, mins, secs);
 	}
 }
