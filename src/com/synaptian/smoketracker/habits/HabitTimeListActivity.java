@@ -11,6 +11,8 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorAdapter.ViewBinder;
@@ -23,6 +25,8 @@ public class HabitTimeListActivity extends ListActivity implements LoaderManager
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_list);
+
+        registerForContextMenu(getListView());
 
         String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME };
         // Fields on the UI to which we map
@@ -47,6 +51,13 @@ public class HabitTimeListActivity extends ListActivity implements LoaderManager
         });
         
         setListAdapter(adapter);
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+      MenuInflater inflater = getMenuInflater();
+      inflater.inflate(R.menu.listmenu, menu);
+      return true;
     }
     
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
