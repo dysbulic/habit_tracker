@@ -8,11 +8,13 @@ import com.synaptian.smoketracker.habits.database.HabitTable;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SimpleCursorAdapter.ViewBinder;
@@ -42,7 +44,7 @@ public class HabitTimeListActivity extends ListActivity implements LoaderManager
     			if(columnIndex == 2) { // Time
                     long time = cursor.getInt(columnIndex);
                     Timer timer = (Timer) view;
-                    timer.setStartingTime(time);
+                    timer.setStartingTime(time * 1000);
                     return true;
     			}
 
@@ -60,6 +62,21 @@ public class HabitTimeListActivity extends ListActivity implements LoaderManager
       return true;
     }
     
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+      switch (item.getItemId()) {
+      case R.id.insert:
+        createHabit();
+        return true;
+      }
+      return super.onOptionsItemSelected(item);
+    }
+
+    private void createHabit() {
+    	Intent i = new Intent(this, HabitDetailActivity.class);
+        startActivity(i);
+    }
+
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME };
         CursorLoader cursorLoader = new CursorLoader(this, MyHabitContentProvider.CONTENT_URI, projection, null, null, null);

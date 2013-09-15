@@ -15,9 +15,9 @@
   	<string name="no_habits">Currently there are no Habit items maintained</string>
   	<string name="menu_insert">Add Item</string>
   	<string name="menu_delete">Delete Habit</string>
-  	<string name="habit_summary">Summary</string>
+  	<string name="habit_summary">Name</string>
   	<string name="habit_description">Delete Habit</string>
-  	<string name="habit_edit_summary">Summary</string>
+  	<string name="habit_edit_summary">Name</string>
   	<string name="habit_edit_description">Description</string>
   	<string name="habit_edit_confirm">Confirm</string>
   	
