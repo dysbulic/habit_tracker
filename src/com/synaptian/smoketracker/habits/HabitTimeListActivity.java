@@ -1,7 +1,6 @@
 package com.synaptian.smoketracker.habits;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.dhappy.android.widget.Timer;
 
 import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
@@ -12,7 +11,9 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.SimpleCursorAdapter;
+import android.widget.SimpleCursorAdapter.ViewBinder;
 
 public class HabitTimeListActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 	private SimpleCursorAdapter adapter;
@@ -28,15 +29,29 @@ public class HabitTimeListActivity extends ListActivity implements LoaderManager
         int[] to = new int[] { R.id.label, R.id.timer };
 
         getLoaderManager().initLoader(0, null, this);
+
         adapter = new SimpleCursorAdapter(this, R.layout.habit_row, null, from, to, 0);
 
+        adapter.setViewBinder(new ViewBinder() {
+    		@Override
+    		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+    			if(columnIndex == 2) { // Time
+                    long time = cursor.getInt(columnIndex);
+                    Timer timer = (Timer) view;
+                    timer.setStartingTime(time);
+                    return true;
+    			}
+
+    			return false;
+    		}
+        });
+        
         setListAdapter(adapter);
     }
     
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
-        CursorLoader cursorLoader = new CursorLoader(this,
-            MyHabitContentProvider.CONTENT_URI, projection, null, null, null);
+        String[] projection = { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME };
+        CursorLoader cursorLoader = new CursorLoader(this, MyHabitContentProvider.CONTENT_URI, projection, null, null, null);
         return cursorLoader;
     }
     
