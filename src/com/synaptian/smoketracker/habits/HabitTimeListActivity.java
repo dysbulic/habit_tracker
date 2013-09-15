@@ -11,15 +11,22 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 
 public class HabitTimeListActivity extends ListActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+	private static final int DELETE_ID = Menu.FIRST + 1;
+	
 	private SimpleCursorAdapter adapter;
 	
     /** Called when the activity is first created. */
@@ -75,6 +82,38 @@ public class HabitTimeListActivity extends ListActivity implements LoaderManager
     private void createHabit() {
     	Intent i = new Intent(this, HabitDetailActivity.class);
         startActivity(i);
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+        ContextMenuInfo menuInfo) {
+      super.onCreateContextMenu(menu, v, menuInfo);
+      menu.add(0, DELETE_ID, 0, R.string.menu_delete);
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+      switch (item.getItemId()) {
+      case DELETE_ID:
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+            .getMenuInfo();
+        Uri uri = Uri.parse(MyHabitContentProvider.CONTENT_URI + "/"
+            + info.id);
+        getContentResolver().delete(uri, null, null);
+        //fillData();
+        return true;
+      }
+      return super.onContextItemSelected(item);
+    }
+
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+      super.onListItemClick(l, v, position, id);
+      Intent i = new Intent(this, HabitDetailActivity.class);
+      Uri habitUri = Uri.parse(MyHabitContentProvider.CONTENT_URI + "/" + id);
+      i.putExtra(MyHabitContentProvider.CONTENT_ITEM_TYPE, habitUri);
+
+      startActivity(i);
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
