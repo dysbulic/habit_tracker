@@ -28,19 +28,19 @@ public class MainActivity extends Activity {
         bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
 
         bar.addTab(bar.newTab()
-                .setText("Menus")
+                .setText("Habits")
                 .setTabListener(new TabListener<FragmentMenuFragment>(
                         this, "menus", FragmentMenuFragment.class)));
         bar.addTab(bar.newTab()
-                .setText("Args")
+                .setText("Events")
                 .setTabListener(new TabListener<FragmentArgumentsFragment>(
                         this, "args", FragmentArgumentsFragment.class)));
         bar.addTab(bar.newTab()
-                .setText("Stack")
+                .setText("Goals")
                 .setTabListener(new TabListener<FragmentStackFragment>(
                         this, "stack", FragmentStackFragment.class)));
         bar.addTab(bar.newTab()
-                .setText("Tabs")
+                .setText("Statistics")
                 .setTabListener(new TabListener<FragmentTabsFragment>(
                         this, "tabs", FragmentTabsFragment.class)));
 
