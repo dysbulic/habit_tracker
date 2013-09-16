@@ -4,9 +4,9 @@
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-  
+
           http://www.apache.org/licenses/LICENSE-2.0
-  
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,31 +16,31 @@
 
 <!-- Top-level content view for the simple fragment sample. -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:padding="4dip"
-    android:gravity="center_horizontal"
-    android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <FrameLayout
-            android:id="@+id/simple_fragment"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:padding="4dip"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="1">
-    </FrameLayout>
+    </android.support.v4.view.ViewPager>
 
-    <LinearLayout android:orientation="horizontal" android:padding="4dip"
-        android:gravity="center_horizontal" android:measureWithLargestChild="true"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_weight="0">
-        <Button android:id="@+id/new_fragment"
+    <LinearLayout android:orientation="horizontal"
+            android:gravity="center" android:measureWithLargestChild="true"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_weight="0">
+        <Button android:id="@+id/goto_first"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/new_fragment">
-            <requestFocus />
+            android:text="@string/first">
         </Button>
-        <Button android:id="@+id/delete_fragment"
+        <Button android:id="@+id/goto_last"
             android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_weight="0" 
-            android:text="@string/delete_fragment">
+            android:text="@string/last">
         </Button>
     </LinearLayout>
 </LinearLayout>
+

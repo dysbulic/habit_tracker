@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.synaptian.smoketracker.habits;
+package com.example.android.supportv13.app;
 
 import java.util.ArrayList;
+
+import com.synaptian.smoketracker.habits.R;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -26,17 +28,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import com.example.android.supportv13.app.CountingFragment;
-import com.example.android.supportv13.app.FragmentPagerSupport;
-import com.example.android.supportv13.app.CursorFragment;
-
 
 /**
  * This demonstrates the use of action bar tabs and how they interact
  * with other action bar features.
  */
 
-public class MainActivity extends Activity {
+public class ActionBarTabsPager extends Activity {
     ViewPager mViewPager;
     TabsAdapter mTabsAdapter;
 
@@ -160,3 +158,4 @@ public class MainActivity extends Activity {
         }
     }
 }
+
