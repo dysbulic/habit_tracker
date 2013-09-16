@@ -17,17 +17,23 @@
 package com.example.android.apis.app;
 
 //BEGIN_INCLUDE(complete)
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.ListFragment;
-import android.app.LoaderManager;
+import android.support.v4.app.FragmentActivity;
+//import android.app.Activity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+//import android.app.FragmentManager;
+//import android.app.ListFragment;
+import android.support.v4.app.LoaderManager;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+//import android.content.CursorLoader;
+//import android.content.Loader;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -55,7 +61,7 @@ import java.util.HashMap;
  * structured data through displaying it in the UI, using throttling to reduce
  * the number of queries done when its data changes.
  */
-public class LoaderThrottle extends Activity {
+public class LoaderThrottle extends FragmentActivity {
     // Debugging.
     static final String TAG = "LoaderThrottle";
 
@@ -371,7 +377,7 @@ public class LoaderThrottle extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
         // Create the list fragment and add it as our sole content.
         if (fm.findFragmentById(android.R.id.content) == null) {
@@ -502,10 +508,6 @@ public class LoaderThrottle extends Activity {
             } else {
                 setListShownNoAnimation(true);
             }
-        }
-
-        public void onLoaderReset(Loader<Cursor> loader) {
-            mAdapter.swapCursor(null);
         }
     }
 }

@@ -15,9 +15,9 @@
  */
 package com.example.android.apis.app;
 
-import java.util.ArrayList;
-
 import com.synaptian.smoketracker.habits.R;
+
+import java.util.ArrayList;
 
 import android.app.Fragment;
 import android.app.FragmentManager;

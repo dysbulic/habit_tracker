@@ -18,9 +18,9 @@ package com.example.android.apis.app;
 
 import com.synaptian.smoketracker.habits.R;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +29,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class FragmentStack extends Activity {
+public class FragmentStack extends FragmentActivity {
     int mStackLevel = 1;
 
     @Override
@@ -54,7 +54,7 @@ public class FragmentStack extends Activity {
         if (savedInstanceState == null) {
             // Do first time initialization -- add initial fragment.
             Fragment newFragment = CountingFragment.newInstance(mStackLevel);
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.add(R.id.simple_fragment, newFragment).commit();
         } else {
             mStackLevel = savedInstanceState.getInt("level");
@@ -76,7 +76,7 @@ public class FragmentStack extends Activity {
 
         // Add the fragment to the activity, pushing this transaction
         // on to the back stack.
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.simple_fragment, newFragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack(null);

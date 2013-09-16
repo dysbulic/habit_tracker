@@ -18,10 +18,10 @@ package com.example.android.apis.app;
 
 import com.synaptian.smoketracker.habits.R;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +33,7 @@ import android.widget.CheckBox;
 /**
  * Demonstrates how fragments can participate in the options menu.
  */
-public class FragmentMenu extends Activity {
+public class FragmentMenu extends FragmentActivity {
     Fragment mFragment1;
     Fragment mFragment2;
     CheckBox mCheckBox1;
@@ -52,7 +52,7 @@ public class FragmentMenu extends Activity {
         setContentView(R.layout.fragment_menu);
         
         // Make sure the two menu fragments are created.
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         mFragment1 = fm.findFragmentByTag("f1");
         if (mFragment1 == null) {
@@ -85,7 +85,7 @@ public class FragmentMenu extends Activity {
 
     // Update fragment visibility based on current check box state.
     void updateFragmentVisibility() {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (mCheckBox1.isChecked()) ft.show(mFragment1);
         else ft.hide(mFragment1);
         if (mCheckBox2.isChecked()) ft.show(mFragment2);

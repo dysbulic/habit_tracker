@@ -16,9 +16,12 @@
 
 package com.example.android.apis.app;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.ListFragment;
+import android.support.v4.app.FragmentActivity;
+//import android.app.Activity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ListFragment;
+//import android.app.FragmentManager;
+//import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -43,13 +46,13 @@ import android.widget.SearchView.OnQueryTextListener;
  * Demonstration of the use of a CursorLoader to load and display contacts
  * data in a fragment.
  */
-public class LoaderCursor extends Activity {
+public class LoaderCursor extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
         // Create the list fragment and add it as our sole content.
         if (fm.findFragmentById(android.R.id.content) == null) {

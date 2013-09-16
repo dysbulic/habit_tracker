@@ -18,9 +18,10 @@ package com.example.android.apis.app;
 
 import com.synaptian.smoketracker.habits.R;
 
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -33,7 +34,7 @@ import android.widget.TextView;
  * Demonstrates a fragment that can be configured through both Bundle arguments
  * and layout attributes.
  */
-public class FragmentArguments extends Activity {
+public class FragmentArguments extends FragmentActivity {
 //BEGIN_INCLUDE(create)
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +42,7 @@ public class FragmentArguments extends Activity {
 
         if (savedInstanceState == null) {
             // First-time init; create fragment to embed in activity.
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment newFragment = MyFragment.newInstance("From Arguments");
             ft.add(R.id.created, newFragment);
             ft.commit();

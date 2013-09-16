@@ -26,9 +26,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.ListFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ListFragment;
+//import android.app.Activity;
+//import android.app.FragmentManager;
+//import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.BroadcastReceiver;
@@ -62,13 +65,13 @@ import android.widget.SearchView.OnQueryTextListener;
 /**
  * Demonstration of the implementation of a custom Loader.
  */
-public class LoaderCustom extends Activity {
+public class LoaderCustom extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
         // Create the list fragment and add it as our sole content.
         if (fm.findFragmentById(android.R.id.content) == null) {
