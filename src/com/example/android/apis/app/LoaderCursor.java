@@ -16,10 +16,15 @@
 
 package com.example.android.apis.app;
 
+import java.util.List;
+
+import com.example.android.apis.app.LoaderCustom.AppEntry;
+
 import android.support.v4.app.FragmentActivity;
 //import android.app.Activity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 //import android.app.FragmentManager;
 //import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -97,7 +102,7 @@ public class LoaderCursor extends FragmentActivity {
 
             // Prepare the loader.  Either re-connect with an existing one,
             // or start a new one.
-            getLoaderManager().initLoader(0, null, this);
+            getLoaderManager().initLoader(0, null, (LoaderCallbacks<List<AppEntry>>) this);
         }
 
         public static class MySearchView extends SearchView {
@@ -141,7 +146,7 @@ public class LoaderCursor extends FragmentActivity {
                 return true;
             }
             mCurFilter = newFilter;
-            getLoaderManager().restartLoader(0, null, this);
+            getLoaderManager().restartLoader(0, null, (LoaderCallbacks<List<AppEntry>>) this);
             return true;
         }
 

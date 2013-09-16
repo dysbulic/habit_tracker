@@ -29,6 +29,7 @@ import java.util.List;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 //import android.app.Activity;
 //import android.app.FragmentManager;
 //import android.app.ListFragment;
@@ -433,7 +434,7 @@ public class LoaderCustom extends FragmentActivity {
 
             // Prepare the loader.  Either re-connect with an existing one,
             // or start a new one.
-            getLoaderManager().initLoader(0, null, this);
+            getLoaderManager().initLoader(0, null, (LoaderCallbacks<List<AppEntry>>) this);
         }
 
         public static class MySearchView extends SearchView {

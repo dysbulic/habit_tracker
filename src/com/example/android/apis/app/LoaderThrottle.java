@@ -509,6 +509,10 @@ public class LoaderThrottle extends FragmentActivity {
                 setListShownNoAnimation(true);
             }
         }
+
+		@Override
+		public void onLoaderReset(Loader<Cursor> arg0) {
+		}
     }
 }
 //END_INCLUDE(complete)
