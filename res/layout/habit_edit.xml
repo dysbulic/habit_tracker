@@ -41,11 +41,19 @@
         	android:minLines="5" >
     	</EditText>
 
-    	<Button
-        	android:id="@+id/habit_edit_button"
-        	android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:text="@string/habit_edit_confirm" >
-    	</Button>
-	</LinearLayout>
+    	
+    	<LinearLayout style="@style/FillWidth.Hor">
+    	    <Button
+                android:id="@+id/habit_cancel_button"
+                style="@style/ControlButton"
+                android:text="@string/habit_edit_cancel" >
+            </Button>
+
+            <Button
+                android:id="@+id/habit_edit_button"
+                style="@style/ControlButton"
+                android:text="@string/habit_edit_confirm" >
+            </Button>
+        </LinearLayout>
+   	</LinearLayout>
 </ScrollView>

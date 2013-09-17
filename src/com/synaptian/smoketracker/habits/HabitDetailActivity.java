@@ -40,6 +40,7 @@ public class HabitDetailActivity extends Activity {
     mTitleText = (EditText) findViewById(R.id.habit_edit_summary);
     mBodyText = (EditText) findViewById(R.id.habit_edit_description);
     Button confirmButton = (Button) findViewById(R.id.habit_edit_button);
+    Button cancelButton = (Button) findViewById(R.id.habit_cancel_button);
 
     Bundle extras = getIntent().getExtras();
 
@@ -56,16 +57,23 @@ public class HabitDetailActivity extends Activity {
     }
 
     confirmButton.setOnClickListener(new View.OnClickListener() {
-      public void onClick(View view) {
-        if (TextUtils.isEmpty(mTitleText.getText().toString())) {
-        	Toast.makeText(HabitDetailActivity.this, "Please provide a name",
-        			Toast.LENGTH_LONG).show();
-        } else {
-          setResult(RESULT_OK);
-          finish();
+        public void onClick(View view) {
+          if (TextUtils.isEmpty(mTitleText.getText().toString())) {
+          	Toast.makeText(HabitDetailActivity.this, "Please provide a name",
+          			Toast.LENGTH_LONG).show();
+          } else {
+            setResult(RESULT_OK);
+            finish();
+          }
         }
-      }
 
+      });
+
+  	cancelButton.setOnClickListener(new View.OnClickListener() {
+      public void onClick(View view) {
+      	setResult(RESULT_OK);
+      	finish();
+      }
     });
   }
 

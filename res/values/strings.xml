@@ -19,7 +19,8 @@
   	<string name="habit_edit_summary">Name</string>
   	<string name="habit_edit_description">Description</string>
   	<string name="habit_edit_confirm">Confirm</string>
-  	
+    <string name="habit_edit_cancel">Cancel</string>
+  		
   	<string name="action_insert">New</string>
   	
     <string name="hello_world"><b>Hello, <i>World!</i></b></string>
