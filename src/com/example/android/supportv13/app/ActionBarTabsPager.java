@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.synaptian.smoketracker.habits;
+package com.example.android.supportv13.app;
 
 import java.util.ArrayList;
+
+import com.synaptian.smoketracker.habits.R;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -26,16 +28,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import com.example.android.supportv13.app.CountingFragment;
-import com.example.android.supportv13.app.FragmentPagerSupport;
-
 
 /**
  * This demonstrates the use of action bar tabs and how they interact
  * with other action bar features.
  */
 
-public class MainActivity extends Activity {
+public class ActionBarTabsPager extends Activity {
     ViewPager mViewPager;
     TabsAdapter mTabsAdapter;
 
@@ -49,16 +48,15 @@ public class MainActivity extends Activity {
 
         final ActionBar bar = getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
 
         mTabsAdapter = new TabsAdapter(this, mViewPager);
-        mTabsAdapter.addTab(bar.newTab().setText("Habits"),
-                HabitListFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("Goals"),
-                GoalListFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText("Simple"),
                 CountingFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText("List"),
                 FragmentPagerSupport.ArrayListFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText("Cursor"),
+                CursorFragment.class, null);
 
         if (savedInstanceState != null) {
             bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
@@ -160,3 +158,4 @@ public class MainActivity extends Activity {
         }
     }
 }
+
