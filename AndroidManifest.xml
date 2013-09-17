@@ -7,7 +7,7 @@
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
     
     <uses-sdk
-        android:minSdkVersion="13"
+        android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
     <application
@@ -19,7 +19,7 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.example.android.supportv13.app.ActionBarTabsPager"
+            android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

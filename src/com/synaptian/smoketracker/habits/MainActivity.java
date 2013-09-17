@@ -28,7 +28,6 @@ import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import com.example.android.supportv13.app.CountingFragment;
 import com.example.android.supportv13.app.FragmentPagerSupport;
-import com.example.android.supportv13.app.CursorFragment;
 
 
 /**
@@ -57,8 +56,8 @@ public class MainActivity extends Activity {
                 CountingFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText("List"),
                 FragmentPagerSupport.ArrayListFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("Cursor"),
-                CursorFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText("Habits"),
+                HabitListFragment.class, null);
 
         if (savedInstanceState != null) {
             bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
