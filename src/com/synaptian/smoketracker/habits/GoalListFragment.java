@@ -8,6 +8,7 @@ import com.synaptian.smoketracker.habits.database.HabitTable;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -20,7 +21,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SimpleCursorAdapter.ViewBinder;
@@ -40,7 +40,7 @@ public class GoalListFragment extends ListFragment
 
         // Give some text to display if there is no data.  In a real
         // application this would come from a resource.
-        setEmptyText("No phone numbers");
+        setEmptyText("No recorded habits");
 
         // We have a menu item to show in action bar.
         setHasOptionsMenu(true);
@@ -83,13 +83,10 @@ public class GoalListFragment extends ListFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Place an action bar item for searching.
-        MenuItem item = menu.add("Search");
-        item.setIcon(android.R.drawable.ic_menu_search);
-        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM
-                | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        SearchView sv = new SearchView(getActivity());
-        sv.setOnQueryTextListener(this);
-        item.setActionView(sv);
+        MenuItem item = menu.add("New");
+        item.setIcon(android.R.drawable.ic_input_add);
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        item.setIntent(new Intent(getActivity(), HabitDetailActivity.class));
     }
 
     public boolean onQueryTextChange(String newText) {

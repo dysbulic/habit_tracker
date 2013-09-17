@@ -8,6 +8,7 @@ import com.synaptian.smoketracker.habits.database.HabitTable;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -27,7 +28,7 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 
 
 public class HabitListFragment extends ListFragment
-        implements OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
@@ -83,27 +84,10 @@ public class HabitListFragment extends ListFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Place an action bar item for searching.
-        MenuItem item = menu.add("Search");
-        item.setIcon(android.R.drawable.ic_menu_search);
-        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM
-                | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        SearchView sv = new SearchView(getActivity());
-        sv.setOnQueryTextListener(this);
-        item.setActionView(sv);
-    }
-
-    public boolean onQueryTextChange(String newText) {
-        // Called when the action bar search text has changed.  Update
-        // the search filter, and restart the loader to do a new query
-        // with this filter.
-        mCurFilter = !TextUtils.isEmpty(newText) ? newText : null;
-        getLoaderManager().restartLoader(0, null, this);
-        return true;
-    }
-
-    @Override public boolean onQueryTextSubmit(String query) {
-        // Don't care about this.
-        return true;
+        MenuItem item = menu.add("New");
+        item.setIcon(android.R.drawable.ic_input_add);
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        item.setIntent(new Intent(getActivity(), HabitDetailActivity.class));
     }
 
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
