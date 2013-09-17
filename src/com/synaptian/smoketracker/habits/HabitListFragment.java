@@ -1,5 +1,10 @@
 package com.synaptian.smoketracker.habits;
 
+import org.dhappy.android.widget.Timer;
+
+import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.database.HabitTable;
+
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -18,6 +23,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.SearchView.OnQueryTextListener;
+import android.widget.SimpleCursorAdapter.ViewBinder;
 
 
 public class HabitListFragment extends ListFragment
@@ -40,10 +46,31 @@ public class HabitListFragment extends ListFragment
         setHasOptionsMenu(true);
 
         // Create an empty adapter we will use to display the loaded data.
+/*
         mAdapter = new SimpleCursorAdapter(getActivity(),
                 android.R.layout.simple_list_item_2, null,
                 new String[] { Contacts.DISPLAY_NAME, Contacts.CONTACT_STATUS },
                 new int[] { android.R.id.text1, android.R.id.text2 }, 0);
+*/
+        String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME };
+        int[] to = new int[] { R.id.label, R.id.timer };
+
+        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.habit_row, null, from, to, 0);
+
+        mAdapter.setViewBinder(new ViewBinder() {
+    		@Override
+    		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+    			if(columnIndex == 2) { // Time
+                    long time = cursor.getInt(columnIndex);
+                    Timer timer = (Timer) view;
+                    timer.setStartingTime(time * 1000);
+                    return true;
+    			}
+
+    			return false;
+    		}
+        });
+
         setListAdapter(mAdapter);
 
         // Start out with a progress indicator.
@@ -85,13 +112,10 @@ public class HabitListFragment extends ListFragment
     }
 
     // These are the Contacts rows that we will retrieve.
-    static final String[] CONTACTS_SUMMARY_PROJECTION = new String[] {
-        Contacts._ID,
-        Contacts.DISPLAY_NAME,
-        Contacts.CONTACT_STATUS,
-        Contacts.CONTACT_PRESENCE,
-        Contacts.PHOTO_ID,
-        Contacts.LOOKUP_KEY,
+    static final String[] HABITS_PROJECTION = new String[] {
+        HabitTable.COLUMN_ID,
+        HabitTable.COLUMN_NAME,
+        HabitTable.COLUMN_TIME
     };
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -104,17 +128,20 @@ public class HabitListFragment extends ListFragment
             baseUri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI,
                     Uri.encode(mCurFilter));
         } else {
-            baseUri = Contacts.CONTENT_URI;
+            baseUri = MyHabitContentProvider.CONTENT_URI;
         }
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
+/*
         String select = "((" + Contacts.DISPLAY_NAME + " NOTNULL) AND ("
                 + Contacts.HAS_PHONE_NUMBER + "=1) AND ("
                 + Contacts.DISPLAY_NAME + " != '' ))";
         return new CursorLoader(getActivity(), baseUri,
                 CONTACTS_SUMMARY_PROJECTION, select, null,
                 Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+*/
+        return new CursorLoader(getActivity(), MyHabitContentProvider.CONTENT_URI, HABITS_PROJECTION, null, null, null);
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
