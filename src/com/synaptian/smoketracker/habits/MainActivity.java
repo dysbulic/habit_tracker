@@ -52,12 +52,14 @@ public class MainActivity extends Activity {
         bar.setDisplayOptions(0, ActionBar.DISPLAY_SHOW_TITLE);
 
         mTabsAdapter = new TabsAdapter(this, mViewPager);
+        mTabsAdapter.addTab(bar.newTab().setText("Habits"),
+                HabitListFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText("Goals"),
+                GoalListFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText("Simple"),
                 CountingFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText("List"),
                 FragmentPagerSupport.ArrayListFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("Habits"),
-                HabitListFragment.class, null);
 
         if (savedInstanceState != null) {
             bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
