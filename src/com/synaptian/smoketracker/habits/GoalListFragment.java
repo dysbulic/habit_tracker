@@ -17,6 +17,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -45,6 +47,8 @@ public class GoalListFragment extends ListFragment
 
         // We have a menu item to show in action bar.
         setHasOptionsMenu(true);
+        
+        registerForContextMenu(getListView());
 
         String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME };
         int[] to = new int[] { R.id.label, R.id.timer };
@@ -83,6 +87,13 @@ public class GoalListFragment extends ListFragment
         item.setIntent(new Intent(getActivity(), GoalDetailActivity.class));
     }
 
+    @Override  
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
+    	super.onCreateContextMenu(menu, v, menuInfo);  
+    	menu.setHeaderTitle("Goal Options");  
+    	menu.add(0, v.getId(), 0, "Delete");
+    }  
+    
     public boolean onQueryTextChange(String newText) {
         // Called when the action bar search text has changed.  Update
         // the search filter, and restart the loader to do a new query
