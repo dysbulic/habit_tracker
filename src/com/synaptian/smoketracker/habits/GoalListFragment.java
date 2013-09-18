@@ -25,12 +25,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 
 
 public class GoalListFragment extends ListFragment
         implements OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
+	private static final int MENU_DELETE = Menu.FIRST + 1;
 
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
@@ -91,8 +93,21 @@ public class GoalListFragment extends ListFragment
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
     	super.onCreateContextMenu(menu, v, menuInfo);  
     	menu.setHeaderTitle("Goal Options");  
-    	menu.add(0, v.getId(), 0, "Delete");
-    }  
+    	menu.add(0, MENU_DELETE, 0, "Delete");
+    }
+
+    @Override  
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case MENU_DELETE:
+          AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+          Uri uri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + info.id);
+          getActivity().getContentResolver().delete(uri, null, null);
+          //fillData();
+          return true;
+        }
+        return super.onContextItemSelected(item);
+    }
     
     public boolean onQueryTextChange(String newText) {
         // Called when the action bar search text has changed.  Update
