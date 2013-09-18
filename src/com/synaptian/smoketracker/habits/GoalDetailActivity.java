@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -26,7 +27,8 @@ import com.synaptian.smoketracker.habits.database.GoalTable;
  * HabitDetailActivity allows to enter a new habit item 
  * or to change an existing
  */
-public class GoalDetailActivity extends Activity {
+public class GoalDetailActivity extends Activity
+	implements AdapterView.OnItemSelectedListener {
   private Spinner mHabitSelect;
   private EditText mTitleText;
   private EditText mBodyText;
@@ -67,6 +69,8 @@ public class GoalDetailActivity extends Activity {
     Cursor cursor = getContentResolver().query(MyHabitContentProvider.HABITS_URI, queryCols, null, null, null);
     SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
     mHabitSelect.setAdapter(mAdapter);
+    
+    mHabitSelect.setOnItemSelectedListener(this);
     
     confirmButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View view) {
@@ -161,5 +165,14 @@ public class GoalDetailActivity extends Activity {
 
     Log.w(GoalDetailActivity.class.getName(),
             "Event Time: " + eventTime);
+  }
+
+  @Override
+  public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+	  mBodyText.setText("ID: " + id);
+  }
+
+  @Override
+  public void onNothingSelected(AdapterView<?> arg0) {
   }
 }
