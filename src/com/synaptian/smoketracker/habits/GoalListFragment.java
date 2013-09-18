@@ -116,8 +116,7 @@ public class GoalListFragment extends ListFragment
         // currently filtering.
         Uri baseUri;
         if (mCurFilter != null) {
-            baseUri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI,
-                    Uri.encode(mCurFilter));
+            baseUri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI, Uri.encode(mCurFilter));
         } else {
             baseUri = MyHabitContentProvider.HABITS_URI;
         }

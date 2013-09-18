@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -58,6 +60,15 @@ public class GoalDetailActivity extends Activity {
       fillData(goalUri);
     }
 
+    String[] queryCols = new String[] { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
+    String[] from = new String[] { HabitTable.COLUMN_NAME };
+    int[] to = new int[] { R.id.label };
+
+    Cursor cursor = getContentResolver().query(MyHabitContentProvider.HABITS_URI, queryCols, null, null, null);
+
+    SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
+    mHabitSelect.setAdapter(mAdapter);
+    
     confirmButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View view) {
           if (TextUtils.isEmpty(mTitleText.getText().toString())) {
@@ -85,10 +96,8 @@ public class GoalDetailActivity extends Activity {
     if (cursor != null) {
       cursor.moveToFirst();
 
-      mTitleText.setText(cursor.getString(cursor
-          .getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
-      mBodyText.setText(cursor.getString(cursor
-          .getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
+      mTitleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
+      mBodyText.setText(cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
 
       mBodyText.setText(uri.toString());
       
@@ -139,8 +148,7 @@ public class GoalDetailActivity extends Activity {
 
     ContentValues values = new ContentValues();	
     values.put(HabitTable.COLUMN_NAME, summary);
-    values.put(HabitTable.COLUMN_TIME,
-    		Math.floor(eventTime.getTimeInMillis() / 1000));
+    values.put(HabitTable.COLUMN_TIME, Math.floor(eventTime.getTimeInMillis() / 1000));
     values.put(HabitTable.COLUMN_DESCRIPTION, description);
 
     if (goalUri == null) {
