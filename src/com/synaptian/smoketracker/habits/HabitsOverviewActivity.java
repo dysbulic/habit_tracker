@@ -73,7 +73,7 @@ public class HabitsOverviewActivity extends ListActivity implements
     case DELETE_ID:
       AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
           .getMenuInfo();
-      Uri uri = Uri.parse(MyHabitContentProvider.CONTENT_URI + "/"
+      Uri uri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/"
           + info.id);
       getContentResolver().delete(uri, null, null);
       fillData();
@@ -92,7 +92,7 @@ public class HabitsOverviewActivity extends ListActivity implements
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
     Intent i = new Intent(this, HabitDetailActivity.class);
-    Uri habitUri = Uri.parse(MyHabitContentProvider.CONTENT_URI + "/" + id);
+    Uri habitUri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + id);
     i.putExtra(MyHabitContentProvider.CONTENT_ITEM_TYPE, habitUri);
 
     startActivity(i);
@@ -125,7 +125,7 @@ public class HabitsOverviewActivity extends ListActivity implements
   public Loader<Cursor> onCreateLoader(int id, Bundle args) {
     String[] projection = { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
     CursorLoader cursorLoader = new CursorLoader(this,
-        MyHabitContentProvider.CONTENT_URI, projection, null, null, null);
+        MyHabitContentProvider.HABITS_URI, projection, null, null, null);
     return cursorLoader;
   }
 

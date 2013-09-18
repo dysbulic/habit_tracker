@@ -145,7 +145,7 @@ public class HabitDetailActivity extends Activity {
 
     if (habitUri == null) {
       // New habit
-      habitUri = getContentResolver().insert(MyHabitContentProvider.CONTENT_URI, values);
+      habitUri = getContentResolver().insert(MyHabitContentProvider.HABITS_URI, values);
     } else {
       // Update habit
       getContentResolver().update(habitUri, values, null, null);

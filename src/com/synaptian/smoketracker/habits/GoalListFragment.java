@@ -125,7 +125,7 @@ public class GoalListFragment extends ListFragment
             baseUri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI,
                     Uri.encode(mCurFilter));
         } else {
-            baseUri = MyHabitContentProvider.CONTENT_URI;
+            baseUri = MyHabitContentProvider.HABITS_URI;
         }
 
         // Now create and return a CursorLoader that will take care of
@@ -138,7 +138,7 @@ public class GoalListFragment extends ListFragment
                 CONTACTS_SUMMARY_PROJECTION, select, null,
                 Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
 */
-        return new CursorLoader(getActivity(), MyHabitContentProvider.CONTENT_URI, HABITS_PROJECTION, null, null, null);
+        return new CursorLoader(getActivity(), MyHabitContentProvider.HABITS_URI, HABITS_PROJECTION, null, null, null);
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

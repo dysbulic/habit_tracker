@@ -26,9 +26,9 @@ public class MyHabitContentProvider extends ContentProvider {
 
   private static final String AUTHORITY = "com.synaptian.smoketracker.habits.contentprovider";
 
-  private static final String BASE_PATH = "habits";
-  public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
-      + "/" + BASE_PATH);
+  private static final String HABITS_PATH = "habits";
+  public static final Uri HABITS_URI = Uri.parse("content://" + AUTHORITY
+      + "/" + HABITS_PATH);
 
    public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
       + "/habits";
@@ -37,8 +37,8 @@ public class MyHabitContentProvider extends ContentProvider {
   
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
-    sURIMatcher.addURI(AUTHORITY, BASE_PATH, HABITS);
-    sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", HABIT_ID);
+    sURIMatcher.addURI(AUTHORITY, HABITS_PATH, HABITS);
+    sURIMatcher.addURI(AUTHORITY, HABITS_PATH + "/#", HABIT_ID);
   }
 
   @Override
@@ -51,7 +51,7 @@ public class MyHabitContentProvider extends ContentProvider {
   public Cursor query(Uri uri, String[] projection, String selection,
       String[] selectionArgs, String sortOrder) {
 
-    // Uisng SQLiteQueryBuilder instead of query() method
+    // Using SQLiteQueryBuilder instead of query() method
     SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
     // Check if the caller has requested a column which does not exists
@@ -100,7 +100,7 @@ public class MyHabitContentProvider extends ContentProvider {
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }
     getContext().getContentResolver().notifyChange(uri, null);
-    return Uri.parse(BASE_PATH + "/" + id);
+    return Uri.parse(HABITS_PATH + "/" + id);
   }
 
   @Override
