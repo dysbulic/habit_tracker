@@ -86,7 +86,7 @@ public class GoalListFragment extends ListFragment
         MenuItem item = menu.add("New");
         item.setIcon(android.R.drawable.ic_input_add);
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        item.setIntent(new Intent(getActivity(), HabitDetailActivity.class));
+        item.setIntent(new Intent(getActivity(), GoalDetailActivity.class));
     }
 
     public boolean onQueryTextChange(String newText) {
@@ -130,14 +130,6 @@ public class GoalListFragment extends ListFragment
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
-/*
-        String select = "((" + Contacts.DISPLAY_NAME + " NOTNULL) AND ("
-                + Contacts.HAS_PHONE_NUMBER + "=1) AND ("
-                + Contacts.DISPLAY_NAME + " != '' ))";
-        return new CursorLoader(getActivity(), baseUri,
-                CONTACTS_SUMMARY_PROJECTION, select, null,
-                Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
-*/
         return new CursorLoader(getActivity(), MyHabitContentProvider.HABITS_URI, HABITS_PROJECTION, null, null, null);
     }
 

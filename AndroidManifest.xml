@@ -28,8 +28,10 @@
         </activity>
         <activity
             android:name=".HabitDetailActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize" >
-        </activity>
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
+        <activity
+            android:name=".GoalDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
 
         <provider
             android:name=".contentprovider.MyHabitContentProvider"
