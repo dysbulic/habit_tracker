@@ -61,11 +61,10 @@ public class GoalDetailActivity extends Activity {
     }
 
     String[] queryCols = new String[] { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
-    String[] from = new String[] { HabitTable.COLUMN_NAME };
-    int[] to = new int[] { R.id.label };
+    String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_ID };
+    int[] to = new int[] { R.id.label, R.id.id };
 
     Cursor cursor = getContentResolver().query(MyHabitContentProvider.HABITS_URI, queryCols, null, null, null);
-
     SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
     mHabitSelect.setAdapter(mAdapter);
     
@@ -129,6 +128,7 @@ public class GoalDetailActivity extends Activity {
   }
 
   private void saveState() {
+	int habitId = mHabitSelect.getSelectedItemPosition();
     String summary = mTitleText.getText().toString();
     String description = mBodyText.getText().toString();
 

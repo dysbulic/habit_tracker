@@ -38,6 +38,9 @@ public class MyHabitContentProvider extends ContentProvider {
   public static final String HABIT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/habits";
   public static final String HABIT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/habit";
   
+  public static final String GOAL_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/goals";
+  public static final String GOAL_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/goal";
+
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
 	    sURIMatcher.addURI(AUTHORITY, HABITS_PATH, HABITS);
