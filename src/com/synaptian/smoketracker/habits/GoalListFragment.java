@@ -4,6 +4,7 @@ import org.dhappy.android.widget.Timer;
 
 import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
+import com.synaptian.smoketracker.habits.database.GoalTable;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -45,13 +46,6 @@ public class GoalListFragment extends ListFragment
         // We have a menu item to show in action bar.
         setHasOptionsMenu(true);
 
-        // Create an empty adapter we will use to display the loaded data.
-/*
-        mAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_2, null,
-                new String[] { Contacts.DISPLAY_NAME, Contacts.CONTACT_STATUS },
-                new int[] { android.R.id.text1, android.R.id.text2 }, 0);
-*/
         String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME };
         int[] to = new int[] { R.id.label, R.id.timer };
 

@@ -45,13 +45,11 @@ public class HabitDetailActivity extends Activity {
     Bundle extras = getIntent().getExtras();
 
     // Check from the saved Instance
-    habitUri = (bundle == null) ? null : (Uri) bundle
-        .getParcelable(MyHabitContentProvider.CONTENT_ITEM_TYPE);
+    habitUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE);
 
     // Or passed from the other activity
     if (extras != null) {
-      habitUri = extras
-          .getParcelable(MyHabitContentProvider.CONTENT_ITEM_TYPE);
+      habitUri = extras.getParcelable(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE);
 
       fillData(habitUri);
     }
@@ -110,7 +108,7 @@ public class HabitDetailActivity extends Activity {
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     saveState();
-    outState.putParcelable(MyHabitContentProvider.CONTENT_ITEM_TYPE, habitUri);
+    outState.putParcelable(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
   }
 
   @Override

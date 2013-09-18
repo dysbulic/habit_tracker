@@ -93,7 +93,7 @@ public class HabitsOverviewActivity extends ListActivity implements
     super.onListItemClick(l, v, position, id);
     Intent i = new Intent(this, HabitDetailActivity.class);
     Uri habitUri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + id);
-    i.putExtra(MyHabitContentProvider.CONTENT_ITEM_TYPE, habitUri);
+    i.putExtra(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
 
     startActivity(i);
   }

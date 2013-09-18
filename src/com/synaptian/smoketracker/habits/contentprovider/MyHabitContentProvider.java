@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import com.synaptian.smoketracker.habits.database.HabitDatabaseHelper;
 import com.synaptian.smoketracker.habits.database.HabitTable;
+import com.synaptian.smoketracker.habits.database.GoalTable;
 
 public class MyHabitContentProvider extends ContentProvider {
 
@@ -29,17 +30,13 @@ public class MyHabitContentProvider extends ContentProvider {
   private static final String AUTHORITY = "com.synaptian.smoketracker.habits.contentprovider";
 
   private static final String HABITS_PATH = "habits";
-  public static final Uri HABITS_URI = Uri.parse("content://" + AUTHORITY
-      + "/" + HABITS_PATH);
+  public static final Uri HABITS_URI = Uri.parse("content://" + AUTHORITY + "/" + HABITS_PATH);
 
   private static final String GOALS_PATH = "goals";
-  public static final Uri GOALS_URI = Uri.parse("content://" + AUTHORITY
-      + "/" + GOALS_PATH);
+  public static final Uri GOALS_URI = Uri.parse("content://" + AUTHORITY + "/" + GOALS_PATH);
 
-   public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
-      + "/habits";
-  public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
-      + "/habit";
+  public static final String HABIT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/habits";
+  public static final String HABIT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/habit";
   
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
@@ -56,8 +53,7 @@ public class MyHabitContentProvider extends ContentProvider {
   }
 
   @Override
-  public Cursor query(Uri uri, String[] projection, String selection,
-      String[] selectionArgs, String sortOrder) {
+  public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
     // Using SQLiteQueryBuilder instead of query() method
     SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
@@ -65,25 +61,24 @@ public class MyHabitContentProvider extends ContentProvider {
     // Check if the caller has requested a column which does not exists
     checkColumns(projection);
 
-    // Set the table
-    queryBuilder.setTables(HabitTable.TABLE_HABIT);
-
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
-    case HABITS:
-      break;
     case HABIT_ID:
-      // Adding the ID to the original query
-      queryBuilder.appendWhere(HabitTable.COLUMN_ID + "="
-          + uri.getLastPathSegment());
-      break;
+        queryBuilder.appendWhere(HabitTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+    case HABITS:
+        queryBuilder.setTables(HabitTable.TABLE_HABIT);
+        break;
+    case GOAL_ID:
+        queryBuilder.appendWhere(GoalTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+    case GOALS:
+        queryBuilder.setTables(GoalTable.TABLE_GOAL);
+        break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }
 
     SQLiteDatabase db = database.getWritableDatabase();
-    Cursor cursor = queryBuilder.query(db, projection, selection,
-        selectionArgs, null, null, sortOrder);
+    Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
     // Make sure that potential listeners are getting notified
     cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
@@ -99,16 +94,22 @@ public class MyHabitContentProvider extends ContentProvider {
   public Uri insert(Uri uri, ContentValues values) {
     int uriType = sURIMatcher.match(uri);
     SQLiteDatabase sqlDB = database.getWritableDatabase();
+    Uri returnUri;
     long id = 0;
     switch (uriType) {
     case HABITS:
-      id = sqlDB.insert(HabitTable.TABLE_HABIT, null, values);
-      break;
+        id = sqlDB.insert(HabitTable.TABLE_HABIT, null, values);
+        returnUri = Uri.parse(HABITS_PATH + "/" + id);
+        break;
+    case GOALS:
+        id = sqlDB.insert(GoalTable.TABLE_GOAL, null, values);
+        returnUri = Uri.parse(GOALS_PATH + "/" + id);
+        break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }
     getContext().getContentResolver().notifyChange(uri, null);
-    return Uri.parse(HABITS_PATH + "/" + id);
+    return returnUri;
   }
 
   @Override
@@ -118,20 +119,14 @@ public class MyHabitContentProvider extends ContentProvider {
     int rowsDeleted = 0;
     switch (uriType) {
     case HABITS:
-      rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, selection,
-          selectionArgs);
+      rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, selection, selectionArgs);
       break;
     case HABIT_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
-        rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT,
-            HabitTable.COLUMN_ID + "=" + id, 
-            null);
+        rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, HabitTable.COLUMN_ID + "=" + id, null);
       } else {
-        rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT,
-            HabitTable.COLUMN_ID + "=" + id 
-            + " and " + selection,
-            selectionArgs);
+        rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, HabitTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
       }
       break;
     default:
@@ -150,25 +145,14 @@ public class MyHabitContentProvider extends ContentProvider {
     int rowsUpdated = 0;
     switch (uriType) {
     case HABITS:
-      rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, 
-          values, 
-          selection,
-          selectionArgs);
+      rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, values, selection, selectionArgs);
       break;
     case HABIT_ID:
       String id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
-        rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, 
-            values,
-            HabitTable.COLUMN_ID + "=" + id, 
-            null);
+        rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, values, HabitTable.COLUMN_ID + "=" + id, null);
       } else {
-        rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, 
-            values,
-            HabitTable.COLUMN_ID + "=" + id 
-            + " and " 
-            + selection,
-            selectionArgs);
+        rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, values, HabitTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
       }
       break;
     default:
