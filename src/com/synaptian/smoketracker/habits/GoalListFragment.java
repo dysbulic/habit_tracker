@@ -4,6 +4,7 @@ import org.dhappy.android.widget.Timer;
 
 import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
+import com.synaptian.smoketracker.habits.database.GoalTable;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -16,24 +17,25 @@ import android.os.Bundle;
 import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 
 
 public class GoalListFragment extends ListFragment
-        implements OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor> {
+	private static final int MENU_DELETE = Menu.FIRST + 1;
 
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
-
-    // If non-null, this is the current filter the user has provided.
-    String mCurFilter;
 
     @Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -44,15 +46,10 @@ public class GoalListFragment extends ListFragment
 
         // We have a menu item to show in action bar.
         setHasOptionsMenu(true);
+        
+        registerForContextMenu(getListView());
 
-        // Create an empty adapter we will use to display the loaded data.
-/*
-        mAdapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_2, null,
-                new String[] { Contacts.DISPLAY_NAME, Contacts.CONTACT_STATUS },
-                new int[] { android.R.id.text1, android.R.id.text2 }, 0);
-*/
-        String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME };
+        String[] from = new String[] { HabitTable.COLUMN_NAME, GoalTable.COLUMN_TIME };
         int[] to = new int[] { R.id.label, R.id.timer };
 
         mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.habit_row, null, from, to, 0);
@@ -82,63 +79,47 @@ public class GoalListFragment extends ListFragment
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Place an action bar item for searching.
         MenuItem item = menu.add("New");
         item.setIcon(android.R.drawable.ic_input_add);
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        item.setIntent(new Intent(getActivity(), HabitDetailActivity.class));
+        item.setIntent(new Intent(getActivity(), GoalDetailActivity.class));
     }
 
-    public boolean onQueryTextChange(String newText) {
-        // Called when the action bar search text has changed.  Update
-        // the search filter, and restart the loader to do a new query
-        // with this filter.
-        mCurFilter = !TextUtils.isEmpty(newText) ? newText : null;
-        getLoaderManager().restartLoader(0, null, this);
-        return true;
+    @Override  
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
+    	super.onCreateContextMenu(menu, v, menuInfo);  
+    	menu.setHeaderTitle("Goal Options");  
+    	menu.add(0, MENU_DELETE, 0, "Delete");
     }
 
-    @Override public boolean onQueryTextSubmit(String query) {
-        // Don't care about this.
-        return true;
+    @Override  
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case MENU_DELETE:
+          AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+          Uri uri = Uri.parse(MyHabitContentProvider.GOALS_URI + "/" + info.id);
+          getActivity().getContentResolver().delete(uri, null, null);
+          return true;
+        }
+        return super.onContextItemSelected(item);
     }
-
+    
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
         // Insert desired behavior here.
         Log.i("FragmentComplexList", "Item clicked: " + id);
     }
 
-    // These are the Contacts rows that we will retrieve.
-    static final String[] HABITS_PROJECTION = new String[] {
-        HabitTable.COLUMN_ID,
+    // These are the rows that we will retrieve.
+    static final String[] GOALS_PROJECTION = new String[] {
+    	GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
-        HabitTable.COLUMN_TIME
+        GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_TIME
     };
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // This is called when a new Loader needs to be created.  This
-        // sample only has one Loader, so we don't care about the ID.
-        // First, pick the base URI to use depending on whether we are
-        // currently filtering.
-        Uri baseUri;
-        if (mCurFilter != null) {
-            baseUri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI,
-                    Uri.encode(mCurFilter));
-        } else {
-            baseUri = MyHabitContentProvider.CONTENT_URI;
-        }
-
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
-/*
-        String select = "((" + Contacts.DISPLAY_NAME + " NOTNULL) AND ("
-                + Contacts.HAS_PHONE_NUMBER + "=1) AND ("
-                + Contacts.DISPLAY_NAME + " != '' ))";
-        return new CursorLoader(getActivity(), baseUri,
-                CONTACTS_SUMMARY_PROJECTION, select, null,
-                Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
-*/
-        return new CursorLoader(getActivity(), MyHabitContentProvider.CONTENT_URI, HABITS_PROJECTION, null, null, null);
+        return new CursorLoader(getActivity(), MyHabitContentProvider.GOALS_URI, GOALS_PROJECTION, null, null, null);
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

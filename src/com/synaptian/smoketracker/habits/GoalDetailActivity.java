@@ -4,37 +4,45 @@ import java.util.Calendar;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.util.Log;
 import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
+import com.synaptian.smoketracker.habits.database.GoalTable;
 
 /*
  * HabitDetailActivity allows to enter a new habit item 
  * or to change an existing
  */
-public class HabitDetailActivity extends Activity {
+public class GoalDetailActivity extends Activity
+	implements AdapterView.OnItemSelectedListener {
+  private Spinner mHabitSelect;
   private EditText mTitleText;
   private EditText mBodyText;
   private TimePicker mEventTime;
   private DatePicker mEventDate;
 
-  private Uri habitUri;
+  private Uri goalUri;
 
   @Override
   protected void onCreate(Bundle bundle) {
     super.onCreate(bundle);
-    setContentView(R.layout.habit_edit);
+    setContentView(R.layout.goal_edit);
 
+    mHabitSelect = (Spinner) findViewById(R.id.habit);
     mEventTime = (TimePicker) findViewById(R.id.event_time);
     mEventDate = (DatePicker) findViewById(R.id.event_date);
     mTitleText = (EditText) findViewById(R.id.habit_edit_summary);
@@ -45,20 +53,29 @@ public class HabitDetailActivity extends Activity {
     Bundle extras = getIntent().getExtras();
 
     // Check from the saved Instance
-    habitUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE);
+    goalUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
 
     // Or passed from the other activity
     if (extras != null) {
-      habitUri = extras.getParcelable(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE);
+      goalUri = extras.getParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
 
-      fillData(habitUri);
+      fillData(goalUri);
     }
 
+    String[] queryCols = new String[] { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
+    String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_ID };
+    int[] to = new int[] { R.id.label, R.id.id };
+
+    Cursor cursor = getContentResolver().query(MyHabitContentProvider.HABITS_URI, queryCols, null, null, null);
+    SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
+    mHabitSelect.setAdapter(mAdapter);
+    
+    mHabitSelect.setOnItemSelectedListener(this);
+    
     confirmButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View view) {
           if (TextUtils.isEmpty(mTitleText.getText().toString())) {
-          	Toast.makeText(HabitDetailActivity.this, "Please provide a name",
-          			Toast.LENGTH_LONG).show();
+          	Toast.makeText(GoalDetailActivity.this, "Please provide a name", Toast.LENGTH_LONG).show();
           } else {
             setResult(RESULT_OK);
             finish();
@@ -69,29 +86,25 @@ public class HabitDetailActivity extends Activity {
 
   	cancelButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View view) {
-      	setResult(RESULT_OK);
+      	setResult(RESULT_CANCELED);
       	finish();
       }
     });
   }
 
   private void fillData(Uri uri) {
-    String[] projection = { HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME,
-        HabitTable.COLUMN_DESCRIPTION };
-    Cursor cursor = getContentResolver().query(uri, projection, null, null,
-        null);
+    String[] projection = { GoalTable.COLUMN_HABIT_ID, GoalTable.COLUMN_TIME, GoalTable.COLUMN_DESCRIPTION };
+    Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
     if (cursor != null) {
       cursor.moveToFirst();
 
-      mTitleText.setText(cursor.getString(cursor
-          .getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
-      mBodyText.setText(cursor.getString(cursor
-          .getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
+      mTitleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_HABIT_ID)));
+      mBodyText.setText(cursor.getString(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_DESCRIPTION)));
 
       mBodyText.setText(uri.toString());
       
       Calendar eventTime = Calendar.getInstance();
-      long seconds = cursor.getInt(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_TIME));
+      long seconds = cursor.getInt(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_TIME));
       eventTime.setTimeInMillis(seconds * 1000);
       
       mEventDate.updateDate(eventTime.get(Calendar.YEAR),
@@ -107,8 +120,9 @@ public class HabitDetailActivity extends Activity {
 
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
+    Toast.makeText(GoalDetailActivity.this, "onSaveInstanceState", Toast.LENGTH_LONG).show();
     saveState();
-    outState.putParcelable(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
+    outState.putParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, goalUri);
   }
 
   @Override
@@ -118,6 +132,7 @@ public class HabitDetailActivity extends Activity {
   }
 
   private void saveState() {
+	int habitId = mHabitSelect.getId();
     String summary = mTitleText.getText().toString();
     String description = mBodyText.getText().toString();
 
@@ -136,20 +151,27 @@ public class HabitDetailActivity extends Activity {
     }
 
     ContentValues values = new ContentValues();	
-    values.put(HabitTable.COLUMN_NAME, summary);
-    values.put(HabitTable.COLUMN_TIME,
-    		Math.floor(eventTime.getTimeInMillis() / 1000));
-    values.put(HabitTable.COLUMN_DESCRIPTION, description);
+    values.put(GoalTable.COLUMN_HABIT_ID, habitId);
+    values.put(GoalTable.COLUMN_TIME, Math.floor(eventTime.getTimeInMillis() / 1000));
+    values.put(GoalTable.COLUMN_DESCRIPTION, description);
 
-    if (habitUri == null) {
+    if (goalUri == null) {
       // New habit
-      habitUri = getContentResolver().insert(MyHabitContentProvider.HABITS_URI, values);
+      goalUri = getContentResolver().insert(MyHabitContentProvider.GOALS_URI, values);
     } else {
       // Update habit
-      getContentResolver().update(habitUri, values, null, null);
+      getContentResolver().update(goalUri, values, null, null);
     }
 
-    Log.w(HabitDetailActivity.class.getName(),
-            "Event Time: " + eventTime);
+    Log.w(GoalDetailActivity.class.getName(), "Event Time: " + eventTime);
+  }
+
+  @Override
+  public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+	  mBodyText.setText("ID: " + id);
+  }
+
+  @Override
+  public void onNothingSelected(AdapterView<?> arg0) {
   }
 }

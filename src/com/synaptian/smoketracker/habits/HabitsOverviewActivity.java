@@ -71,10 +71,8 @@ public class HabitsOverviewActivity extends ListActivity implements
   public boolean onContextItemSelected(MenuItem item) {
     switch (item.getItemId()) {
     case DELETE_ID:
-      AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-          .getMenuInfo();
-      Uri uri = Uri.parse(MyHabitContentProvider.CONTENT_URI + "/"
-          + info.id);
+      AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+      Uri uri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + info.id);
       getContentResolver().delete(uri, null, null);
       fillData();
       return true;
@@ -92,8 +90,8 @@ public class HabitsOverviewActivity extends ListActivity implements
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
     Intent i = new Intent(this, HabitDetailActivity.class);
-    Uri habitUri = Uri.parse(MyHabitContentProvider.CONTENT_URI + "/" + id);
-    i.putExtra(MyHabitContentProvider.CONTENT_ITEM_TYPE, habitUri);
+    Uri habitUri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + id);
+    i.putExtra(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
 
     startActivity(i);
   }
@@ -107,15 +105,13 @@ public class HabitsOverviewActivity extends ListActivity implements
     int[] to = new int[] { R.id.label };
 
     getLoaderManager().initLoader(0, null, this);
-    adapter = new SimpleCursorAdapter(this, R.layout.habit_row, null, from,
-        to, 0);
+    adapter = new SimpleCursorAdapter(this, R.layout.habit_row, null, from, to, 0);
 
     setListAdapter(adapter);
   }
 
   @Override
-  public void onCreateContextMenu(ContextMenu menu, View v,
-      ContextMenuInfo menuInfo) {
+  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
     super.onCreateContextMenu(menu, v, menuInfo);
     menu.add(0, DELETE_ID, 0, R.string.menu_delete);
   }
@@ -124,8 +120,7 @@ public class HabitsOverviewActivity extends ListActivity implements
   @Override
   public Loader<Cursor> onCreateLoader(int id, Bundle args) {
     String[] projection = { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
-    CursorLoader cursorLoader = new CursorLoader(this,
-        MyHabitContentProvider.CONTENT_URI, projection, null, null, null);
+    CursorLoader cursorLoader = new CursorLoader(this, MyHabitContentProvider.HABITS_URI, projection, null, null, null);
     return cursorLoader;
   }
 
@@ -139,5 +134,4 @@ public class HabitsOverviewActivity extends ListActivity implements
     // data is not available anymore, delete reference
     adapter.swapCursor(null);
   }
-
-} 
+}
