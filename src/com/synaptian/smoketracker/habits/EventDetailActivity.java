@@ -35,7 +35,7 @@ public class EventDetailActivity extends Activity
   private TimePicker mEventTime;
   private DatePicker mEventDate;
 
-  private Uri goalUri;
+  private Uri eventUri;
   private long habitId;
 
   @Override
@@ -53,13 +53,13 @@ public class EventDetailActivity extends Activity
     Bundle extras = getIntent().getExtras();
 
     // Check from the saved Instance
-    goalUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
+    eventUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
 
     // Or passed from the other activity
     if (extras != null) {
-      goalUri = extras.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
+      eventUri = extras.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
 
-      fillData(goalUri);
+      fillData(eventUri);
     }
 
     String[] queryCols = new String[] { HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
@@ -115,7 +115,7 @@ public class EventDetailActivity extends Activity
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     saveState();
-    outState.putParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, goalUri);
+    outState.putParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, eventUri);
   }
 
   @Override
@@ -134,16 +134,16 @@ public class EventDetailActivity extends Activity
     			  mEventTime.getCurrentMinute());
     
     ContentValues values = new ContentValues();	
-    values.put(GoalTable.COLUMN_HABIT_ID, habitId);
-    values.put(GoalTable.COLUMN_TIME, Math.floor(eventTime.getTimeInMillis() / 1000));
-    values.put(GoalTable.COLUMN_DESCRIPTION, description);
+    values.put(EventTable.COLUMN_HABIT_ID, habitId);
+    values.put(EventTable.COLUMN_TIME, Math.floor(eventTime.getTimeInMillis() / 1000));
+    values.put(EventTable.COLUMN_DESCRIPTION, description);
 
-    if (goalUri == null) {
+    if (eventUri == null) {
       // New habit
-      goalUri = getContentResolver().insert(MyHabitContentProvider.GOALS_URI, values);
+      eventUri = getContentResolver().insert(MyHabitContentProvider.EVENTS_URI, values);
     } else {
       // Update habit
-      getContentResolver().update(goalUri, values, null, null);
+      getContentResolver().update(eventUri, values, null, null);
     }
 
     Log.w(EventDetailActivity.class.getName(), "Event Time: " + eventTime);
