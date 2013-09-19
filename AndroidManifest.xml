@@ -33,7 +33,10 @@
         <activity
             android:name=".GoalDetailActivity"
             android:windowSoftInputMode="stateVisible|adjustResize"/>
-
+        <activity
+            android:name=".EventDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
+        
         <provider
             android:name=".contentprovider.MyHabitContentProvider"
             android:authorities="com.synaptian.smoketracker.habits.contentprovider" >

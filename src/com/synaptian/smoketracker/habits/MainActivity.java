@@ -55,8 +55,8 @@ public class MainActivity extends Activity {
                 HabitListFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText("Goals"),
                 GoalListFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("Simple"),
-                CountingFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText("Events"),
+                EventListFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText("List"),
                 FragmentPagerSupport.ArrayListFragment.class, null);
 

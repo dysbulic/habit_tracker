@@ -27,6 +27,8 @@ public class MyHabitContentProvider extends ContentProvider {
   private static final int HABIT_ID = 20;
   private static final int GOALS = 30;
   private static final int GOAL_ID = 40;
+  private static final int EVENTS = 50;
+  private static final int EVENT_ID = 60;
 
   private static final String AUTHORITY = "com.synaptian.smoketracker.habits.contentprovider";
 
@@ -36,11 +38,17 @@ public class MyHabitContentProvider extends ContentProvider {
   private static final String GOALS_PATH = "goals";
   public static final Uri GOALS_URI = Uri.parse("content://" + AUTHORITY + "/" + GOALS_PATH);
 
+  private static final String EVENTS_PATH = "events";
+  public static final Uri EVENTS_URI = Uri.parse("content://" + AUTHORITY + "/" + EVENTS_PATH);
+
   public static final String HABIT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/habits";
   public static final String HABIT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/habit";
   
   public static final String GOAL_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/goals";
   public static final String GOAL_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/goal";
+
+  public static final String EVENT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/events";
+  public static final String EVENT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/event";
 
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
@@ -48,6 +56,8 @@ public class MyHabitContentProvider extends ContentProvider {
 	    sURIMatcher.addURI(AUTHORITY, HABITS_PATH + "/#", HABIT_ID);
 	    sURIMatcher.addURI(AUTHORITY, GOALS_PATH, GOALS);
 	    sURIMatcher.addURI(AUTHORITY, GOALS_PATH + "/#", GOAL_ID);
+	    sURIMatcher.addURI(AUTHORITY, EVENTS_PATH, EVENTS);
+	    sURIMatcher.addURI(AUTHORITY, EVENTS_PATH + "/#", EVENT_ID);
   }
 
   @Override
@@ -74,6 +84,12 @@ public class MyHabitContentProvider extends ContentProvider {
     case GOALS:
         queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_HABIT_ID + "=" + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID);
         queryBuilder.setTables(GoalTable.TABLE_GOAL + "," + HabitTable.TABLE_HABIT);
+        break;
+    case EVENT_ID:
+        queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+    case EVENTS:
+        queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID + "=" + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID);
+        queryBuilder.setTables(EventTable.TABLE_EVENT + "," + HabitTable.TABLE_HABIT);
         break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -106,6 +122,10 @@ public class MyHabitContentProvider extends ContentProvider {
     case GOALS:
         id = sqlDB.insert(GoalTable.TABLE_GOAL, null, values);
         returnUri = Uri.parse(GOALS_PATH + "/" + id);
+        break;
+    case EVENTS:
+        id = sqlDB.insert(EventTable.TABLE_EVENT, null, values);
+        returnUri = Uri.parse(EVENTS_PATH + "/" + id);
         break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
