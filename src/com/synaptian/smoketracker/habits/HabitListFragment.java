@@ -4,6 +4,7 @@ import org.dhappy.android.widget.Timer;
 
 import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
+import com.synaptian.smoketracker.habits.database.EventTable;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
@@ -53,7 +54,7 @@ public class HabitListFragment extends ListFragment
                 new String[] { Contacts.DISPLAY_NAME, Contacts.CONTACT_STATUS },
                 new int[] { android.R.id.text1, android.R.id.text2 }, 0);
 */
-        String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME };
+        String[] from = new String[] { HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
         int[] to = new int[] { R.id.label, R.id.timer };
 
         mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.habit_row, null, from, to, 0);
@@ -97,34 +98,12 @@ public class HabitListFragment extends ListFragment
 
     // These are the Contacts rows that we will retrieve.
     static final String[] HABITS_PROJECTION = new String[] {
-        HabitTable.COLUMN_ID,
+    	HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
-        HabitTable.COLUMN_TIME
+        EventTable.COLUMN_TIME
     };
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // This is called when a new Loader needs to be created.  This
-        // sample only has one Loader, so we don't care about the ID.
-        // First, pick the base URI to use depending on whether we are
-        // currently filtering.
-        Uri baseUri;
-        if (mCurFilter != null) {
-            baseUri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI,
-                    Uri.encode(mCurFilter));
-        } else {
-            baseUri = MyHabitContentProvider.HABITS_URI;
-        }
-
-        // Now create and return a CursorLoader that will take care of
-        // creating a Cursor for the data being displayed.
-/*
-        String select = "((" + Contacts.DISPLAY_NAME + " NOTNULL) AND ("
-                + Contacts.HAS_PHONE_NUMBER + "=1) AND ("
-                + Contacts.DISPLAY_NAME + " != '' ))";
-        return new CursorLoader(getActivity(), baseUri,
-                CONTACTS_SUMMARY_PROJECTION, select, null,
-                Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
-*/
         return new CursorLoader(getActivity(), MyHabitContentProvider.HABITS_URI, HABITS_PROJECTION, null, null, null);
     }
 

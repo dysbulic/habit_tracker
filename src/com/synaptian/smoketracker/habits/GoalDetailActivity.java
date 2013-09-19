@@ -60,9 +60,9 @@ public class GoalDetailActivity extends Activity
       fillData(goalUri);
     }
 
-    String[] queryCols = new String[] { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
-    String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_ID };
-    int[] to = new int[] { R.id.label, R.id.id };
+    String[] queryCols = new String[] { HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
+    String[] from = new String[] { HabitTable.COLUMN_NAME };
+    int[] to = new int[] { R.id.label };
 
     Cursor cursor = getContentResolver().query(MyHabitContentProvider.HABITS_URI, queryCols, null, null, null);
     SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);

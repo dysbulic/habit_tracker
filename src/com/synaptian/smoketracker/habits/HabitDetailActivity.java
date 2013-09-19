@@ -25,8 +25,6 @@ import com.synaptian.smoketracker.habits.database.HabitTable;
 public class HabitDetailActivity extends Activity {
   private EditText mTitleText;
   private EditText mBodyText;
-  private TimePicker mEventTime;
-  private DatePicker mEventDate;
 
   private Uri habitUri;
 
@@ -35,8 +33,6 @@ public class HabitDetailActivity extends Activity {
     super.onCreate(bundle);
     setContentView(R.layout.habit_edit);
 
-    mEventTime = (TimePicker) findViewById(R.id.event_time);
-    mEventDate = (DatePicker) findViewById(R.id.event_date);
     mTitleText = (EditText) findViewById(R.id.habit_edit_summary);
     mBodyText = (EditText) findViewById(R.id.habit_edit_description);
     Button confirmButton = (Button) findViewById(R.id.habit_edit_button);
@@ -76,8 +72,7 @@ public class HabitDetailActivity extends Activity {
   }
 
   private void fillData(Uri uri) {
-    String[] projection = { HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME,
-        HabitTable.COLUMN_DESCRIPTION };
+    String[] projection = { HabitTable.COLUMN_NAME, HabitTable.COLUMN_DESCRIPTION };
     Cursor cursor = getContentResolver().query(uri, projection, null, null,
         null);
     if (cursor != null) {
@@ -90,17 +85,6 @@ public class HabitDetailActivity extends Activity {
 
       mBodyText.setText(uri.toString());
       
-      Calendar eventTime = Calendar.getInstance();
-      long seconds = cursor.getInt(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_TIME));
-      eventTime.setTimeInMillis(seconds * 1000);
-      
-      mEventDate.updateDate(eventTime.get(Calendar.YEAR),
-    		  eventTime.get(Calendar.MONTH),
-    		  eventTime.get(Calendar.DAY_OF_MONTH));
-      mEventTime.setCurrentHour(eventTime.get(Calendar.HOUR_OF_DAY));
-      mEventTime.setCurrentMinute(eventTime.get(Calendar.MINUTE));
-      
-      // Always close the cursor
       cursor.close();
     }
   }
@@ -121,13 +105,6 @@ public class HabitDetailActivity extends Activity {
     String summary = mTitleText.getText().toString();
     String description = mBodyText.getText().toString();
 
-    Calendar eventTime = Calendar.getInstance();
-    eventTime.set(mEventDate.getYear(),
-    			  mEventDate.getMonth(),
-    			  mEventDate.getDayOfMonth(),
-    			  mEventTime.getCurrentHour(),
-    			  mEventTime.getCurrentMinute());
-    
     // Only save if either summary or description
     // is available
 
@@ -137,8 +114,6 @@ public class HabitDetailActivity extends Activity {
 
     ContentValues values = new ContentValues();	
     values.put(HabitTable.COLUMN_NAME, summary);
-    values.put(HabitTable.COLUMN_TIME,
-    		Math.floor(eventTime.getTimeInMillis() / 1000));
     values.put(HabitTable.COLUMN_DESCRIPTION, description);
 
     if (habitUri == null) {
@@ -148,8 +123,5 @@ public class HabitDetailActivity extends Activity {
       // Update habit
       getContentResolver().update(habitUri, values, null, null);
     }
-
-    Log.w(HabitDetailActivity.class.getName(),
-            "Event Time: " + eventTime);
   }
 }

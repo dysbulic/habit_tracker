@@ -4,6 +4,7 @@ import org.dhappy.android.widget.Timer;
 
 import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
+import com.synaptian.smoketracker.habits.database.EventTable;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
@@ -37,7 +38,7 @@ public class HabitTimeListActivity extends ListActivity implements LoaderManager
 
         registerForContextMenu(getListView());
 
-        String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME };
+        String[] from = new String[] { HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
         // Fields on the UI to which we map
         int[] to = new int[] { R.id.label, R.id.timer };
 
@@ -117,7 +118,7 @@ public class HabitTimeListActivity extends ListActivity implements LoaderManager
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String[] projection = { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME };
+        String[] projection = { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
         CursorLoader cursorLoader = new CursorLoader(this, MyHabitContentProvider.HABITS_URI, projection, null, null, null);
         return cursorLoader;
     }

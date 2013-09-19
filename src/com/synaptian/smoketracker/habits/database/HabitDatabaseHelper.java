@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class HabitDatabaseHelper extends SQLiteOpenHelper {
 
   private static final String DATABASE_NAME = "habits.db";
-  private static final int DATABASE_VERSION = 4;
+  private static final int DATABASE_VERSION = 5;
 
   public HabitDatabaseHelper(Context context) {
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -18,6 +18,7 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
   public void onCreate(SQLiteDatabase database) {
 	    HabitTable.onCreate(database);
 	    GoalTable.onCreate(database);
+	    EventTable.onCreate(database);
   }
 
   // Method is called during an upgrade of the database,
@@ -27,5 +28,6 @@ public class HabitDatabaseHelper extends SQLiteOpenHelper {
       int newVersion) {
 	    HabitTable.onUpgrade(database, oldVersion, newVersion);
 	    GoalTable.onUpgrade(database, oldVersion, newVersion);
+	    EventTable.onUpgrade(database, oldVersion, newVersion);
   }
 }

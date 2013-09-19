@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import com.synaptian.smoketracker.habits.database.HabitDatabaseHelper;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 import com.synaptian.smoketracker.habits.database.GoalTable;
+import com.synaptian.smoketracker.habits.database.EventTable;
 
 public class MyHabitContentProvider extends ContentProvider {
 
@@ -61,15 +62,13 @@ public class MyHabitContentProvider extends ContentProvider {
     // Using SQLiteQueryBuilder instead of query() method
     SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
-    // Check if the caller has requested a column which does not exists
-    //checkColumns(projection);
-
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
     case HABIT_ID:
         queryBuilder.appendWhere(HabitTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case HABITS:
-        queryBuilder.setTables(HabitTable.TABLE_HABIT);
+        queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID + "=" + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID);
+        queryBuilder.setTables(EventTable.TABLE_EVENT + "," + HabitTable.TABLE_HABIT);
         break;
     case GOAL_ID:
         queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID + "=" + uri.getLastPathSegment());
@@ -175,20 +174,5 @@ public class MyHabitContentProvider extends ContentProvider {
     }
     getContext().getContentResolver().notifyChange(uri, null);
     return rowsUpdated;
-  }
-
-  private void checkColumns(String[] projection) {
-    String[] available = {
-        HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME,
-        HabitTable.COLUMN_DESCRIPTION, HabitTable.COLUMN_ID,
-        GoalTable.COLUMN_HABIT_ID };
-    if (projection != null) {
-      HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
-      HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
-      // Check if all columns which are requested are available
-      if (!availableColumns.containsAll(requestedColumns)) {
-        throw new IllegalArgumentException("Unknown columns in projection");
-      }
-    }
   }
 }
