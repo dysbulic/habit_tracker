@@ -49,7 +49,7 @@ public class GoalListFragment extends ListFragment
         
         registerForContextMenu(getListView());
 
-        String[] from = new String[] { GoalTable.COLUMN_HABIT_ID, GoalTable.COLUMN_TIME };
+        String[] from = new String[] { HabitTable.COLUMN_NAME, GoalTable.COLUMN_TIME };
         int[] to = new int[] { R.id.label, R.id.timer };
 
         mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.habit_row, null, from, to, 0);
@@ -112,7 +112,7 @@ public class GoalListFragment extends ListFragment
     // These are the rows that we will retrieve.
     static final String[] GOALS_PROJECTION = new String[] {
     	GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID,
-        GoalTable.COLUMN_HABIT_ID,
+        HabitTable.COLUMN_NAME,
         GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_TIME
     };
 

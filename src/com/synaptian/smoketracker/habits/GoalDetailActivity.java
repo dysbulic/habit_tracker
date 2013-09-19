@@ -132,7 +132,7 @@ public class GoalDetailActivity extends Activity
   }
 
   private void saveState() {
-	int habitId = mHabitSelect.getSelectedItemPosition();
+	int habitId = mHabitSelect.getId();
     String summary = mTitleText.getText().toString();
     String description = mBodyText.getText().toString();
 
@@ -163,8 +163,7 @@ public class GoalDetailActivity extends Activity
       getContentResolver().update(goalUri, values, null, null);
     }
 
-    Log.w(GoalDetailActivity.class.getName(),
-            "Event Time: " + eventTime);
+    Log.w(GoalDetailActivity.class.getName(), "Event Time: " + eventTime);
   }
 
   @Override
