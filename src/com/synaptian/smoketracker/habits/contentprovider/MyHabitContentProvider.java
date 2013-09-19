@@ -67,8 +67,7 @@ public class MyHabitContentProvider extends ContentProvider {
     case HABIT_ID:
         queryBuilder.appendWhere(HabitTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case HABITS:
-        queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID + "=" + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID);
-        queryBuilder.setTables(EventTable.TABLE_EVENT + "," + HabitTable.TABLE_HABIT);
+        queryBuilder.setTables(HabitTable.TABLE_HABIT + " LEFT OUTER JOIN " + EventTable.TABLE_EVENT);
         break;
     case GOAL_ID:
         queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID + "=" + uri.getLastPathSegment());

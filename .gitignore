@@ -19,3 +19,6 @@ local.properties
 .classpath
 .project
 keystore
+
+# db from app
+habits.db
