@@ -26,15 +26,6 @@
         	android:layout_height="wrap_content"
         	android:calendarViewShown="false" />
 
-    	<EditText
-            android:id="@+id/habit_edit_summary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/habit_edit_summary"
-            android:imeOptions="actionNext" >
-        </EditText>
-
 	    <EditText
     	    android:id="@+id/habit_edit_description"
         	android:layout_width="match_parent"

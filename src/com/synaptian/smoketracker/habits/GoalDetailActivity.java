@@ -30,8 +30,7 @@ import com.synaptian.smoketracker.habits.database.GoalTable;
 public class GoalDetailActivity extends Activity
 	implements AdapterView.OnItemSelectedListener {
   private Spinner mHabitSelect;
-  private EditText mTitleText;
-  private EditText mBodyText;
+  private EditText mDescriptionText;
   private TimePicker mEventTime;
   private DatePicker mEventDate;
 
@@ -45,8 +44,7 @@ public class GoalDetailActivity extends Activity
     mHabitSelect = (Spinner) findViewById(R.id.habit);
     mEventTime = (TimePicker) findViewById(R.id.event_time);
     mEventDate = (DatePicker) findViewById(R.id.event_date);
-    mTitleText = (EditText) findViewById(R.id.habit_edit_summary);
-    mBodyText = (EditText) findViewById(R.id.habit_edit_description);
+    mDescriptionText = (EditText) findViewById(R.id.habit_edit_description);
     Button confirmButton = (Button) findViewById(R.id.habit_edit_button);
     Button cancelButton = (Button) findViewById(R.id.habit_cancel_button);
 
@@ -74,14 +72,9 @@ public class GoalDetailActivity extends Activity
     
     confirmButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View view) {
-          if (TextUtils.isEmpty(mTitleText.getText().toString())) {
-          	Toast.makeText(GoalDetailActivity.this, "Please provide a name", Toast.LENGTH_LONG).show();
-          } else {
-            setResult(RESULT_OK);
-            finish();
-          }
+          setResult(RESULT_OK);
+          finish();
         }
-
       });
 
   	cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -98,10 +91,9 @@ public class GoalDetailActivity extends Activity
     if (cursor != null) {
       cursor.moveToFirst();
 
-      mTitleText.setText(cursor.getString(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_HABIT_ID)));
-      mBodyText.setText(cursor.getString(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_DESCRIPTION)));
+      mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_DESCRIPTION)));
 
-      mBodyText.setText(uri.toString());
+      mDescriptionText.setText(uri.toString());
       
       Calendar eventTime = Calendar.getInstance();
       long seconds = cursor.getInt(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_TIME));
@@ -120,7 +112,6 @@ public class GoalDetailActivity extends Activity
 
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
-    Toast.makeText(GoalDetailActivity.this, "onSaveInstanceState", Toast.LENGTH_LONG).show();
     saveState();
     outState.putParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, goalUri);
   }
@@ -133,8 +124,7 @@ public class GoalDetailActivity extends Activity
 
   private void saveState() {
 	int habitId = mHabitSelect.getId();
-    String summary = mTitleText.getText().toString();
-    String description = mBodyText.getText().toString();
+    String description = mDescriptionText.getText().toString();
 
     Calendar eventTime = Calendar.getInstance();
     eventTime.set(mEventDate.getYear(),
@@ -143,13 +133,6 @@ public class GoalDetailActivity extends Activity
     			  mEventTime.getCurrentHour(),
     			  mEventTime.getCurrentMinute());
     
-    // Only save if either summary or description
-    // is available
-
-    if (description.length() == 0 && summary.length() == 0) {
-      return;
-    }
-
     ContentValues values = new ContentValues();	
     values.put(GoalTable.COLUMN_HABIT_ID, habitId);
     values.put(GoalTable.COLUMN_TIME, Math.floor(eventTime.getTimeInMillis() / 1000));
@@ -168,7 +151,7 @@ public class GoalDetailActivity extends Activity
 
   @Override
   public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-	  mBodyText.setText("ID: " + id);
+	  mDescriptionText.setText("ID: " + id);
   }
 
   @Override
