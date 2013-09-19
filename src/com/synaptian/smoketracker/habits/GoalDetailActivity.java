@@ -35,6 +35,7 @@ public class GoalDetailActivity extends Activity
   private DatePicker mEventDate;
 
   private Uri goalUri;
+  private long habitId;
 
   @Override
   protected void onCreate(Bundle bundle) {
@@ -123,7 +124,6 @@ public class GoalDetailActivity extends Activity
   }
 
   private void saveState() {
-	int habitId = mHabitSelect.getId();
     String description = mDescriptionText.getText().toString();
 
     Calendar eventTime = Calendar.getInstance();
@@ -148,10 +148,10 @@ public class GoalDetailActivity extends Activity
 
     Log.w(GoalDetailActivity.class.getName(), "Event Time: " + eventTime);
   }
-
+  
   @Override
   public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-	  mDescriptionText.setText("ID: " + id);
+	  habitId = id;
   }
 
   @Override

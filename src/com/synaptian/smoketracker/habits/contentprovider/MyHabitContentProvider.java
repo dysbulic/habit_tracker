@@ -72,7 +72,7 @@ public class MyHabitContentProvider extends ContentProvider {
     case GOAL_ID:
         queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case GOALS:
-        queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID + "=" + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID);
+        queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_HABIT_ID + "=" + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID);
         queryBuilder.setTables(GoalTable.TABLE_GOAL + "," + HabitTable.TABLE_HABIT);
         break;
     default:
