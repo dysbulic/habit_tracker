@@ -53,10 +53,10 @@ public class HabitDetailActivity extends Activity {
     confirmButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View view) {
           if (TextUtils.isEmpty(mTitleText.getText().toString())) {
-          	Toast.makeText(HabitDetailActivity.this, "Please provide a name",
-          			Toast.LENGTH_LONG).show();
+          	Toast.makeText(HabitDetailActivity.this, "Please provide a name", Toast.LENGTH_LONG).show();
           } else {
             setResult(RESULT_OK);
+            saveState();
             finish();
           }
         }
@@ -65,7 +65,7 @@ public class HabitDetailActivity extends Activity {
 
   	cancelButton.setOnClickListener(new View.OnClickListener() {
       public void onClick(View view) {
-      	setResult(RESULT_OK);
+        setResult(RESULT_CANCELED);
       	finish();
       }
     });
@@ -98,7 +98,6 @@ public class HabitDetailActivity extends Activity {
   @Override
   protected void onPause() {
     super.onPause();
-    saveState();
   }
 
   private void saveState() {

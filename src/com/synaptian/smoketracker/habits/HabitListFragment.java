@@ -63,10 +63,14 @@ public class HabitListFragment extends ListFragment
     		@Override
     		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
     			if(columnIndex == 2) { // Time
-                    long time = cursor.getInt(columnIndex);
-                    Timer timer = (Timer) view;
-                    timer.setStartingTime(time * 1000);
-                    return true;
+					Timer timer = (Timer) view;
+    				if(cursor.getType(columnIndex) == Cursor.FIELD_TYPE_NULL) {
+    					timer.setVisibility(View.GONE);
+    				} else {
+    					long time = cursor.getInt(columnIndex);
+    					timer.setStartingTime(time * 1000);
+    				}
+    				return true;
     			}
 
     			return false;

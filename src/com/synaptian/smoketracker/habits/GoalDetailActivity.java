@@ -73,6 +73,7 @@ public class GoalDetailActivity extends Activity
     confirmButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View view) {
           setResult(RESULT_OK);
+          saveState();
           finish();
         }
       });
@@ -119,7 +120,6 @@ public class GoalDetailActivity extends Activity
   @Override
   protected void onPause() {
     super.onPause();
-    saveState();
   }
 
   private void saveState() {

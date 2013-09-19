@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class HabitDatabaseHelper extends SQLiteOpenHelper {
 
   private static final String DATABASE_NAME = "habits.db";
-  private static final int DATABASE_VERSION = 5;
+  private static final int DATABASE_VERSION = 6;
 
   public HabitDatabaseHelper(Context context) {
     super(context, DATABASE_NAME, null, DATABASE_VERSION);
