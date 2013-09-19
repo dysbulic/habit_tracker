@@ -62,7 +62,7 @@ public class MyHabitContentProvider extends ContentProvider {
     SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
     // Check if the caller has requested a column which does not exists
-    checkColumns(projection);
+    //checkColumns(projection);
 
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
@@ -72,9 +72,9 @@ public class MyHabitContentProvider extends ContentProvider {
         queryBuilder.setTables(HabitTable.TABLE_HABIT);
         break;
     case GOAL_ID:
-        queryBuilder.appendWhere(GoalTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+        queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case GOALS:
-        queryBuilder.setTables(GoalTable.TABLE_GOAL);
+        queryBuilder.setTables(GoalTable.TABLE_GOAL + "," + HabitTable.TABLE_HABIT);
         break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -122,16 +122,27 @@ public class MyHabitContentProvider extends ContentProvider {
     int rowsDeleted = 0;
     switch (uriType) {
     case HABITS:
-      rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, selection, selectionArgs);
-      break;
-    case HABIT_ID:
-      String id = uri.getLastPathSegment();
-      if (TextUtils.isEmpty(selection)) {
-        rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, HabitTable.COLUMN_ID + "=" + id, null);
-      } else {
-        rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, HabitTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
-      }
-      break;
+        rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, selection, selectionArgs);
+        break;
+      case HABIT_ID:
+        String id = uri.getLastPathSegment();
+        if (TextUtils.isEmpty(selection)) {
+          rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, HabitTable.COLUMN_ID + "=" + id, null);
+        } else {
+          rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, HabitTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+        }
+        break;
+      case GOALS:
+        rowsDeleted = sqlDB.delete(GoalTable.TABLE_GOAL, selection, selectionArgs);
+        break;
+      case GOAL_ID:
+        id = uri.getLastPathSegment();
+        if (TextUtils.isEmpty(selection)) {
+          rowsDeleted = sqlDB.delete(GoalTable.TABLE_GOAL, GoalTable.COLUMN_ID + "=" + id, null);
+        } else {
+          rowsDeleted = sqlDB.delete(GoalTable.TABLE_GOAL, GoalTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+        }
+        break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }
@@ -168,7 +179,8 @@ public class MyHabitContentProvider extends ContentProvider {
   private void checkColumns(String[] projection) {
     String[] available = {
         HabitTable.COLUMN_NAME, HabitTable.COLUMN_TIME,
-        HabitTable.COLUMN_DESCRIPTION, HabitTable.COLUMN_ID };
+        HabitTable.COLUMN_DESCRIPTION, HabitTable.COLUMN_ID,
+        GoalTable.COLUMN_HABIT_ID };
     if (projection != null) {
       HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
       HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
