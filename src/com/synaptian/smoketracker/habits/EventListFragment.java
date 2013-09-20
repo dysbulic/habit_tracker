@@ -38,7 +38,7 @@ import android.widget.TextView;
 
 public class EventListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
-	private static final int MENU_DELETE = Menu.FIRST + 1;
+	private static final int MENU_DELETE = Menu.FIRST + 3;
 
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
@@ -54,7 +54,6 @@ public class EventListFragment extends ListFragment
         setHasOptionsMenu(true);
         
         registerForContextMenu(getListView());
-        getListView().setOnCreateContextMenuListener(this);
         
         String[] from = new String[] { HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
         int[] to = new int[] { R.id.name, R.id.time };
@@ -102,10 +101,11 @@ public class EventListFragment extends ListFragment
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
     	super.onCreateContextMenu(menu, v, menuInfo);  
     	menu.setHeaderTitle("Event Options");
-    	menu.add(0, MENU_DELETE, 0, "Delete");
+    	menu.add(ContextMenu.NONE, MENU_DELETE, ContextMenu.NONE, "Delete");
     }
 
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    @Override  
+    public boolean onContextItemSelected(MenuItem item) {
     	Toast.makeText(getActivity(), "onMenuItemSelected", Toast.LENGTH_LONG).show();
         switch (item.getItemId()) {
         case MENU_DELETE:

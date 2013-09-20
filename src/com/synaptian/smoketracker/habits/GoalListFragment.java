@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SimpleCursorAdapter.ViewBinder;
@@ -94,6 +95,7 @@ public class GoalListFragment extends ListFragment
 
     @Override  
     public boolean onContextItemSelected(MenuItem item) {
+    	Toast.makeText(getActivity(), "GoalListFragment.onContextItemSelected", Toast.LENGTH_LONG).show();
         switch (item.getItemId()) {
         case MENU_DELETE:
           AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
@@ -105,7 +107,6 @@ public class GoalListFragment extends ListFragment
     }
     
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
-        // Insert desired behavior here.
         Log.i("FragmentComplexList", "Item clicked: " + id);
     }
 
