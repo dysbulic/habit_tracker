@@ -1,8 +1,14 @@
 package com.synaptian.smoketracker.habits;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
+import org.dhappy.android.widget.HeaderItem;
+import org.dhappy.android.widget.HeaderedListAdapter;
+import org.dhappy.android.widget.ListItem;
+import org.dhappy.android.widget.TextItem;
 import org.dhappy.android.widget.Timer;
 
 import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
@@ -50,11 +56,12 @@ public class EventListFragment extends ListFragment
         // application this would come from a resource.
         setEmptyText("No recorded events");
 
-        // We have a menu item to show in action bar.
+        // We have a menu iteArraym to show in action bar.
         setHasOptionsMenu(true);
         
         registerForContextMenu(getListView());
-        
+
+/*
         String[] from = new String[] { HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
         int[] to = new int[] { R.id.name, R.id.time };
 
@@ -81,7 +88,22 @@ public class EventListFragment extends ListFragment
         });
 
         setListAdapter(mAdapter);
+*/
+        List<ListItem> items = new ArrayList<ListItem>();
+        items.add(new HeaderItem("Header 1"));
+        items.add(new TextItem("Text 1", "Rabble rabble"));
+        items.add(new TextItem("Text 2", "Rabble rabble"));
+        items.add(new TextItem("Text 3", "Rabble rabble"));
+        items.add(new TextItem("Text 4", "Rabble rabble"));
+        items.add(new HeaderItem("Header 2"));
+        items.add(new TextItem("Text 5", "Rabble rabble"));
+        items.add(new TextItem("Text 6", "Rabble rabble"));
+        items.add(new TextItem("Text 7", "Rabble rabble"));
+        items.add(new TextItem("Text 8", "Rabble rabble"));
 
+        HeaderedListAdapter adapter = new HeaderedListAdapter(getActivity(), items);
+        setListAdapter(adapter);
+        
         // Start out with a progress indicator.
         setListShown(false);
 
@@ -138,7 +160,7 @@ public class EventListFragment extends ListFragment
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
-        mAdapter.swapCursor(data);
+        //mAdapter.swapCursor(data);
 
         // The list should now be shown.
         if (isResumed()) {

@@ -93,6 +93,9 @@ public class GoalDetailActivity extends Activity
     if (cursor != null) {
       cursor.moveToFirst();
 
+      int habitId = cursor.getInt(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_HABIT_ID));
+      mHabitSelect.setSelection(habitId);
+      
       String description = cursor.getString(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_DESCRIPTION));
       description = description == null ? "" : description;
       mDescriptionText.setText(description);
