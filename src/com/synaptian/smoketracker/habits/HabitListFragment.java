@@ -116,7 +116,7 @@ public class HabitListFragment extends ListFragment
     }
     
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
-      	Toast.makeText(getActivity(), "Item clicked: " + id, Toast.LENGTH_LONG).show();
+      	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
         ContentValues values = new ContentValues();	
         values.put(EventTable.COLUMN_HABIT_ID, id);
         values.put(EventTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));

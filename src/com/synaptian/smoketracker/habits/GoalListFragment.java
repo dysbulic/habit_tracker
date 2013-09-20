@@ -33,7 +33,7 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 
 public class GoalListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
-	private static final int MENU_DELETE = Menu.FIRST + 1;
+	private static final int MENU_DELETE = Menu.FIRST + 2;
 
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
@@ -107,7 +107,12 @@ public class GoalListFragment extends ListFragment
     }
     
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
-        Log.i("FragmentComplexList", "Item clicked: " + id);
+    	super.onListItemClick(l, v, position, id);
+        Intent intent = new Intent(getActivity(), GoalDetailActivity.class);
+        Uri eventUri = Uri.parse(MyHabitContentProvider.GOALS_URI + "/" + id);
+        intent.putExtra(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, eventUri);
+
+        startActivity(intent);
     }
 
     // These are the rows that we will retrieve.

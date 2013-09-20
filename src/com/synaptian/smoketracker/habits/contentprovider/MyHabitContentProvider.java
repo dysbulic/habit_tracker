@@ -86,8 +86,8 @@ public class MyHabitContentProvider extends ContentProvider {
     case GOAL_ID:
         queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case GOALS:
-        queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_HABIT_ID + "=" + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID);
-        queryBuilder.setTables(GoalTable.TABLE_GOAL + "," + HabitTable.TABLE_HABIT);
+        queryBuilder.setTables(GoalTable.TABLE_GOAL + " LEFT OUTER JOIN " + HabitTable.TABLE_HABIT
+        					   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_HABIT_ID);
         break;
     case EVENT_ID:
         queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID + "=" + uri.getLastPathSegment());
@@ -201,6 +201,17 @@ public class MyHabitContentProvider extends ContentProvider {
         rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, values, HabitTable.COLUMN_ID + "=" + id, null);
       } else {
         rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, values, HabitTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+      }
+      break;
+    case GOALS:
+      rowsUpdated = sqlDB.update(GoalTable.TABLE_GOAL, values, selection, selectionArgs);
+      break;
+    case GOAL_ID:
+      id = uri.getLastPathSegment();
+      if (TextUtils.isEmpty(selection)) {
+        rowsUpdated = sqlDB.update(GoalTable.TABLE_GOAL, values, GoalTable.COLUMN_ID + "=" + id, null);
+      } else {
+        rowsUpdated = sqlDB.update(GoalTable.TABLE_GOAL, values, GoalTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
       }
       break;
     default:

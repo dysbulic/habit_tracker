@@ -88,12 +88,14 @@ public class GoalDetailActivity extends Activity
   }
 
   private void fillData(Uri uri) {
-    String[] projection = { GoalTable.COLUMN_HABIT_ID, GoalTable.COLUMN_TIME, GoalTable.COLUMN_DESCRIPTION };
+    String[] projection = { GoalTable.COLUMN_HABIT_ID, GoalTable.COLUMN_TIME, GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_DESCRIPTION };
     Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
     if (cursor != null) {
       cursor.moveToFirst();
 
-      mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_DESCRIPTION)));
+      String description = cursor.getString(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_DESCRIPTION));
+      description = description == null ? "" : description;
+      mDescriptionText.setText(description);
 
       mDescriptionText.setText(uri.toString());
       
