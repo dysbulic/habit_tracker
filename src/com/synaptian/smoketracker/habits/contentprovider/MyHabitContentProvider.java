@@ -80,7 +80,8 @@ public class MyHabitContentProvider extends ContentProvider {
         queryBuilder.appendWhere(HabitTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case HABITS:
     	groupBy = HabitTable.TABLE_HABIT + HabitTable.COLUMN_ID;
-        queryBuilder.setTables(HabitTable.TABLE_HABIT + " LEFT OUTER JOIN " + EventTable.TABLE_EVENT);
+        queryBuilder.setTables(HabitTable.TABLE_HABIT + " LEFT OUTER JOIN " + EventTable.TABLE_EVENT
+        					   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
         break;
     case GOAL_ID:
         queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID + "=" + uri.getLastPathSegment());
