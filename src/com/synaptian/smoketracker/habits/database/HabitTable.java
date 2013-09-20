@@ -17,7 +17,7 @@ public class HabitTable {
       + "(" 
       + COLUMN_ID + " integer primary key autoincrement, " 
       + COLUMN_NAME + " text not null,"
-      + COLUMN_DESCRIPTION + " text not null" 
+      + COLUMN_DESCRIPTION + " text" 
       + ");";
 
   public static void onCreate(SQLiteDatabase database) {

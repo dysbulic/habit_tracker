@@ -19,7 +19,7 @@ public class GoalTable {
       + COLUMN_ID + " integer primary key autoincrement, " 
       + COLUMN_HABIT_ID + " integer not null,"
       + COLUMN_TIME + " integer,"
-      + COLUMN_DESCRIPTION + " text not null" 
+      + COLUMN_DESCRIPTION + " text" 
       + ");";
 
   public static void onCreate(SQLiteDatabase database) {

@@ -8,6 +8,7 @@ import com.synaptian.smoketracker.habits.database.EventTable;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -35,7 +36,7 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 public class HabitListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final int MENU_DELETE = Menu.FIRST + 1;
-
+	
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
 
@@ -116,6 +117,10 @@ public class HabitListFragment extends ListFragment
     
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
       	Toast.makeText(getActivity(), "Item clicked: " + id, Toast.LENGTH_LONG).show();
+        ContentValues values = new ContentValues();	
+        values.put(EventTable.COLUMN_HABIT_ID, id);
+        values.put(EventTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
+        getActivity().getContentResolver().insert(MyHabitContentProvider.EVENTS_URI, values);
     }
 
     // These are the rows that we will retrieve.
