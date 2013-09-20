@@ -165,6 +165,17 @@ public class MyHabitContentProvider extends ContentProvider {
           rowsDeleted = sqlDB.delete(GoalTable.TABLE_GOAL, GoalTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
         }
         break;
+      case EVENTS:
+        rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, selection, selectionArgs);
+        break;
+      case EVENT_ID:
+        id = uri.getLastPathSegment();
+        if (TextUtils.isEmpty(selection)) {
+          rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, EventTable.COLUMN_ID + "=" + id, null);
+        } else {
+          rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, EventTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+        }
+        break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }
