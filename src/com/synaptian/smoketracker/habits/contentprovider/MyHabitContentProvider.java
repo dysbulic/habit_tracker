@@ -72,11 +72,14 @@ public class MyHabitContentProvider extends ContentProvider {
     // Using SQLiteQueryBuilder instead of query() method
     SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
+    String groupBy = null;
+    
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
     case HABIT_ID:
         queryBuilder.appendWhere(HabitTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case HABITS:
+    	groupBy = HabitTable.TABLE_HABIT + HabitTable.COLUMN_ID;
         queryBuilder.setTables(HabitTable.TABLE_HABIT + " LEFT OUTER JOIN " + EventTable.TABLE_EVENT);
         break;
     case GOAL_ID:
@@ -96,7 +99,7 @@ public class MyHabitContentProvider extends ContentProvider {
     }
 
     SQLiteDatabase db = database.getWritableDatabase();
-    Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+    Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, groupBy, null, sortOrder);
     // Make sure that potential listeners are getting notified
     cursor.setNotificationUri(getContext().getContentResolver(), uri);
 

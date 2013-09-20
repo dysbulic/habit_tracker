@@ -127,7 +127,7 @@ public class HabitListFragment extends ListFragment
     static final String[] HABITS_PROJECTION = new String[] {
     	HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
-        EventTable.COLUMN_TIME
+        "MIN(" + EventTable.COLUMN_TIME + ") as " + EventTable.COLUMN_TIME
     };
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
