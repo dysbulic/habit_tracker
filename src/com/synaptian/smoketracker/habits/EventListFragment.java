@@ -90,16 +90,18 @@ public class EventListFragment extends ListFragment
         setListAdapter(mAdapter);
 */
         List<ListItem> items = new ArrayList<ListItem>();
+
         items.add(new HeaderItem("Header 1"));
-        items.add(new TextItem("Text 1", "Rabble rabble"));
-        items.add(new TextItem("Text 2", "Rabble rabble"));
-        items.add(new TextItem("Text 3", "Rabble rabble"));
-        items.add(new TextItem("Text 4", "Rabble rabble"));
-        items.add(new HeaderItem("Header 2"));
-        items.add(new TextItem("Text 5", "Rabble rabble"));
-        items.add(new TextItem("Text 6", "Rabble rabble"));
-        items.add(new TextItem("Text 7", "Rabble rabble"));
-        items.add(new TextItem("Text 8", "Rabble rabble"));
+        
+        String[] queryCols = new String[] { EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID, HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
+        Cursor cursor = getActivity().getContentResolver().query(MyHabitContentProvider.EVENTS_URI, queryCols, null, null, null);
+
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()) {
+        	String name = cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME));
+        	items.add(new TextItem(name, "Rabble rabble"));
+        	cursor.moveToNext();
+        }
 
         HeaderedListAdapter adapter = new HeaderedListAdapter(getActivity(), items);
         setListAdapter(adapter);
