@@ -127,7 +127,7 @@ public class Timer extends TextView {
 		long hours = Math.abs(time) % 24;
 		time /= 24;
 		long days = time;
-		if( days <= 0 ) {
+		if( days == 0 ) {
 			return String.format("%s%01d:%02d:%02d", elapsedTime < 0 ? "-" : "", hours, mins, secs);
 		} else {
 			return String.format("%01d:%02d:%02d:%02d", days, hours, mins, secs);
