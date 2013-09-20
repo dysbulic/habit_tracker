@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SimpleCursorAdapter.ViewBinder;
@@ -53,7 +54,8 @@ public class EventListFragment extends ListFragment
         setHasOptionsMenu(true);
         
         registerForContextMenu(getListView());
-
+        getListView().setOnCreateContextMenuListener(this);
+        
         String[] from = new String[] { HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
         int[] to = new int[] { R.id.name, R.id.time };
 
@@ -103,12 +105,14 @@ public class EventListFragment extends ListFragment
     	menu.add(0, MENU_DELETE, 0, "Delete");
     }
 
-    @Override  
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    	Toast.makeText(getActivity(), "onMenuItemSelected", Toast.LENGTH_LONG).show();
         switch (item.getItemId()) {
         case MENU_DELETE:
           AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
           Uri uri = Uri.parse(MyHabitContentProvider.EVENTS_URI + "/" + info.id);
+          Toast.makeText(getActivity(), "Deleting: " + uri, Toast.LENGTH_LONG).show();
+
           getActivity().getContentResolver().delete(uri, null, null);
           return true;
         }
