@@ -2,10 +2,13 @@ package com.synaptian.smoketracker.habits;
 
 import java.util.Calendar;
 
+import org.dhappy.android.widget.Timer;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +21,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
 import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
@@ -61,12 +65,25 @@ public class GoalDetailActivity extends Activity
       fillData(goalUri);
     }
 
-    String[] queryCols = new String[] { HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
-    String[] from = new String[] { HabitTable.COLUMN_NAME };
-    int[] to = new int[] { R.id.label };
+    String[] queryCols = new String[] { HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID, HabitTable.COLUMN_COLOR, HabitTable.COLUMN_NAME };
+    String[] from = new String[] { HabitTable.COLUMN_COLOR, HabitTable.COLUMN_NAME };
+    int[] to = new int[] { R.id.color_block, R.id.label };
 
     Cursor cursor = getContentResolver().query(MyHabitContentProvider.HABITS_URI, queryCols, null, null, null);
     SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
+
+    mAdapter.setViewBinder(new ViewBinder() {
+		@Override
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			if(columnIndex == 1) { // Time
+				view.setBackgroundColor(Color.parseColor(cursor.getString(columnIndex)));
+			 	return true;
+			}
+
+			return false;
+		}
+    });
+
     mHabitSelect.setAdapter(mAdapter);
     
     mHabitSelect.setOnItemSelectedListener(this);
