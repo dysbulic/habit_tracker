@@ -4,11 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 import org.dhappy.android.widget.HeaderItem;
 import org.dhappy.android.widget.HeaderedListAdapter;
 import org.dhappy.android.widget.ListItem;
-import org.dhappy.android.widget.TextItem;
+import org.dhappy.android.widget.TextTimeItem;
 import org.dhappy.android.widget.Timer;
 
 import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
@@ -91,18 +93,26 @@ public class EventListFragment extends ListFragment
 */
         List<ListItem> items = new ArrayList<ListItem>();
 
-        items.add(new HeaderItem("Header 1"));
-        
         String[] queryCols = new String[] { EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID, HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
         Cursor cursor = getActivity().getContentResolver().query(MyHabitContentProvider.EVENTS_URI, queryCols, null, null, null);
-
-        cursor.moveToFirst();
-        while(!cursor.isAfterLast()) {
-        	String name = cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME));
-        	items.add(new TextItem(name, "Rabble rabble"));
-        	cursor.moveToNext();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EE, d MMM y");
+        
+        TextTimeItem lastItem = null;
+        if(cursor.moveToFirst()) {
+        	do {
+        		String name = cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME));
+        		long time = cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_TIME));
+        		TextTimeItem nextItem = new TextTimeItem(name, time);
+        		
+        		if(lastItem == null || nextItem.time.get(Calendar.DAY_OF_YEAR) != lastItem.time.get(Calendar.DAY_OF_YEAR)) {
+        	        items.add(new HeaderItem(dateFormat.format(nextItem.time.getTime())));
+        		}
+        		items.add(nextItem);
+        		lastItem = nextItem;
+        	} while(cursor.moveToNext());
         }
 
+        
         HeaderedListAdapter adapter = new HeaderedListAdapter(getActivity(), items);
         setListAdapter(adapter);
         
@@ -114,7 +124,8 @@ public class EventListFragment extends ListFragment
         getLoaderManager().initLoader(0, null, this);
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         MenuItem item = menu.add("New");
         item.setIcon(android.R.drawable.ic_input_add);
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);

@@ -3,7 +3,10 @@
 package org.dhappy.android.widget;
 
 import com.synaptian.smoketracker.habits.R;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
@@ -41,16 +44,19 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 				
 				final TextView sectionView = (TextView) v.findViewById(R.id.header_text);
 				sectionView.setText(si.getTitle());
-			}else{
-				TextItem ei = (TextItem)i;
+			} else {
+				TextTimeItem ei = (TextTimeItem)i;
 				v = vi.inflate(R.layout.event_row, null);
 				final TextView title = (TextView)v.findViewById(R.id.name);
 				final TextView time = (TextView)v.findViewById(R.id.time);
 				
-				if (title != null) 
+				if (title != null) {
 					title.setText(ei.title);
-				if(time != null)
-					time.setText(ei.subtitle);
+				}
+				if(time != null) {
+	                 SimpleDateFormat timeFormat = new SimpleDateFormat("H:mm:ss");
+	                 time.setText(timeFormat.format(ei.time.getTime()));
+	            }
 			}
 		}
 		return v;

@@ -4,13 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
-    <TextView
-        style="?android:attr/listSeparatorTextViewStyle"
-        android:id="@+id/header_text"
-        android:text="Header"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#757678"
-        android:textColor="#f5c227" />
-
+	<include
+		android:id="@+id/header_text"
+		layout="@android:layout/preference_category" />
 </LinearLayout>
