@@ -116,18 +116,21 @@ public class HabitListFragment extends ListFragment
     }
     
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
-      	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
         ContentValues values = new ContentValues();	
         values.put(EventTable.COLUMN_HABIT_ID, id);
         values.put(EventTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
         getActivity().getContentResolver().insert(MyHabitContentProvider.EVENTS_URI, values);
+
+      	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
+
+      	getLoaderManager().restartLoader(0, null, this);
     }
 
     // These are the rows that we will retrieve.
     static final String[] HABITS_PROJECTION = new String[] {
     	HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
-        "MIN(" + EventTable.COLUMN_TIME + ") as " + EventTable.COLUMN_TIME
+        "MAX(" + EventTable.COLUMN_TIME + ") as " + EventTable.COLUMN_TIME
     };
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
