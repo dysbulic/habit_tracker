@@ -16,7 +16,8 @@
   	<string name="menu_delete">Delete Habit</string>
   	<string name="habit_summary">Name</string>
   	<string name="habit_description">Delete Habit</string>
-  	<string name="habit_edit_summary">Name</string>
+  	<string name="habit_edit_name">Name</string>
+  	<string name="habit_edit_color">Color</string>
   	<string name="habit_edit_description">Description</string>
   	<string name="habit_edit_confirm">Confirm</string>
     <string name="habit_edit_cancel">Cancel</string>

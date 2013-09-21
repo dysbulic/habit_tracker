@@ -13,6 +13,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract.Contacts;
@@ -55,8 +56,8 @@ public class HabitListFragment extends ListFragment
 
         registerForContextMenu(getListView());
 
-        String[] from = new String[] { HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
-        int[] to = new int[] { R.id.label, R.id.timer };
+        String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, EventTable.COLUMN_TIME };
+        int[] to = new int[] { R.id.label, R.id.color_block, R.id.timer };
 
         mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.habit_row, null, from, to, 0);
 
@@ -64,6 +65,11 @@ public class HabitListFragment extends ListFragment
     		@Override
     		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
     			if(columnIndex == 2) { // Time
+    				view.setBackgroundColor(Color.parseColor(cursor.getString(columnIndex)));
+    				return true;
+    			}
+
+    			if(columnIndex == 3) { // Time
 					Timer timer = (Timer) view;
     				if(cursor.getType(columnIndex) == Cursor.FIELD_TYPE_NULL) {
     					timer.setVisibility(View.GONE);
@@ -100,7 +106,7 @@ public class HabitListFragment extends ListFragment
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
     	super.onCreateContextMenu(menu, v, menuInfo);  
     	menu.setHeaderTitle("Habit Options");
-    	menu.add(0, MENU_DELETE, 0, "Delete");
+    	menu.add(ContextMenu.NONE, MENU_DELETE, ContextMenu.NONE, "Delete");
     }
 
     @Override  
@@ -124,12 +130,15 @@ public class HabitListFragment extends ListFragment
       	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
 
       	getLoaderManager().restartLoader(0, null, this);
+      	
+      	((MainActivity) getActivity()).getViewPager().setCurrentItem(2, true);
     }
 
     // These are the rows that we will retrieve.
     static final String[] HABITS_PROJECTION = new String[] {
     	HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
+        HabitTable.COLUMN_COLOR,
         "MAX(" + EventTable.COLUMN_TIME + ") as " + EventTable.COLUMN_TIME
     };
 

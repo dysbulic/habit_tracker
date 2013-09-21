@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,10 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 			} else {
 				TextTimeItem ei = (TextTimeItem)i;
 				v = vi.inflate(R.layout.event_row, null);
+				
+				final TextView color = (TextView)v.findViewById(R.id.color_block);
+				color.setBackgroundColor(Color.parseColor(ei.color));
+
 				final TextView title = (TextView)v.findViewById(R.id.name);
 				final TextView time = (TextView)v.findViewById(R.id.time);
 				

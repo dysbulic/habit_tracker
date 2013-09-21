@@ -51,14 +51,10 @@ public class MainActivity extends Activity {
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         mTabsAdapter = new TabsAdapter(this, mViewPager);
-        mTabsAdapter.addTab(bar.newTab().setText("Habits"),
-                HabitListFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("Goals"),
-                GoalListFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("Events"),
-                EventListFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("List"),
-                FragmentPagerSupport.ArrayListFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText("Habits"), HabitListFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText("Goals"), GoalListFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText("Events"), EventListFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText("List"), FragmentPagerSupport.ArrayListFragment.class, null);
 
         if (savedInstanceState != null) {
             bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
@@ -71,6 +67,10 @@ public class MainActivity extends Activity {
         outState.putInt("tab", getActionBar().getSelectedNavigationIndex());
     }
 
+    public ViewPager getViewPager() {
+    	return mViewPager;
+	}
+    
     /**
      * This is a helper class that implements the management of tabs and all
      * details of connecting a ViewPager with associated TabHost.  It relies on a

@@ -12,6 +12,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract.Contacts;
@@ -50,8 +51,8 @@ public class GoalListFragment extends ListFragment
         
         registerForContextMenu(getListView());
 
-        String[] from = new String[] { HabitTable.COLUMN_NAME, GoalTable.COLUMN_TIME };
-        int[] to = new int[] { R.id.label, R.id.timer };
+        String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, GoalTable.COLUMN_TIME };
+        int[] to = new int[] { R.id.label, R.id.color_block, R.id.timer };
 
         mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.habit_row, null, from, to, 0);
 
@@ -59,6 +60,11 @@ public class GoalListFragment extends ListFragment
     		@Override
     		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
     			if(columnIndex == 2) { // Time
+    				view.setBackgroundColor(Color.parseColor(cursor.getString(columnIndex)));
+    				return true;
+    			}
+
+    			if(columnIndex == 3) { // Time
                     long time = cursor.getInt(columnIndex);
                     Timer timer = (Timer) view;
                     timer.setStartingTime(time * 1000);
@@ -119,6 +125,7 @@ public class GoalListFragment extends ListFragment
     static final String[] GOALS_PROJECTION = new String[] {
     	GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
+        HabitTable.COLUMN_COLOR,
         GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_TIME
     };
 
