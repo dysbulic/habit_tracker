@@ -48,11 +48,9 @@ public class EventListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final int MENU_DELETE = Menu.FIRST + 3;
 
-    List<ListItem> items;
+    List<ListItem> items = new ArrayList<ListItem>();
+    HeaderedListAdapter adapter;
     
-    // This is the Adapter being used to display the list's data.
-    SimpleCursorAdapter mAdapter;
-
     @Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -64,36 +62,6 @@ public class EventListFragment extends ListFragment
         setHasOptionsMenu(true);
         
         registerForContextMenu(getListView());
-
-/*
-        String[] from = new String[] { HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
-        int[] to = new int[] { R.id.name, R.id.time };
-
-        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.event_row, null, from, to, 0);
-
-        mAdapter.setViewBinder(new ViewBinder() {
-    		@Override
-    		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-    			if(columnIndex == 2) { // Time
-                    long time = cursor.getInt(columnIndex);
-
-                    Calendar eventTime = Calendar.getInstance();
-                    eventTime.setTimeInMillis(time * 1000);
-                    
-                    SimpleDateFormat timeFormat = new SimpleDateFormat("H:mm:ss");
-                    
-                    TextView timeView = (TextView) view;
-                    timeView.setText(timeFormat.format(eventTime.getTime()));
-                    return true;
-    			}
-
-    			return false;
-    		}
-        });
-
-        setListAdapter(mAdapter);
-*/
-        items = new ArrayList<ListItem>();
 
         String[] queryCols = new String[] { EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID, HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, EventTable.COLUMN_TIME };
         Cursor cursor = getActivity().getContentResolver().query(MyHabitContentProvider.EVENTS_URI, queryCols, null, null, EventTable.COLUMN_TIME + " DESC");
@@ -116,7 +84,7 @@ public class EventListFragment extends ListFragment
         	} while(cursor.moveToNext());
         }
 
-        HeaderedListAdapter adapter = new HeaderedListAdapter(getActivity(), items);
+        adapter = new HeaderedListAdapter(getActivity(), items);
         setListAdapter(adapter);
         
         // Start out with a progress indicator.
@@ -144,15 +112,16 @@ public class EventListFragment extends ListFragment
 
     @Override  
     public boolean onContextItemSelected(MenuItem item) {
-    	Toast.makeText(getActivity(), "onMenuItemSelected", Toast.LENGTH_LONG).show();
         switch (item.getItemId()) {
         case MENU_DELETE:
           AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-          int id = ((TextTimeItem) items.get((int) info.position)).id;
+          int id = ((TextTimeItem) items.remove((int) info.position)).id;
           Uri uri = Uri.parse(MyHabitContentProvider.EVENTS_URI + "/" + id);
-          Toast.makeText(getActivity(), "Deleting: " + uri, Toast.LENGTH_LONG).show();
 
           getActivity().getContentResolver().delete(uri, null, null);
+
+          adapter.notifyDataSetChanged();
+          
           return true;
         }
         return super.onContextItemSelected(item);
@@ -191,6 +160,6 @@ public class EventListFragment extends ListFragment
         // This is called when the last Cursor provided to onLoadFinished()
         // above is about to be closed.  We need to make sure we are no
         // longer using it.
-        mAdapter.swapCursor(null);
+        //mAdapter.swapCursor(null);
     }
 }
