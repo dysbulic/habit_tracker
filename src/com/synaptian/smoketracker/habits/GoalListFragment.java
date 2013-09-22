@@ -54,7 +54,7 @@ public class GoalListFragment extends ListFragment
         String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, GoalTable.COLUMN_TIME };
         int[] to = new int[] { R.id.label, R.id.color_block, R.id.timer };
 
-        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.habit_row, null, from, to, 0);
+        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.goal_row, null, from, to, 0);
 
         mAdapter.setViewBinder(new ViewBinder() {
     		@Override
