@@ -16,8 +16,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract.Contacts;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -26,17 +24,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 
 
 public class HabitListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
-	private static final int MENU_DELETE = Menu.FIRST + 1;
+	private static final int MENU_EDIT = Menu.FIRST + 1;
+	private static final int MENU_DELETE = Menu.FIRST + 2;
 	
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
@@ -106,14 +103,21 @@ public class HabitListFragment extends ListFragment
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
     	super.onCreateContextMenu(menu, v, menuInfo);  
     	menu.setHeaderTitle("Habit Options");
+    	menu.add(ContextMenu.NONE, MENU_EDIT, ContextMenu.NONE, "Edit");
     	menu.add(ContextMenu.NONE, MENU_DELETE, ContextMenu.NONE, "Delete");
     }
 
     @Override  
     public boolean onContextItemSelected(MenuItem item) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
+        case MENU_EDIT:
+            Intent intent = new Intent(getActivity(), HabitDetailActivity.class);
+            Uri habitUri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + info.id);
+            intent.putExtra(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
+            startActivity(intent);
+            return true;
         case MENU_DELETE:
-          AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
           Uri uri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + info.id);
           getActivity().getContentResolver().delete(uri, null, null);
           return true;

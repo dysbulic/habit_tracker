@@ -76,7 +76,10 @@ public class HabitDetailActivity extends Activity {
   }
 
   private void fillData(Uri uri) {
-    String[] projection = { HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, HabitTable.COLUMN_DESCRIPTION };
+    String[] projection = {
+    		HabitTable.COLUMN_NAME,
+    		HabitTable.COLUMN_COLOR,
+    		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
     Cursor cursor = getContentResolver().query(uri, projection, null, null,
         null);
     if (cursor != null) {

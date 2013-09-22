@@ -77,9 +77,9 @@ public class MyHabitContentProvider extends ContentProvider {
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
     case HABIT_ID:
-        queryBuilder.appendWhere(HabitTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+        queryBuilder.appendWhere(HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case HABITS:
-    	groupBy = HabitTable.TABLE_HABIT + HabitTable.COLUMN_ID;
+    	groupBy = HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID;
         queryBuilder.setTables(HabitTable.TABLE_HABIT + " LEFT OUTER JOIN " + EventTable.TABLE_EVENT
         					   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
         break;
