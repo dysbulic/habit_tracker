@@ -64,7 +64,7 @@ public class StatisticsFragment extends Fragment {
         View v = inflater.inflate(R.layout.statistics, container, false);
 
         WebView webView = (WebView) v.findViewById(R.id.webview);
-        webView.loadUrl("http://wholcomb.github.io/smoke_tracker/stats.html	");
+        webView.loadUrl("http://wholcomb.github.io/smoke_tracker/stats.html");
         
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
