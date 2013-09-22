@@ -118,9 +118,9 @@ public class HabitListFragment extends ListFragment
             startActivity(intent);
             return true;
         case MENU_DELETE:
-          Uri uri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + info.id);
-          getActivity().getContentResolver().delete(uri, null, null);
-          return true;
+        	Uri uri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + info.id);
+        	getActivity().getContentResolver().delete(uri, null, null);
+        	return true;
         }
         return super.onContextItemSelected(item);
     }

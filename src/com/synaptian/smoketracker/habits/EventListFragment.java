@@ -48,7 +48,7 @@ public class EventListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final int MENU_DELETE = Menu.FIRST + 3;
 
-    List<ListItem> items;
+    List<ListItem> items = new ArrayList<ListItem>();
     HeaderedListAdapter adapter;
     
     @Override public void onActivityCreated(Bundle savedInstanceState) {
@@ -63,29 +63,9 @@ public class EventListFragment extends ListFragment
         
         registerForContextMenu(getListView());
 
-        String[] queryCols = new String[] { EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID, HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, EventTable.COLUMN_TIME };
-        Cursor cursor = getActivity().getContentResolver().query(MyHabitContentProvider.EVENTS_URI, queryCols, null, null, EventTable.COLUMN_TIME + " DESC");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EE, d MMM y");
+        //String[] queryCols = new String[] { EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID, HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, EventTable.COLUMN_TIME };
+        //Cursor cursor = getActivity().getContentResolver().query(MyHabitContentProvider.EVENTS_URI, queryCols, null, null, EventTable.COLUMN_TIME + " DESC");
         
-        items = new ArrayList<ListItem>();
-        
-        TextTimeItem lastItem = null;
-        if(cursor.moveToFirst()) {
-        	do {
-        		int id = cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_ID));
-        		String name = cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME));
-        		long time = cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_TIME));
-        		String color = cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_COLOR));
-        		TextTimeItem nextItem = new TextTimeItem(name, time, color, id);
-        		
-        		if(lastItem == null || nextItem.time.get(Calendar.DAY_OF_YEAR) != lastItem.time.get(Calendar.DAY_OF_YEAR)) {
-        	        items.add(new HeaderItem(dateFormat.format(nextItem.time.getTime())));
-        		}
-        		items.add(nextItem);
-        		lastItem = nextItem;
-        	} while(cursor.moveToNext());
-        }
-
         adapter = new HeaderedListAdapter(getActivity(), items);
         setListAdapter(adapter);
         
@@ -136,19 +116,38 @@ public class EventListFragment extends ListFragment
     static final String[] EVENTS_PROJECTION = new String[] {
     	EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
+        HabitTable.COLUMN_COLOR,
         EventTable.TABLE_EVENT + "." + EventTable.COLUMN_TIME
     };
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
-        return new CursorLoader(getActivity(), MyHabitContentProvider.EVENTS_URI, EVENTS_PROJECTION, null, null, null);
+        return new CursorLoader(getActivity(), MyHabitContentProvider.EVENTS_URI, EVENTS_PROJECTION, null, null, EventTable.COLUMN_TIME + " DESC");
     }
 
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // Swap the new cursor in.  (The framework will take care of closing the
-        // old cursor once we return.)
-        //mAdapter.swapCursor(data);
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        items.clear();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EE, d MMM y");
+        
+        TextTimeItem lastItem = null;
+        if(cursor.moveToFirst()) {
+        	do {
+        		int id = cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_ID));
+        		String name = cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME));
+        		long time = cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_TIME));
+        		String color = cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_COLOR));
+        		TextTimeItem nextItem = new TextTimeItem(name, time, color, id);
+        		
+        		if(lastItem == null || nextItem.time.get(Calendar.DAY_OF_YEAR) != lastItem.time.get(Calendar.DAY_OF_YEAR)) {
+        	        items.add(new HeaderItem(dateFormat.format(nextItem.time.getTime())));
+        		}
+        		items.add(nextItem);
+        		lastItem = nextItem;
+        	} while(cursor.moveToNext());
+        }
+
 
         // The list should now be shown.
         if (isResumed()) {
