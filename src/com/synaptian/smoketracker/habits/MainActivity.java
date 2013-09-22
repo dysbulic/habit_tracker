@@ -52,8 +52,8 @@ public class MainActivity extends Activity {
 
         mTabsAdapter = new TabsAdapter(this, mViewPager);
         mTabsAdapter.addTab(bar.newTab().setText("Habits"), HabitListFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("Goals"), GoalListFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText("Events"), EventListFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText("Goals"), GoalListFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText("Stats"), StatisticsFragment.class, null);
 
         if (savedInstanceState != null) {

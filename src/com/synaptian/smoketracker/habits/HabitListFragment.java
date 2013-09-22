@@ -135,7 +135,7 @@ public class HabitListFragment extends ListFragment
 
       	getLoaderManager().restartLoader(0, null, this);
       	
-      	((MainActivity) getActivity()).getViewPager().setCurrentItem(2, true);
+      	((MainActivity) getActivity()).getViewPager().setCurrentItem(1, true);
     }
 
     // These are the rows that we will retrieve.

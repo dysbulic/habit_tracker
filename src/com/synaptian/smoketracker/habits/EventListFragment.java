@@ -48,7 +48,7 @@ public class EventListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final int MENU_DELETE = Menu.FIRST + 3;
 
-    List<ListItem> items = new ArrayList<ListItem>();
+    List<ListItem> items;
     HeaderedListAdapter adapter;
     
     @Override public void onActivityCreated(Bundle savedInstanceState) {
@@ -66,6 +66,8 @@ public class EventListFragment extends ListFragment
         String[] queryCols = new String[] { EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID, HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, EventTable.COLUMN_TIME };
         Cursor cursor = getActivity().getContentResolver().query(MyHabitContentProvider.EVENTS_URI, queryCols, null, null, EventTable.COLUMN_TIME + " DESC");
         SimpleDateFormat dateFormat = new SimpleDateFormat("EE, d MMM y");
+        
+        items = new ArrayList<ListItem>();
         
         TextTimeItem lastItem = null;
         if(cursor.moveToFirst()) {
