@@ -116,8 +116,6 @@ public class GoalDetailActivity extends Activity
       String description = cursor.getString(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_DESCRIPTION));
       description = description == null ? "" : description;
       mDescriptionText.setText(description);
-
-      mDescriptionText.setText(uri.toString());
       
       Calendar eventTime = Calendar.getInstance();
       long seconds = cursor.getInt(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_TIME));

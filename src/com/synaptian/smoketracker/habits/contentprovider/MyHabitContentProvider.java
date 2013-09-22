@@ -185,8 +185,7 @@ public class MyHabitContentProvider extends ContentProvider {
   }
 
   @Override
-  public int update(Uri uri, ContentValues values, String selection,
-      String[] selectionArgs) {
+  public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 
     int uriType = sURIMatcher.match(uri);
     SQLiteDatabase sqlDB = database.getWritableDatabase();
