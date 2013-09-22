@@ -148,7 +148,7 @@ public class EventListFragment extends ListFragment
         switch (item.getItemId()) {
         case MENU_DELETE:
           AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-          int id = ((TextTimeItem) items.get((int) info.id)).id;
+          int id = ((TextTimeItem) items.get((int) info.position)).id;
           Uri uri = Uri.parse(MyHabitContentProvider.EVENTS_URI + "/" + id);
           Toast.makeText(getActivity(), "Deleting: " + uri, Toast.LENGTH_LONG).show();
 

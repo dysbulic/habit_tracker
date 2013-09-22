@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.supportv13.app;
+package com.synaptian.smoketracker.habits;
 
 import com.synaptian.smoketracker.habits.R;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
-public class CountingFragment extends Fragment {
+public class StatisticsFragment extends Fragment {
     int mNum;
 
     /**
      * Create a new instance of CountingFragment, providing "num"
      * as an argument.
      */
-    static CountingFragment newInstance(int num) {
-        CountingFragment f = new CountingFragment();
+    static StatisticsFragment newInstance(int num) {
+        StatisticsFragment f = new StatisticsFragment();
 
         // Supply num input as an argument.
         Bundle args = new Bundle();
@@ -55,12 +57,18 @@ public class CountingFragment extends Fragment {
      * The Fragment's UI is just a simple text view showing its
      * instance number.
      */
-    @Override
+    @SuppressLint("SetJavaScriptEnabled")
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.statistics, container, false);
-        View tv = v.findViewById(R.id.text);
-        ((TextView)tv).setText("Fragment #" + mNum);
+
+        WebView webView = (WebView) v.findViewById(R.id.webview);
+        webView.loadUrl("http://wholcomb.github.io/smoke_tracker/stats.html	");
+        
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        
         return v;
     }
 }
