@@ -111,8 +111,8 @@ public class GoalListFragment extends ListFragment
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
     	super.onListItemClick(l, v, position, id);
         Intent intent = new Intent(getActivity(), GoalDetailActivity.class);
-        Uri eventUri = Uri.parse(MyHabitContentProvider.GOALS_URI + "/" + id);
-        intent.putExtra(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, eventUri);
+        Uri goalUri = Uri.parse(MyHabitContentProvider.GOALS_URI + "/" + id);
+        intent.putExtra(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, goalUri);
 
         startActivity(intent);
     }

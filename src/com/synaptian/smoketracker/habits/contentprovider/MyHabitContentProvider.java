@@ -1,8 +1,5 @@
 package com.synaptian.smoketracker.habits.contentprovider;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -92,8 +89,8 @@ public class MyHabitContentProvider extends ContentProvider {
     case EVENT_ID:
         queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case EVENTS:
-        queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID + "=" + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID);
-        queryBuilder.setTables(EventTable.TABLE_EVENT + "," + HabitTable.TABLE_HABIT);
+        queryBuilder.setTables(EventTable.TABLE_EVENT + " LEFT OUTER JOIN " + HabitTable.TABLE_HABIT
+				   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
         break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -210,7 +207,18 @@ public class MyHabitContentProvider extends ContentProvider {
       if (TextUtils.isEmpty(selection)) {
         rowsUpdated = sqlDB.update(GoalTable.TABLE_GOAL, values, GoalTable.COLUMN_ID + "=" + id, null);
       } else {
-        rowsUpdated = sqlDB.update(GoalTable.TABLE_GOAL, values, GoalTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+    	 rowsUpdated = sqlDB.update(GoalTable.TABLE_GOAL, values, GoalTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+      }
+      break;
+    case EVENTS:
+      rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, values, selection, selectionArgs);
+      break;
+    case EVENT_ID:
+      id = uri.getLastPathSegment();
+      if (TextUtils.isEmpty(selection)) {
+        rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, values, EventTable.COLUMN_ID + "=" + id, null);
+      } else {
+        rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, values, EventTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
       }
       break;
     default:

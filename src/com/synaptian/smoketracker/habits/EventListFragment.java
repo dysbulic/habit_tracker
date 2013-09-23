@@ -109,7 +109,14 @@ public class EventListFragment extends ListFragment
         return super.onContextItemSelected(item);
     }
     
-    @Override public void onListItemClick(ListView l, View v, int position, long id) {
+    @Override public void onListItemClick(ListView l, View v, int position, long listId) {
+    	super.onListItemClick(l, v, position, listId);
+        Intent intent = new Intent(getActivity(), EventDetailActivity.class);
+        int id = ((TextTimeItem) items.get((int) position)).id;
+        Uri eventUri = Uri.parse(MyHabitContentProvider.EVENTS_URI + "/" + id);
+        intent.putExtra(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE, eventUri);
+
+        startActivity(intent);
     }
 
     // These are the rows that we will retrieve.

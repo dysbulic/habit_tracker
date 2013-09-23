@@ -39,7 +39,8 @@ public class EventDetailActivity extends Activity
 
   private Uri eventUri;
   private long habitId;
-
+  SimpleCursorAdapter mAdapter;
+  
   @Override
   protected void onCreate(Bundle bundle) {
     super.onCreate(bundle);
@@ -52,24 +53,12 @@ public class EventDetailActivity extends Activity
     Button confirmButton = (Button) findViewById(R.id.habit_edit_button);
     Button cancelButton = (Button) findViewById(R.id.habit_cancel_button);
 
-    Bundle extras = getIntent().getExtras();
-
-    // Check from the saved Instance
-    eventUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
-
-    // Or passed from the other activity
-    if (extras != null) {
-      eventUri = extras.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
-
-      fillData(eventUri);
-    }
-
     String[] queryCols = new String[] { HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID, HabitTable.COLUMN_COLOR, HabitTable.COLUMN_NAME };
     String[] from = new String[] { HabitTable.COLUMN_COLOR, HabitTable.COLUMN_NAME };
     int[] to = new int[] { R.id.color_block, R.id.label };
 
     Cursor cursor = getContentResolver().query(MyHabitContentProvider.HABITS_URI, queryCols, null, null, null);
-    SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
+    mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
 
     mAdapter.setViewBinder(new ViewBinder() {
 		@Override
@@ -87,6 +76,18 @@ public class EventDetailActivity extends Activity
     
     mHabitSelect.setOnItemSelectedListener(this);
     
+    Bundle extras = getIntent().getExtras();
+
+    // Check from the saved Instance
+    eventUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
+
+    // Or passed from the other activity
+    if (extras != null) {
+      eventUri = extras.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
+
+      fillData(eventUri);
+    }
+
     confirmButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View view) {
           setResult(RESULT_OK);
@@ -104,11 +105,19 @@ public class EventDetailActivity extends Activity
   }
 
   private void fillData(Uri uri) {
-    String[] projection = { GoalTable.COLUMN_HABIT_ID, EventTable.COLUMN_TIME, EventTable.COLUMN_DESCRIPTION };
+    String[] projection = { GoalTable.COLUMN_HABIT_ID, EventTable.COLUMN_TIME, EventTable.TABLE_EVENT + "." + EventTable.COLUMN_DESCRIPTION };
     Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
     if (cursor != null) {
       cursor.moveToFirst();
 
+      int habitId = cursor.getInt(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_HABIT_ID));
+      for(int pos = mAdapter.getCount(); pos >= 0; pos--) {
+    	  if(mAdapter.getItemId(pos) == habitId) {
+    		  mHabitSelect.setSelection(pos);
+    		  break;
+    	  }
+      }
+      
       mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_DESCRIPTION)));
       
       Calendar eventTime = Calendar.getInstance();
