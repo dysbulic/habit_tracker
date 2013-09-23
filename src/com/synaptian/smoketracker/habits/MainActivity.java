@@ -26,9 +26,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import com.example.android.supportv13.app.CountingFragment;
-import com.example.android.supportv13.app.FragmentPagerSupport;
-
 
 /**
  * This demonstrates the use of action bar tabs and how they interact
@@ -51,10 +48,10 @@ public class MainActivity extends Activity {
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         mTabsAdapter = new TabsAdapter(this, mViewPager);
-        mTabsAdapter.addTab(bar.newTab().setText("Habits"), HabitListFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("Events"), EventListFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("Goals"), GoalListFragment.class, null);
-        mTabsAdapter.addTab(bar.newTab().setText("Stats"), StatisticsFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText(R.string.habits_tab), HabitListFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText(R.string.events_tab), EventListFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText(R.string.goals_tab), GoalListFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText(R.string.statistics_tab), StatisticsFragment.class, null);
 
         if (savedInstanceState != null) {
             bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));

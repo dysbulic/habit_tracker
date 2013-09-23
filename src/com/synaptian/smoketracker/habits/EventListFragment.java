@@ -56,7 +56,7 @@ public class EventListFragment extends ListFragment
 
         // Give some text to display if there is no data.  In a real
         // application this would come from a resource.
-        setEmptyText("No recorded events");
+        setEmptyText(getString(R.string.no_events));
 
         // We have a menu iteArraym to show in action bar.
         setHasOptionsMenu(true);
@@ -79,7 +79,7 @@ public class EventListFragment extends ListFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuItem item = menu.add("New");
+        MenuItem item = menu.add(R.string.menu_new);
         item.setIcon(android.R.drawable.ic_input_add);
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         item.setIntent(new Intent(getActivity(), EventDetailActivity.class));
@@ -88,8 +88,8 @@ public class EventListFragment extends ListFragment
     @Override  
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
     	super.onCreateContextMenu(menu, v, menuInfo);  
-    	menu.setHeaderTitle("Event Options");
-    	menu.add(ContextMenu.NONE, MENU_DELETE, ContextMenu.NONE, "Delete");
+    	menu.setHeaderTitle(R.string.event_options_header);
+    	menu.add(ContextMenu.NONE, MENU_DELETE, ContextMenu.NONE, R.string.menu_delete);
     }
 
     @Override  
@@ -148,7 +148,8 @@ public class EventListFragment extends ListFragment
         	} while(cursor.moveToNext());
         }
 
-
+        adapter.notifyDataSetChanged();
+        
         // The list should now be shown.
         if (isResumed()) {
             setListShown(true);

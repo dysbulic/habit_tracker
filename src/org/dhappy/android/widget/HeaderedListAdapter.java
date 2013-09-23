@@ -31,29 +31,29 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View v = convertView;
+		View view = convertView;
 
 		final ListItem i = items.get(position);
 		if (i != null) {
 			if(i.isHeader()){
 				HeaderItem si = (HeaderItem)i;
-				v = vi.inflate(R.layout.header, null);
+				view = vi.inflate(R.layout.header, null);
 
-				v.setOnClickListener(null);
-				v.setOnLongClickListener(null);
-				v.setLongClickable(false);
+				view.setOnClickListener(null);
+				view.setOnLongClickListener(null);
+				view.setLongClickable(false);
 				
-				final TextView sectionView = (TextView) v.findViewById(R.id.header_text);
+				final TextView sectionView = (TextView) view.findViewById(R.id.header_text);
 				sectionView.setText(si.getTitle());
 			} else {
 				TextTimeItem ei = (TextTimeItem)i;
-				v = vi.inflate(R.layout.event_row, null);
+				view = vi.inflate(R.layout.event_row, null);
 				
-				final TextView color = (TextView)v.findViewById(R.id.color_block);
+				final TextView color = (TextView)view.findViewById(R.id.color_block);
 				color.setBackgroundColor(Color.parseColor(ei.color));
 
-				final TextView title = (TextView)v.findViewById(R.id.name);
-				final TextView time = (TextView)v.findViewById(R.id.time);
+				final TextView title = (TextView)view.findViewById(R.id.name);
+				final TextView time = (TextView)view.findViewById(R.id.time);
 				
 				if (title != null) {
 					title.setText(ei.title);
@@ -64,6 +64,6 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 	            }
 			}
 		}
-		return v;
+		return view;
 	}
 }

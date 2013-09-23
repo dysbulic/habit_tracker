@@ -61,7 +61,7 @@ public class HabitListFragment extends ListFragment
         mAdapter.setViewBinder(new ViewBinder() {
     		@Override
     		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-    			if(columnIndex == 2) { // Time
+    			if(columnIndex == 2) { // Color
     				view.setBackgroundColor(Color.parseColor(cursor.getString(columnIndex)));
     				return true;
     			}
@@ -103,8 +103,8 @@ public class HabitListFragment extends ListFragment
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
     	super.onCreateContextMenu(menu, v, menuInfo);  
     	menu.setHeaderTitle("Habit Options");
-    	menu.add(ContextMenu.NONE, MENU_EDIT, ContextMenu.NONE, "Edit");
-    	menu.add(ContextMenu.NONE, MENU_DELETE, ContextMenu.NONE, "Delete");
+    	menu.add(ContextMenu.NONE, MENU_EDIT, ContextMenu.NONE, R.string.menu_edit);
+    	menu.add(ContextMenu.NONE, MENU_DELETE, ContextMenu.NONE, R.string.menu_delete);
     }
 
     @Override  
@@ -134,6 +134,7 @@ public class HabitListFragment extends ListFragment
       	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
 
       	getLoaderManager().restartLoader(0, null, this);
+        mAdapter.notifyDataSetChanged();
       	
       	((MainActivity) getActivity()).getViewPager().setCurrentItem(1, true);
     }

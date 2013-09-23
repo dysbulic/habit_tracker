@@ -41,7 +41,7 @@ public class GoalListFragment extends ListFragment
 
         // Give some text to display if there is no data.  In a real
         // application this would come from a resource.
-        setEmptyText("No recorded goals");
+        setEmptyText(getString(R.string.no_goals));
 
         // We have a menu item to show in action bar.
         setHasOptionsMenu(true);
@@ -83,7 +83,7 @@ public class GoalListFragment extends ListFragment
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuItem item = menu.add("New");
+        MenuItem item = menu.add(R.string.menu_new);
         item.setIcon(android.R.drawable.ic_input_add);
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         item.setIntent(new Intent(getActivity(), GoalDetailActivity.class));
@@ -92,13 +92,12 @@ public class GoalListFragment extends ListFragment
     @Override  
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
     	super.onCreateContextMenu(menu, v, menuInfo);  
-    	menu.setHeaderTitle("Goal Options");  
-    	menu.add(0, MENU_DELETE, 0, "Delete");
+    	menu.setHeaderTitle(R.string.goal_options_header);
+    	menu.add(ContextMenu.NONE, MENU_DELETE, ContextMenu.NONE, R.string.menu_delete);
     }
 
     @Override  
     public boolean onContextItemSelected(MenuItem item) {
-    	Toast.makeText(getActivity(), "GoalListFragment.onContextItemSelected", Toast.LENGTH_LONG).show();
         switch (item.getItemId()) {
         case MENU_DELETE:
           AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
