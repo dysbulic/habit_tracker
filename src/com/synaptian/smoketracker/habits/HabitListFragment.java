@@ -71,6 +71,7 @@ public class HabitListFragment extends ListFragment
     				if(cursor.getType(columnIndex) == Cursor.FIELD_TYPE_NULL) {
     					timer.setVisibility(View.GONE);
     				} else {
+    					timer.setVisibility(View.VISIBLE);
     					long time = cursor.getInt(columnIndex);
     					timer.setStartingTime(time * 1000);
     				}

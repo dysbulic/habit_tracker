@@ -83,13 +83,13 @@ public class MyHabitContentProvider extends ContentProvider {
     case GOAL_ID:
         queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case GOALS:
-        queryBuilder.setTables(GoalTable.TABLE_GOAL + " LEFT OUTER JOIN " + HabitTable.TABLE_HABIT
+        queryBuilder.setTables(HabitTable.TABLE_HABIT + " JOIN " + GoalTable.TABLE_GOAL
         					   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_HABIT_ID);
         break;
     case EVENT_ID:
         queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case EVENTS:
-        queryBuilder.setTables(EventTable.TABLE_EVENT + " LEFT OUTER JOIN " + HabitTable.TABLE_HABIT
+        queryBuilder.setTables(HabitTable.TABLE_HABIT + " JOIN " + EventTable.TABLE_EVENT
 				   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
         break;
     default:
