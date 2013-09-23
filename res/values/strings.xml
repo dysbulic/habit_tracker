@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">Smoking Tracker</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-
-   	<string name="hello">Hello World, Todo!</string>
-  	<string name="no_events">Currently there are no Todo items maintained</string>
+  	<string name="hello">Hello World, Habit!</string>
+	<string name="app_name">Smoke Tracker</string>
+  	<string name="no_habits">Currently there are no habits recorded</string>
+  	<string name="no_goals">Currently there are no goals recorded</string>
+  	<string name="no_events">Currently there are no events recorded</string>
   	<string name="menu_insert">Add Item</string>
-  	<string name="menu_delete">Delete Event</string>
-  	<string name="event_description">Delete Event</string>
-  	<string name="event_edit_description">Description</string>
-  	<string name="event_edit_confirm">Confirm</string>
+  	<string name="menu_edit">Edit</string>
+  	<string name="menu_new">New</string>
+  	<string name="menu_delete">Delete</string>
+  	<string name="habit_summary">Name</string>
+  	<string name="habit_description">Delete Habit</string>
+  	<string name="habit_edit_name">Name</string>
+  	<string name="habit_edit_color">Color</string>
+  	<string name="habit_edit_description">Description</string>
+  	<string name="habit_edit_confirm">Save</string>
+    <string name="habit_edit_cancel">Cancel</string>
+    <string name="goal_options_header">Goal Options</string>
+    <string name="event_options_header">Event Options</string>
+    <string name="habits_tab">Habits</string>
+    <string name="events_tab">Events</string>
+    <string name="goals_tab">Goals</string>
+    <string name="statistics_tab">Stats</string>
+        
+  	<string name="action_insert">New</string>
+  	
+    <string name="hello_world"><b>Hello, <i>World!</i></b></string>
+  	<string name="retained">Retained state</string>
+  	
+  	<string name="first">First</string>
+    <string name="last">Last</string>
 </resources>

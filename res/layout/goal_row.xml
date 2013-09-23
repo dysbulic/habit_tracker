@@ -13,22 +13,22 @@
     </TextView>
 
     <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:lines="1"
-        android:text="@+id/TextView01"
-        android:textSize="24sp">
-    </TextView>
-
-    <TextView
-        android:id="@+id/time"
+        android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
+		android:layout_weight="1"
         android:lines="1"
         android:text="@+id/TextView01"
         android:textSize="24sp">
     </TextView>
+    
+	<org.dhappy.android.widget.Timer
+    	android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="00:00:00.000"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="24sp" />
 </LinearLayout>

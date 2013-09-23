@@ -35,4 +35,18 @@
 
     <style name="ButtonBarButton" />
 
+	<style name="FillWidth">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="FillWidth.Hor">
+        <item name="android:orientation">horizontal</item>
+    </style>
+        
+    <style name="ControlButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>        
+    </style>
 </resources>

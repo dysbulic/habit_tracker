@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.synaptian.smokingtracker"
+    package="com.synaptian.smoketracker.habits"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.1" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="17" />
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
 
     <application
-        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:allowBackup="true">
         <activity
-            android:name=".EventsOverviewActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
-            android:theme="@style/FullscreenTheme" >
+            android:name=".HabitTimeListActivity"
+            android:label="@string/app_name">
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-	    <activity
-    		android:name=".EventDetailActivity"
-       		android:windowSoftInputMode="stateVisible|adjustResize" >
-    	</activity>
-    
-  		<provider
-    		android:name=".contentprovider.EventContentProvider"
-      		android:authorities="com.synaptian.android.events.contentprovider" >
-   		</provider>
-	</application> 
+        <activity
+            android:name=".HabitDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
+        <activity
+            android:name=".GoalDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
+        <activity
+            android:name=".EventDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
+        
+        <provider
+            android:name=".contentprovider.MyHabitContentProvider"
+            android:authorities="com.synaptian.smoketracker.habits.contentprovider" >
+        </provider>
+    </application>
 
 </manifest>
-

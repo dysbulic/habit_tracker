@@ -13,22 +13,26 @@
     </TextView>
 
     <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:lines="1"
-        android:text="@+id/TextView01"
-        android:textSize="24sp">
-    </TextView>
-
-    <TextView
-        android:id="@+id/time"
+        android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
+		android:layout_weight="1"
         android:lines="1"
         android:text="@+id/TextView01"
         android:textSize="24sp">
     </TextView>
+    
+    <TextView
+        android:id="@+id/id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+		android:layout_weight="1"
+        android:lines="1"
+        android:text="@+id/TextView01"
+        android:textSize="24sp"
+        android:visibility="gone">
+    </TextView>
+    
 </LinearLayout>
