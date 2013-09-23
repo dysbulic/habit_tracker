@@ -40,7 +40,8 @@ public class GoalDetailActivity extends Activity
 
   private Uri goalUri;
   private long habitId;
-
+  SimpleCursorAdapter mAdapter;
+  
   @Override
   protected void onCreate(Bundle bundle) {
     super.onCreate(bundle);
@@ -53,24 +54,12 @@ public class GoalDetailActivity extends Activity
     Button confirmButton = (Button) findViewById(R.id.habit_edit_button);
     Button cancelButton = (Button) findViewById(R.id.habit_cancel_button);
 
-    Bundle extras = getIntent().getExtras();
-
-    // Check from the saved Instance
-    goalUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
-
-    // Or passed from the other activity
-    if (extras != null) {
-      goalUri = extras.getParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
-
-      fillData(goalUri);
-    }
-
     String[] queryCols = new String[] { HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID, HabitTable.COLUMN_COLOR, HabitTable.COLUMN_NAME };
     String[] from = new String[] { HabitTable.COLUMN_COLOR, HabitTable.COLUMN_NAME };
     int[] to = new int[] { R.id.color_block, R.id.label };
 
     Cursor cursor = getContentResolver().query(MyHabitContentProvider.HABITS_URI, queryCols, null, null, null);
-    SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
+    mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
 
     mAdapter.setViewBinder(new ViewBinder() {
 		@Override
@@ -88,6 +77,18 @@ public class GoalDetailActivity extends Activity
     
     mHabitSelect.setOnItemSelectedListener(this);
     
+    Bundle extras = getIntent().getExtras();
+
+    // Check from the saved Instance
+    goalUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
+
+    // Or passed from the other activity
+    if (extras != null) {
+      goalUri = extras.getParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
+
+      fillData(goalUri);
+    }
+
     confirmButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View view) {
           setResult(RESULT_OK);
@@ -111,14 +112,19 @@ public class GoalDetailActivity extends Activity
       cursor.moveToFirst();
 
       int habitId = cursor.getInt(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_HABIT_ID));
-      mHabitSelect.setSelection(habitId);
+      for(int pos = mAdapter.getCount(); pos >= 0; pos--) {
+    	  if(mAdapter.getItemId(pos) == habitId) {
+    		  mHabitSelect.setSelection(pos);
+    		  break;
+    	  }
+      }
       
       String description = cursor.getString(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_DESCRIPTION));
       description = description == null ? "" : description;
       mDescriptionText.setText(description);
       
       Calendar eventTime = Calendar.getInstance();
-      long seconds = cursor.getInt(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_TIME));
+      long seconds = cursor.getLong(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_TIME));
       eventTime.setTimeInMillis(seconds * 1000);
       
       mEventDate.updateDate(eventTime.get(Calendar.YEAR),
