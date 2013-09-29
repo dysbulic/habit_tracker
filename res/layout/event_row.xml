@@ -3,25 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="30dp"
-        android:layout_height="24dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/calendar" >
-    </ImageView>
+    <TextView
+        android:id="@+id/color_block"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="6dp"
+        android:text=""
+        android:textSize="24sp">
+    </TextView>
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginTop="6dp"
         android:lines="1"
         android:text="@+id/TextView01"
-        android:textSize="24dp">
+        android:textSize="24sp">
     </TextView>
 
     <TextView
@@ -31,6 +29,6 @@
         android:layout_marginTop="6dp"
         android:lines="1"
         android:text="@+id/TextView01"
-        android:textSize="24dp">
+        android:textSize="24sp">
     </TextView>
 </LinearLayout>

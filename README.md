@@ -1,4 +1,4 @@
-ToDo Example
-============
+Smoke Tracker
+=============
 
-From: http://www.vogella.com/articles/AndroidSQLite/article.html
+Android app for tracking smoking habits

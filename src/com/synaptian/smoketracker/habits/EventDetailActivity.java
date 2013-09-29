@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
 import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
@@ -35,9 +37,10 @@ public class EventDetailActivity extends Activity
   private TimePicker mEventTime;
   private DatePicker mEventDate;
 
-  private Uri goalUri;
+  private Uri eventUri;
   private long habitId;
-
+  SimpleCursorAdapter mAdapter;
+  
   @Override
   protected void onCreate(Bundle bundle) {
     super.onCreate(bundle);
@@ -50,28 +53,41 @@ public class EventDetailActivity extends Activity
     Button confirmButton = (Button) findViewById(R.id.habit_edit_button);
     Button cancelButton = (Button) findViewById(R.id.habit_cancel_button);
 
-    Bundle extras = getIntent().getExtras();
-
-    // Check from the saved Instance
-    goalUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
-
-    // Or passed from the other activity
-    if (extras != null) {
-      goalUri = extras.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
-
-      fillData(goalUri);
-    }
-
-    String[] queryCols = new String[] { HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME };
-    String[] from = new String[] { HabitTable.COLUMN_NAME };
-    int[] to = new int[] { R.id.label };
+    String[] queryCols = new String[] { HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID, HabitTable.COLUMN_COLOR, HabitTable.COLUMN_NAME };
+    String[] from = new String[] { HabitTable.COLUMN_COLOR, HabitTable.COLUMN_NAME };
+    int[] to = new int[] { R.id.color_block, R.id.label };
 
     Cursor cursor = getContentResolver().query(MyHabitContentProvider.HABITS_URI, queryCols, null, null, null);
-    SimpleCursorAdapter mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
+    mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
+
+    mAdapter.setViewBinder(new ViewBinder() {
+		@Override
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			if(columnIndex == 1) { // Time
+				view.setBackgroundColor(Color.parseColor(cursor.getString(columnIndex)));
+			 	return true;
+			}
+
+			return false;
+		}
+    });
+
     mHabitSelect.setAdapter(mAdapter);
     
     mHabitSelect.setOnItemSelectedListener(this);
     
+    Bundle extras = getIntent().getExtras();
+
+    // Check from the saved Instance
+    eventUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
+
+    // Or passed from the other activity
+    if (extras != null) {
+      eventUri = extras.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
+
+      fillData(eventUri);
+    }
+
     confirmButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View view) {
           setResult(RESULT_OK);
@@ -89,14 +105,20 @@ public class EventDetailActivity extends Activity
   }
 
   private void fillData(Uri uri) {
-    String[] projection = { GoalTable.COLUMN_HABIT_ID, EventTable.COLUMN_TIME, EventTable.COLUMN_DESCRIPTION };
+    String[] projection = { GoalTable.COLUMN_HABIT_ID, EventTable.COLUMN_TIME, EventTable.TABLE_EVENT + "." + EventTable.COLUMN_DESCRIPTION };
     Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
     if (cursor != null) {
       cursor.moveToFirst();
 
+      int habitId = cursor.getInt(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_HABIT_ID));
+      for(int pos = mAdapter.getCount(); pos >= 0; pos--) {
+    	  if(mAdapter.getItemId(pos) == habitId) {
+    		  mHabitSelect.setSelection(pos);
+    		  break;
+    	  }
+      }
+      
       mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_DESCRIPTION)));
-
-      mDescriptionText.setText(uri.toString());
       
       Calendar eventTime = Calendar.getInstance();
       long seconds = cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_TIME));
@@ -115,7 +137,7 @@ public class EventDetailActivity extends Activity
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     saveState();
-    outState.putParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, goalUri);
+    outState.putParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, eventUri);
   }
 
   @Override
@@ -134,16 +156,16 @@ public class EventDetailActivity extends Activity
     			  mEventTime.getCurrentMinute());
     
     ContentValues values = new ContentValues();	
-    values.put(GoalTable.COLUMN_HABIT_ID, habitId);
-    values.put(GoalTable.COLUMN_TIME, Math.floor(eventTime.getTimeInMillis() / 1000));
-    values.put(GoalTable.COLUMN_DESCRIPTION, description);
+    values.put(EventTable.COLUMN_HABIT_ID, habitId);
+    values.put(EventTable.COLUMN_TIME, Math.floor(eventTime.getTimeInMillis() / 1000));
+    values.put(EventTable.COLUMN_DESCRIPTION, description);
 
-    if (goalUri == null) {
+    if (eventUri == null) {
       // New habit
-      goalUri = getContentResolver().insert(MyHabitContentProvider.GOALS_URI, values);
+      eventUri = getContentResolver().insert(MyHabitContentProvider.EVENTS_URI, values);
     } else {
       // Update habit
-      getContentResolver().update(goalUri, values, null, null);
+      getContentResolver().update(eventUri, values, null, null);
     }
 
     Log.w(EventDetailActivity.class.getName(), "Event Time: " + eventTime);

@@ -23,8 +23,9 @@ import com.synaptian.smoketracker.habits.database.HabitTable;
  * or to change an existing
  */
 public class HabitDetailActivity extends Activity {
-  private EditText mTitleText;
-  private EditText mBodyText;
+  private EditText mNameText;
+  private EditText mColorText;
+  private EditText mDescriptionText;
 
   private Uri habitUri;
 
@@ -33,8 +34,9 @@ public class HabitDetailActivity extends Activity {
     super.onCreate(bundle);
     setContentView(R.layout.habit_edit);
 
-    mTitleText = (EditText) findViewById(R.id.habit_edit_summary);
-    mBodyText = (EditText) findViewById(R.id.habit_edit_description);
+    mNameText = (EditText) findViewById(R.id.habit_edit_name);
+    mColorText = (EditText) findViewById(R.id.habit_edit_color);
+    mDescriptionText = (EditText) findViewById(R.id.habit_edit_description);
     Button confirmButton = (Button) findViewById(R.id.habit_edit_button);
     Button cancelButton = (Button) findViewById(R.id.habit_cancel_button);
 
@@ -48,11 +50,13 @@ public class HabitDetailActivity extends Activity {
       habitUri = extras.getParcelable(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE);
 
       fillData(habitUri);
+    } else {
+    	mColorText.setText(getRandomColor());
     }
 
     confirmButton.setOnClickListener(new View.OnClickListener() {
         public void onClick(View view) {
-          if (TextUtils.isEmpty(mTitleText.getText().toString())) {
+          if (TextUtils.isEmpty(mNameText.getText().toString())) {
           	Toast.makeText(HabitDetailActivity.this, "Please provide a name", Toast.LENGTH_LONG).show();
           } else {
             setResult(RESULT_OK);
@@ -72,18 +76,18 @@ public class HabitDetailActivity extends Activity {
   }
 
   private void fillData(Uri uri) {
-    String[] projection = { HabitTable.COLUMN_NAME, HabitTable.COLUMN_DESCRIPTION };
+    String[] projection = {
+    		HabitTable.COLUMN_NAME,
+    		HabitTable.COLUMN_COLOR,
+    		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
     Cursor cursor = getContentResolver().query(uri, projection, null, null,
         null);
     if (cursor != null) {
       cursor.moveToFirst();
 
-      mTitleText.setText(cursor.getString(cursor
-          .getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
-      mBodyText.setText(cursor.getString(cursor
-          .getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
-
-      mBodyText.setText(uri.toString());
+      mNameText.setText(cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
+      mColorText.setText(cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_COLOR)));
+      mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
       
       cursor.close();
     }
@@ -101,18 +105,20 @@ public class HabitDetailActivity extends Activity {
   }
 
   private void saveState() {
-    String summary = mTitleText.getText().toString();
-    String description = mBodyText.getText().toString();
+    String name = mNameText.getText().toString();
+    String color = mColorText.getText().toString();
+    String description = mDescriptionText.getText().toString();
 
     // Only save if either summary or description
     // is available
 
-    if (description.length() == 0 && summary.length() == 0) {
+    if (description.length() == 0 && name.length() == 0) {
       return;
     }
 
     ContentValues values = new ContentValues();	
-    values.put(HabitTable.COLUMN_NAME, summary);
+    values.put(HabitTable.COLUMN_NAME, name);
+    values.put(HabitTable.COLUMN_COLOR, color);
     values.put(HabitTable.COLUMN_DESCRIPTION, description);
 
     if (habitUri == null) {
@@ -122,5 +128,14 @@ public class HabitDetailActivity extends Activity {
       // Update habit
       getContentResolver().update(habitUri, values, null, null);
     }
+  }
+  
+  public static String getRandomColor() {
+	 String[] letters = {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
+	 String color = "#";
+	 for (int i = 0; i < 6; i++ ) {
+	 	color += letters[(int) Math.round(Math.random() * (letters.length - 1))];
+	 }
+	 return color;
   }
 }

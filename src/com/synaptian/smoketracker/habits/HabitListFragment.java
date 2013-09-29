@@ -8,14 +8,14 @@ import com.synaptian.smoketracker.habits.database.EventTable;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract.Contacts;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -24,18 +24,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 
 
 public class HabitListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
-	private static final int MENU_DELETE = Menu.FIRST + 1;
-
+	private static final int MENU_EDIT = Menu.FIRST + 1;
+	private static final int MENU_DELETE = Menu.FIRST + 2;
+	
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
 
@@ -47,26 +46,32 @@ public class HabitListFragment extends ListFragment
 
         // Give some text to display if there is no data.  In a real
         // application this would come from a resource.
-        setEmptyText("No habits recorded");
+        setEmptyText(getString(R.string.no_habits));
 
         // We have a menu item to show in action bar.
         setHasOptionsMenu(true);
 
         registerForContextMenu(getListView());
 
-        String[] from = new String[] { HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
-        int[] to = new int[] { R.id.label, R.id.timer };
+        String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, EventTable.COLUMN_TIME };
+        int[] to = new int[] { R.id.label, R.id.color_block, R.id.timer };
 
         mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.habit_row, null, from, to, 0);
 
         mAdapter.setViewBinder(new ViewBinder() {
     		@Override
     		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-    			if(columnIndex == 2) { // Time
+    			if(columnIndex == 2) { // Color
+    				view.setBackgroundColor(Color.parseColor(cursor.getString(columnIndex)));
+    				return true;
+    			}
+
+    			if(columnIndex == 3) { // Time
 					Timer timer = (Timer) view;
     				if(cursor.getType(columnIndex) == Cursor.FIELD_TYPE_NULL) {
     					timer.setVisibility(View.GONE);
     				} else {
+    					timer.setVisibility(View.VISIBLE);
     					long time = cursor.getInt(columnIndex);
     					timer.setStartingTime(time * 1000);
     				}
@@ -99,30 +104,48 @@ public class HabitListFragment extends ListFragment
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
     	super.onCreateContextMenu(menu, v, menuInfo);  
     	menu.setHeaderTitle("Habit Options");
-    	menu.add(0, MENU_DELETE, 0, "Delete");
+    	menu.add(ContextMenu.NONE, MENU_EDIT, ContextMenu.NONE, R.string.menu_edit);
+    	menu.add(ContextMenu.NONE, MENU_DELETE, ContextMenu.NONE, R.string.menu_delete);
     }
 
     @Override  
     public boolean onContextItemSelected(MenuItem item) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
+        case MENU_EDIT:
+            Intent intent = new Intent(getActivity(), HabitDetailActivity.class);
+            Uri habitUri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + info.id);
+            intent.putExtra(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
+            startActivity(intent);
+            return true;
         case MENU_DELETE:
-          AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-          Uri uri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + info.id);
-          getActivity().getContentResolver().delete(uri, null, null);
-          return true;
+        	Uri uri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + info.id);
+        	getActivity().getContentResolver().delete(uri, null, null);
+        	return true;
         }
         return super.onContextItemSelected(item);
     }
     
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
-      	Toast.makeText(getActivity(), "Item clicked: " + id, Toast.LENGTH_LONG).show();
+        ContentValues values = new ContentValues();	
+        values.put(EventTable.COLUMN_HABIT_ID, id);
+        values.put(EventTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
+        getActivity().getContentResolver().insert(MyHabitContentProvider.EVENTS_URI, values);
+
+      	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
+
+      	getLoaderManager().restartLoader(0, null, this);
+        mAdapter.notifyDataSetChanged();
+      	
+      	((MainActivity) getActivity()).setActiveTab(1);
     }
 
     // These are the rows that we will retrieve.
     static final String[] HABITS_PROJECTION = new String[] {
     	HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
-        EventTable.COLUMN_TIME
+        HabitTable.COLUMN_COLOR,
+        "MAX(" + EventTable.COLUMN_TIME + ") as " + EventTable.COLUMN_TIME
     };
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

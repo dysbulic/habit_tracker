@@ -12,10 +12,9 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract.Contacts;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -25,14 +24,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 
 
 public class GoalListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
-	private static final int MENU_DELETE = Menu.FIRST + 1;
+	private static final int MENU_DELETE = Menu.FIRST + 2;
 
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
@@ -42,22 +41,27 @@ public class GoalListFragment extends ListFragment
 
         // Give some text to display if there is no data.  In a real
         // application this would come from a resource.
-        setEmptyText("No recorded goals");
+        setEmptyText(getString(R.string.no_goals));
 
         // We have a menu item to show in action bar.
         setHasOptionsMenu(true);
         
         registerForContextMenu(getListView());
 
-        String[] from = new String[] { HabitTable.COLUMN_NAME, GoalTable.COLUMN_TIME };
-        int[] to = new int[] { R.id.label, R.id.timer };
+        String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, GoalTable.COLUMN_TIME };
+        int[] to = new int[] { R.id.label, R.id.color_block, R.id.timer };
 
-        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.habit_row, null, from, to, 0);
+        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.goal_row, null, from, to, 0);
 
         mAdapter.setViewBinder(new ViewBinder() {
     		@Override
     		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
     			if(columnIndex == 2) { // Time
+    				view.setBackgroundColor(Color.parseColor(cursor.getString(columnIndex)));
+    				return true;
+    			}
+
+    			if(columnIndex == 3) { // Time
                     long time = cursor.getInt(columnIndex);
                     Timer timer = (Timer) view;
                     timer.setStartingTime(time * 1000);
@@ -79,7 +83,7 @@ public class GoalListFragment extends ListFragment
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        MenuItem item = menu.add("New");
+        MenuItem item = menu.add(R.string.menu_new);
         item.setIcon(android.R.drawable.ic_input_add);
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         item.setIntent(new Intent(getActivity(), GoalDetailActivity.class));
@@ -88,8 +92,8 @@ public class GoalListFragment extends ListFragment
     @Override  
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
     	super.onCreateContextMenu(menu, v, menuInfo);  
-    	menu.setHeaderTitle("Goal Options");  
-    	menu.add(0, MENU_DELETE, 0, "Delete");
+    	menu.setHeaderTitle(R.string.goal_options_header);
+    	menu.add(ContextMenu.NONE, MENU_DELETE, ContextMenu.NONE, R.string.menu_delete);
     }
 
     @Override  
@@ -105,14 +109,19 @@ public class GoalListFragment extends ListFragment
     }
     
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
-        // Insert desired behavior here.
-        Log.i("FragmentComplexList", "Item clicked: " + id);
+    	super.onListItemClick(l, v, position, id);
+        Intent intent = new Intent(getActivity(), GoalDetailActivity.class);
+        Uri goalUri = Uri.parse(MyHabitContentProvider.GOALS_URI + "/" + id);
+        intent.putExtra(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, goalUri);
+
+        startActivity(intent);
     }
 
     // These are the rows that we will retrieve.
     static final String[] GOALS_PROJECTION = new String[] {
     	GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
+        HabitTable.COLUMN_COLOR,
         GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_TIME
     };
 

@@ -1,8 +1,5 @@
 package com.synaptian.smoketracker.habits.contentprovider;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -72,31 +69,35 @@ public class MyHabitContentProvider extends ContentProvider {
     // Using SQLiteQueryBuilder instead of query() method
     SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
+    String groupBy = null;
+    
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
     case HABIT_ID:
-        queryBuilder.appendWhere(HabitTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+        queryBuilder.appendWhere(HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case HABITS:
-        queryBuilder.setTables(HabitTable.TABLE_HABIT + " LEFT OUTER JOIN " + EventTable.TABLE_EVENT);
+    	groupBy = HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID;
+        queryBuilder.setTables(HabitTable.TABLE_HABIT + " LEFT OUTER JOIN " + EventTable.TABLE_EVENT
+        					   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
         break;
     case GOAL_ID:
         queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case GOALS:
-        queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_HABIT_ID + "=" + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID);
-        queryBuilder.setTables(GoalTable.TABLE_GOAL + "," + HabitTable.TABLE_HABIT);
+        queryBuilder.setTables(HabitTable.TABLE_HABIT + " JOIN " + GoalTable.TABLE_GOAL
+        					   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_HABIT_ID);
         break;
     case EVENT_ID:
         queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case EVENTS:
-        queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID + "=" + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID);
-        queryBuilder.setTables(EventTable.TABLE_EVENT + "," + HabitTable.TABLE_HABIT);
+        queryBuilder.setTables(HabitTable.TABLE_HABIT + " JOIN " + EventTable.TABLE_EVENT
+				   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
         break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }
 
     SQLiteDatabase db = database.getWritableDatabase();
-    Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+    Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, groupBy, null, sortOrder);
     // Make sure that potential listeners are getting notified
     cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
@@ -162,6 +163,17 @@ public class MyHabitContentProvider extends ContentProvider {
           rowsDeleted = sqlDB.delete(GoalTable.TABLE_GOAL, GoalTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
         }
         break;
+      case EVENTS:
+        rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, selection, selectionArgs);
+        break;
+      case EVENT_ID:
+        id = uri.getLastPathSegment();
+        if (TextUtils.isEmpty(selection)) {
+          rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, EventTable.COLUMN_ID + "=" + id, null);
+        } else {
+          rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, EventTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+        }
+        break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }
@@ -170,8 +182,7 @@ public class MyHabitContentProvider extends ContentProvider {
   }
 
   @Override
-  public int update(Uri uri, ContentValues values, String selection,
-      String[] selectionArgs) {
+  public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 
     int uriType = sURIMatcher.match(uri);
     SQLiteDatabase sqlDB = database.getWritableDatabase();
@@ -186,6 +197,28 @@ public class MyHabitContentProvider extends ContentProvider {
         rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, values, HabitTable.COLUMN_ID + "=" + id, null);
       } else {
         rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, values, HabitTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+      }
+      break;
+    case GOALS:
+      rowsUpdated = sqlDB.update(GoalTable.TABLE_GOAL, values, selection, selectionArgs);
+      break;
+    case GOAL_ID:
+      id = uri.getLastPathSegment();
+      if (TextUtils.isEmpty(selection)) {
+        rowsUpdated = sqlDB.update(GoalTable.TABLE_GOAL, values, GoalTable.COLUMN_ID + "=" + id, null);
+      } else {
+    	 rowsUpdated = sqlDB.update(GoalTable.TABLE_GOAL, values, GoalTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+      }
+      break;
+    case EVENTS:
+      rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, values, selection, selectionArgs);
+      break;
+    case EVENT_ID:
+      id = uri.getLastPathSegment();
+      if (TextUtils.isEmpty(selection)) {
+        rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, values, EventTable.COLUMN_ID + "=" + id, null);
+      } else {
+        rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, values, EventTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
       }
       break;
     default:
