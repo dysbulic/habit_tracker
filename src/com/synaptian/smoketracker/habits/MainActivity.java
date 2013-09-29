@@ -63,9 +63,16 @@ public class MainActivity extends Activity {
         super.onSaveInstanceState(outState);
         outState.putInt("tab", getActionBar().getSelectedNavigationIndex());
     }
+    
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	
+    	setActiveTab(0);
+    }
 
-    public ViewPager getViewPager() {
-    	return mViewPager;
+    public void setActiveTab(int index) {
+    	mViewPager.setCurrentItem(index, true);;
 	}
     
     /**

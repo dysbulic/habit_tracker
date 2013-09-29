@@ -46,7 +46,7 @@ public class HabitListFragment extends ListFragment
 
         // Give some text to display if there is no data.  In a real
         // application this would come from a resource.
-        setEmptyText("No habits recorded");
+        setEmptyText(getString(R.string.no_habits));
 
         // We have a menu item to show in action bar.
         setHasOptionsMenu(true);
@@ -137,7 +137,7 @@ public class HabitListFragment extends ListFragment
       	getLoaderManager().restartLoader(0, null, this);
         mAdapter.notifyDataSetChanged();
       	
-      	((MainActivity) getActivity()).getViewPager().setCurrentItem(1, true);
+      	((MainActivity) getActivity()).setActiveTab(1);
     }
 
     // These are the rows that we will retrieve.
