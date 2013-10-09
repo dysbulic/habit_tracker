@@ -32,9 +32,13 @@ import android.util.Log;
 
 import com.example.android.network.sync.basicsyncadapter.net.FeedParser;
 import com.example.android.network.sync.basicsyncadapter.provider.FeedContract;
+import com.synaptian.smoketracker.habits.database.HabitTable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -63,7 +67,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      * <p>This points to the Android Developers Blog. (Side note: We highly recommend reading the
      * Android Developer Blog to stay up to date on the latest Android platform developments!)
      */
-    private static final String FEED_URL = "http://android-developers.blogspot.com/atom.xml";
+    private static final String APP_URL = "http://smoke-track.herokuapp.com/habits/";
 
     /**
      * Network connection timeout, in milliseconds.
@@ -84,18 +88,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      * Project used when querying content provider. Returns all known fields.
      */
     private static final String[] PROJECTION = new String[] {
-            FeedContract.Entry._ID,
-            FeedContract.Entry.COLUMN_NAME_ENTRY_ID,
-            FeedContract.Entry.COLUMN_NAME_TITLE,
-            FeedContract.Entry.COLUMN_NAME_LINK,
-            FeedContract.Entry.COLUMN_NAME_PUBLISHED};
-
-    // Constants representing column positions from PROJECTION.
-    public static final int COLUMN_ID = 0;
-    public static final int COLUMN_ENTRY_ID = 1;
-    public static final int COLUMN_TITLE = 2;
-    public static final int COLUMN_LINK = 3;
-    public static final int COLUMN_PUBLISHED = 4;
+        HabitTable.COLUMN_ID,
+        HabitTable.COLUMN_COLOR,
+        HabitTable.COLUMN_NAME,
+        HabitTable.COLUMN_DESCRIPTION};
 
     /**
      * Constructor. Obtains handle to content resolver for later use.
@@ -132,46 +128,47 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
         Log.i(TAG, "Beginning network synchronization");
-        try {
-            final URL location = new URL(FEED_URL);
-            InputStream stream = null;
 
-            try {
-                Log.i(TAG, "Streaming data from network: " + location);
-                stream = downloadUrl(location);
-                updateLocalFeedData(stream, syncResult);
-                // Makes sure that the InputStream is closed after the app is
-                // finished using it.
-            } finally {
-                if (stream != null) {
-                    stream.close();
-                }
-            }
-        } catch (MalformedURLException e) {
-            Log.wtf(TAG, "Feed URL is malformed", e);
-            syncResult.stats.numParseExceptions++;
-            return;
-        } catch (IOException e) {
-            Log.e(TAG, "Error reading from network: " + e.toString());
-            syncResult.stats.numIoExceptions++;
-            return;
-        } catch (XmlPullParserException e) {
-            Log.e(TAG, "Error parsing feed: " + e.toString());
-            syncResult.stats.numParseExceptions++;
-            return;
-        } catch (ParseException e) {
-            Log.e(TAG, "Error parsing feed: " + e.toString());
-            syncResult.stats.numParseExceptions++;
-            return;
-        } catch (RemoteException e) {
-            Log.e(TAG, "Error updating database: " + e.toString());
-            syncResult.databaseError = true;
-            return;
-        } catch (OperationApplicationException e) {
-            Log.e(TAG, "Error updating database: " + e.toString());
-            syncResult.databaseError = true;
-            return;
-        }
+        try {
+        	URL appURL = new URL(APP_URL);
+            HttpURLConnection con = (HttpURLConnection) appURL.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setRequestProperty("Accept", "application/json");
+            con.setRequestProperty("Accept-Encoding", "gzip, deflate");
+
+            //String userpassword = email + ":" + password;
+            //con.setRequestProperty("Authorization", "Basic " + new String(Base64.encodeBase64(userpassword.getBytes())));
+
+            JSONObject body = new JSONObject();
+            body.put("habit[color]", "green");
+            body.put("habit[name]", "Test");
+            body.put("habit[description]", "Test Habit");
+            
+            byte[] body_bytes = body.toString().getBytes();
+
+            con.setRequestProperty("Content-Length", Integer.toString(body_bytes.length));
+            con.setRequestProperty("Content-Language", "en-US");  
+
+            con.setInstanceFollowRedirects(false);
+            con.setUseCaches(false);
+            con.setDoInput(true);
+            con.setDoOutput(true);
+
+            DataOutputStream wr = new DataOutputStream (con.getOutputStream ());
+            wr.write(body_bytes);
+            wr.flush();
+            wr.close();
+
+            InputStream is = con.getInputStream();
+        } catch(MalformedURLException e) {
+            Log.e(TAG, "Bad URL: " + APP_URL);        	
+        } catch(IOException e) {
+            Log.e(TAG, "IOException: " + e.getMessage());
+		} catch(JSONException e) {
+            Log.e(TAG, "JSONException: " + e.getMessage());
+		} finally {
+		}
         Log.i(TAG, "Network synchronization complete");
     }
 
@@ -198,7 +195,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void updateLocalFeedData(final InputStream stream, final SyncResult syncResult)
             throws IOException, XmlPullParserException, RemoteException,
             OperationApplicationException, ParseException {
-        final FeedParser feedParser = new FeedParser();
+/*
+    	final FeedParser feedParser = new FeedParser();
         final ContentResolver contentResolver = getContext().getContentResolver();
 
         Log.i(TAG, "Parsing stream as Atom feed");
@@ -285,6 +283,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                 false);                         // IMPORTANT: Do not sync to network
         // This sample doesn't support uploads, but if *your* code does, make sure you set
         // syncToNetwork=false in the line above to prevent duplicate syncs.
+*/
     }
 
     /**
