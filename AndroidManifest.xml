@@ -36,6 +36,17 @@
             android:name=".EventDetailActivity"
             android:windowSoftInputMode="stateVisible|adjustResize"/>
         
+		<service android:name=".SyncService"
+                 android:exported="true">
+            <!-- This intent filter is required. It allows the system to launch our sync service
+            as needed. -->
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <!-- This points to a required XML file which describes our SyncAdapter. -->
+            <meta-data android:name="android.content.SyncAdapter"
+                       android:resource="@xml/syncadapter" />
+        </service>    
         <provider
             android:name=".contentprovider.MyHabitContentProvider"
             android:authorities="com.synaptian.smoketracker.habits.contentprovider" >
