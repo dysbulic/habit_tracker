@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.synaptian.smoketracker.sync;
+package com.synaptian.smoketracker.habits.sync;
 
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;

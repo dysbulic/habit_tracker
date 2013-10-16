@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.synaptian.smoketracker.sync;
+package com.synaptian.smoketracker.habits.sync;
 
 import android.app.Service;
 import android.content.Intent;

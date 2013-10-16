@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.synaptian.smoketracker.sync;
+package com.synaptian.smoketracker.habits.sync;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -29,7 +29,7 @@ import android.util.Log;
 
 public class GenericAccountService extends Service {
     private static final String TAG = "GenericAccountService";
-    private static final String ACCOUNT_TYPE = "com.example.android.network.sync.basicsyncadapter";
+    private static final String ACCOUNT_TYPE = "com.synaptian.smoketracker.habits.sync";
     public static final String ACCOUNT_NAME = "sync";
     private Authenticator mAuthenticator;
 
@@ -119,4 +119,3 @@ public class GenericAccountService extends Service {
     }
 
 }
-
