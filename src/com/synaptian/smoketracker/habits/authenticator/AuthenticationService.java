@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.synaptian.smoketracker.habits.autenticator;
+package com.synaptian.smoketracker.habits.authenticator;
 
 import android.app.Service;
 import android.content.Intent;

@@ -65,4 +65,9 @@
     <!-- Label for this package -->
     <string
         name="label">Sample SyncAdapter</string>
+    
+    <!-- Title string for Login activity-->
+    <string
+        name="ui_activity_title">Sign-in</string>
+    
 </resources>

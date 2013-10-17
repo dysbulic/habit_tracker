@@ -42,7 +42,19 @@
         <activity
             android:name="com.synaptian.smoketracker.habits.EventDetailActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-
+        <activity
+            android:name=".authenticator.AuthenticatorActivity"
+            android:label="@string/ui_activity_title"
+            android:theme="@android:style/Theme.Dialog"
+            android:excludeFromRecents="true"
+            android:configChanges="orientation"
+            >
+            <!--
+                No intent-filter here! This activity is only ever launched by
+                someone who explicitly knows the class name
+            -->
+        </activity>
+        
         <service
             android:name="com.synaptian.smoketracker.habits.sync.SyncService"
             android:exported="true"

@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.synaptian.smoketracker.habits.autenticator;
+package com.synaptian.smoketracker.habits.authenticator;
 
 import com.example.android.samplesync.Constants;
 import com.synaptian.smoketracker.habits.R;
