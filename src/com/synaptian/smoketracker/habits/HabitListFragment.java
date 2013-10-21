@@ -92,8 +92,8 @@ public class HabitListFragment extends ListFragment
         getLoaderManager().initLoader(0, null, this);
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Place an action bar item for searching.
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         MenuItem item = menu.add("New");
         item.setIcon(android.R.drawable.ic_input_add);
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -126,7 +126,8 @@ public class HabitListFragment extends ListFragment
         return super.onContextItemSelected(item);
     }
     
-    @Override public void onListItemClick(ListView l, View v, int position, long id) {
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
         ContentValues values = new ContentValues();	
         values.put(EventTable.COLUMN_HABIT_ID, id);
         values.put(EventTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));

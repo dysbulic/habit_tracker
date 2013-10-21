@@ -60,11 +60,11 @@
         activity.
     -->
     <string
-        name="login_activity_newaccount_text">Sign in to your Sample SyncAdapter account. </string>
+        name="login_activity_newaccount_text">Sign in to your Habit Tracker account. </string>
     
     <!-- Label for this package -->
     <string
-        name="label">Sample SyncAdapter</string>
+        name="label">Habit Tracker</string>
     
     <!-- Title string for Login activity-->
     <string

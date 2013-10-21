@@ -19,12 +19,17 @@ import com.synaptian.smoketracker.habits.R;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 public class StatisticsFragment extends Fragment {
     int mNum;
@@ -50,9 +55,24 @@ public class StatisticsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         mNum = getArguments() != null ? getArguments().getInt("num") : 1;
     }
-
+    
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Place an action bar item for searching.
+        MenuItem item = menu.add("New");
+        item.setIcon(android.R.drawable.ic_menu_rotate);
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	Toast.makeText(getActivity(), "Syncing", Toast.LENGTH_LONG).show();
+		return false;
+    }
+    
     /**
      * The Fragment's UI is just a simple text view showing its
      * instance number.
