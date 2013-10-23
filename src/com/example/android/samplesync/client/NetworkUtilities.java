@@ -127,6 +127,7 @@ final public class NetworkUtilities {
                 if (istream != null) {
                     BufferedReader ireader = new BufferedReader(new InputStreamReader(istream));
                     authToken = ireader.readLine().trim();
+                    ireader.close();	
                 }
             }
             if ((authToken != null) && (authToken.length() > 0)) {
