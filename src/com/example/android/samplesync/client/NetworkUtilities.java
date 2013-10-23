@@ -60,9 +60,9 @@ final public class NetworkUtilities {
     /** The tag used to log to adb console. */
     private static final String TAG = "NetworkUtilities";
     /** POST parameter name for the user's account name */
-    public static final String PARAM_USERNAME = "username";
+    public static final String PARAM_USERNAME = "user[email]";
     /** POST parameter name for the user's password */
-    public static final String PARAM_PASSWORD = "password";
+    public static final String PARAM_PASSWORD = "user[password]";
     /** POST parameter name for the user's authentication token */
     public static final String PARAM_AUTH_TOKEN = "authtoken";
     /** POST parameter name for the client's last-known sync state */
@@ -72,9 +72,9 @@ final public class NetworkUtilities {
     /** Timeout (in ms) we specify for each http request */
     public static final int HTTP_REQUEST_TIMEOUT_MS = 30 * 1000;
     /** Base URL for the v2 Sample Sync Service */
-    public static final String BASE_URL = "https://samplesyncadapter2.appspot.com";
+    public static final String BASE_URL = "http://smoke-track.herokuapp.com";
     /** URI for authentication service */
-    public static final String AUTH_URI = BASE_URL + "/auth";
+    public static final String AUTH_URI = BASE_URL + "/oauth/authorize";
     /** URI for sync service */
     public static final String SYNC_CONTACTS_URI = BASE_URL + "/sync";
 
