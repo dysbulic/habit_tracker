@@ -1,4 +1,5 @@
 Webapp::Application.routes.draw do
+  use_doorkeeper
   resources :habits
 
   # The priority is based upon order of creation: first created -> highest priority.
