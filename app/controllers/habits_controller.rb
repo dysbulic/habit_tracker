@@ -24,7 +24,9 @@ class HabitsController < ApplicationController
   # POST /habits
   # POST /habits.json
   def create
-    @habit = Habit.new(habit_params)
+    @habit = Habit.new
+    puts habit_params
+    @habit.from_json(habit_params)
 
     respond_to do |format|
       if @habit.save
