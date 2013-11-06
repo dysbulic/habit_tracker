@@ -1,5 +1,7 @@
 class HabitsController < ApplicationController
   before_action :set_habit, only: [:show, :edit, :update, :destroy]
+  doorkeeper_for :all, if: lambda { request.format.json? }
+  skip_before_action :verify_authenticity_token, if: lambda { request.format.json? }
 
   # GET /habits
   # GET /habits.json
@@ -24,9 +26,7 @@ class HabitsController < ApplicationController
   # POST /habits
   # POST /habits.json
   def create
-    @habit = Habit.new
-    puts habit_params
-    @habit.from_json(habit_params)
+    @habit = Habit.new(habit_params)
 
     respond_to do |format|
       if @habit.save
