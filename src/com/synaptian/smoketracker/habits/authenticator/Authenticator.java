@@ -64,10 +64,13 @@ class Authenticator extends AbstractAccountAuthenticator {
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType,
             String authTokenType, String[] requiredFeatures, Bundle options) {
         Log.v(TAG, "addAccount()");
+        
         final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+
         final Bundle bundle = new Bundle();
         bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+        
         return bundle;
     }
 

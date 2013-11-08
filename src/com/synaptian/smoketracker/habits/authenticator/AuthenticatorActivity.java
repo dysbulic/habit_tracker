@@ -16,6 +16,9 @@
 
 package com.synaptian.smoketracker.habits.authenticator;
 
+import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
+import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+
 import com.example.android.samplesync.Constants;
 import com.synaptian.smoketracker.habits.R;
 import com.example.android.samplesync.client.NetworkUtilities;
@@ -36,6 +39,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -93,7 +97,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      */
     @Override
     public void onCreate(Bundle icicle) {
-
         Log.i(TAG, "onCreate(" + icicle + ")");
         super.onCreate(icicle);
         mAccountManager = AccountManager.get(this);
@@ -112,6 +115,31 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         mPasswordEdit = (EditText) findViewById(R.id.password_edit);
         if (!TextUtils.isEmpty(mUsername)) mUsernameEdit.setText(mUsername);
         mMessage.setText(getMessage());
+
+    	String host = "http://smoke-track.herokuapp.com";
+    	String authUri = host + "/oauth/authorize";
+    	String tokenUri = host + "/oauth/token";
+        String appUri = host + "/habits";
+
+        String callback = "http://localhost:8080";
+    	
+        String clientId = "728ad798943fff1afd90e79765e9534ef52a5b166cfd25f055d1c8ff6f3ae7fd";
+    	String secret = "3728e0449052b616e2465c04d3cbd792f2d37e70ca64075708bfe8b53c28d529";
+    	
+        try {
+        	OAuthClientRequest request = OAuthClientRequest
+				.authorizationLocation(authUri)
+			    .setClientId(clientId)
+			    .setRedirectURI(callback)
+				.setResponseType("code")
+			    .buildQueryMessage();
+
+            WebView webView = (WebView) findViewById(R.id.webview);
+            webView.loadUrl(request.getLocationUri());
+
+        } catch (OAuthSystemException e) {
+			e.printStackTrace();
+		}
     }
 
     /*
