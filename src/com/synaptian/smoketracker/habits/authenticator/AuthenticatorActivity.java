@@ -40,6 +40,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -135,6 +136,19 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			    .buildQueryMessage();
 
             WebView webView = (WebView) findViewById(R.id.webview);
+            webView.setWebViewClient(new WebViewClient() {
+                @Override
+                public void onReceivedError(WebView view, int errorCode,
+                        String description, String failingUrl) {
+                    Log.i(TAG, "WebView Error: " + description);
+                }
+
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return true;
+                }
+            });
             webView.loadUrl(request.getLocationUri());
 
         } catch (OAuthSystemException e) {
@@ -145,6 +159,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     /*
      * {@inheritDoc}
      */
+    /*
     @Override
     protected Dialog onCreateDialog(int id, Bundle args) {
         final ProgressDialog dialog = new ProgressDialog(this);
@@ -165,7 +180,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         mProgressDialog = dialog;
         return dialog;
     }
-
+	*/
+    
     /**
      * Handles onClick event on the Submit button. Sends username/password to
      * the server for authentication. The button is configured to call

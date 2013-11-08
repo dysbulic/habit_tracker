@@ -74,7 +74,7 @@ final public class NetworkUtilities {
     /** Base URL for the v2 Sample Sync Service */
     public static final String BASE_URL = "http://smoke-track.herokuapp.com";
     /** URI for authentication service */
-    public static final String AUTH_URI = BASE_URL + "/oauth/authorize";
+    public static final String AUTH_URI = BASE_URL + "/users/sign_in";
     /** URI for sync service */
     public static final String SYNC_CONTACTS_URI = BASE_URL + "/sync";
 
