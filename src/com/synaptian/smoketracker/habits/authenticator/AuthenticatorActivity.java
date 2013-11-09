@@ -26,8 +26,6 @@ import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
-import org.json.JSONObject;
-import org.json.JSONStringer;
 
 import com.example.android.samplesync.Constants;
 import com.synaptian.smoketracker.habits.R;
@@ -37,10 +35,8 @@ import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,7 +45,6 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
@@ -112,7 +107,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     public void onCreate(Bundle icicle) {
         Log.i(TAG, "onCreate(" + icicle + ")");
         super.onCreate(icicle);
-        mAccountManager = AccountManager.get(this);
         Log.i(TAG, "loading data from Intent");
         final Intent intent = getIntent();
         setContentView(R.layout.login_activity);
@@ -122,10 +116,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     	final String tokenUri = host + "/oauth/token";
         final String appUri = host + "/habits";
 
-        final String callback = "http://localhost:8080";
+        final String callback = getText(R.string.oauth_callback).toString();
     	
-        final String clientId = "728ad798943fff1afd90e79765e9534ef52a5b166cfd25f055d1c8ff6f3ae7fd";
-    	final String secret = "3728e0449052b616e2465c04d3cbd792f2d37e70ca64075708bfe8b53c28d529";
+        final String clientId = getText(R.string.oauth_id).toString();
+    	final String secret = getText(R.string.oauth_secret).toString();
     	
         try {
         	OAuthClientRequest request = OAuthClientRequest
@@ -184,7 +178,22 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             		        }
 
             		        protected void onPostExecute(OAuthJSONAccessTokenResponse oAuthResponse) {
-    	                        Toast.makeText(parentActivity, oAuthResponse.getAccessToken(), Toast.LENGTH_SHORT).show();
+            		        	String authToken = oAuthResponse.getAccessToken();
+    	                        Toast.makeText(parentActivity, authToken, Toast.LENGTH_SHORT).show();
+
+    	                        String accountName = getText(R.string.oauth_account_name).toString();
+    	                        String accountType = getText(R.string.oauth_account_type).toString();
+    	                        final Account account = new Account(accountName, accountType);
+    	                        AccountManager mAccountManager = AccountManager.get(getBaseContext());
+	                            mAccountManager.addAccountExplicitly(account, null, null);
+	                            mAccountManager.setAuthToken(account, Constants.AUTHTOKEN_TYPE, authToken);
+
+	                            Bundle data = new Bundle();
+	                            data.putString(AccountManager.KEY_ACCOUNT_NAME, accountName);
+	                            data.putString(AccountManager.KEY_ACCOUNT_TYPE, accountType);
+	                            data.putString(AccountManager.KEY_AUTHTOKEN, authToken);
+	                            setAccountAuthenticatorResult(data);
+	                            finish();
             		        }
             		    }.execute((Void) null);
                 	}
