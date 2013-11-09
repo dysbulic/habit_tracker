@@ -16,8 +16,18 @@
 
 package com.synaptian.smoketracker.habits.authenticator;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.oltu.oauth2.client.OAuthClient;
+import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
+import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
+import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
+import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import com.example.android.samplesync.Constants;
 import com.synaptian.smoketracker.habits.R;
@@ -26,6 +36,7 @@ import com.example.android.samplesync.client.NetworkUtilities;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -43,6 +54,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Activity which displays login screen to the user.
@@ -103,29 +115,17 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         mAccountManager = AccountManager.get(this);
         Log.i(TAG, "loading data from Intent");
         final Intent intent = getIntent();
-        mUsername = intent.getStringExtra(PARAM_USERNAME);
-        mRequestNewAccount = mUsername == null;
-        mConfirmCredentials = intent.getBooleanExtra(PARAM_CONFIRM_CREDENTIALS, false);
-        Log.i(TAG, "    request new: " + mRequestNewAccount);
-        requestWindowFeature(Window.FEATURE_LEFT_ICON);
         setContentView(R.layout.login_activity);
-        getWindow().setFeatureDrawableResource(
-                Window.FEATURE_LEFT_ICON, android.R.drawable.ic_dialog_alert);
-        mMessage = (TextView) findViewById(R.id.message);
-        mUsernameEdit = (EditText) findViewById(R.id.username_edit);
-        mPasswordEdit = (EditText) findViewById(R.id.password_edit);
-        if (!TextUtils.isEmpty(mUsername)) mUsernameEdit.setText(mUsername);
-        mMessage.setText(getMessage());
 
-    	String host = "http://smoke-track.herokuapp.com";
-    	String authUri = host + "/oauth/authorize";
-    	String tokenUri = host + "/oauth/token";
-        String appUri = host + "/habits";
+    	final String host = "http://smoke-track.herokuapp.com";
+    	final String authUri = host + "/oauth/authorize";
+    	final String tokenUri = host + "/oauth/token";
+        final String appUri = host + "/habits";
 
-        String callback = "http://localhost:8080";
+        final String callback = "http://localhost:8080";
     	
-        String clientId = "728ad798943fff1afd90e79765e9534ef52a5b166cfd25f055d1c8ff6f3ae7fd";
-    	String secret = "3728e0449052b616e2465c04d3cbd792f2d37e70ca64075708bfe8b53c28d529";
+        final String clientId = "728ad798943fff1afd90e79765e9534ef52a5b166cfd25f055d1c8ff6f3ae7fd";
+    	final String secret = "3728e0449052b616e2465c04d3cbd792f2d37e70ca64075708bfe8b53c28d529";
     	
         try {
         	OAuthClientRequest request = OAuthClientRequest
@@ -134,6 +134,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 			    .setRedirectURI(callback)
 				.setResponseType("code")
 			    .buildQueryMessage();
+        	
+        	final Activity parentActivity = this;
 
             WebView webView = (WebView) findViewById(R.id.webview);
             webView.setWebViewClient(new WebViewClient() {
@@ -148,6 +150,45 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                     view.loadUrl(url);
                     return true;
                 }
+
+                @Override
+                public void onLoadResource (WebView view, String url) {
+                	if(url.startsWith(callback)) {
+                		Pattern p = Pattern.compile("\\?code=([^&]+)");
+                		Matcher m = p.matcher(url);
+
+                		final String code = m.find() ? m.group(1) : "Not Found";
+                		
+            		    new AsyncTask<Void, Void, OAuthJSONAccessTokenResponse>() {
+
+            		        protected OAuthJSONAccessTokenResponse doInBackground(Void... args) {
+        						try {
+        	                		OAuthClientRequest request = OAuthClientRequest
+        							     .tokenLocation(tokenUri)
+        							     .setGrantType(GrantType.AUTHORIZATION_CODE)
+        							     .setClientId(clientId)
+        							     .setClientSecret(secret)
+        							     .setRedirectURI(callback)
+        							     .setCode(code)
+        							     .buildBodyMessage();
+        	                         
+        	                         OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+
+        	                         return oAuthClient.accessToken(request, OAuthJSONAccessTokenResponse.class);
+        						} catch (OAuthSystemException e) {
+        							e.printStackTrace();
+        						} catch (OAuthProblemException e) {
+        							e.printStackTrace();
+        						}
+        						return null;
+            		        }
+
+            		        protected void onPostExecute(OAuthJSONAccessTokenResponse oAuthResponse) {
+    	                        Toast.makeText(parentActivity, oAuthResponse.getAccessToken(), Toast.LENGTH_SHORT).show();
+            		        }
+            		    }.execute((Void) null);
+                	}
+                }
             });
             webView.loadUrl(request.getLocationUri());
 
@@ -156,32 +197,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 		}
     }
 
-    /*
-     * {@inheritDoc}
-     */
-    /*
-    @Override
-    protected Dialog onCreateDialog(int id, Bundle args) {
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage(getText(R.string.ui_activity_authenticating));
-        dialog.setIndeterminate(true);
-        dialog.setCancelable(true);
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            public void onCancel(DialogInterface dialog) {
-                Log.i(TAG, "user cancelling authentication");
-                if (mAuthTask != null) {
-                    mAuthTask.cancel(true);
-                }
-            }
-        });
-        // We save off the progress dialog in a field so that we can dismiss
-        // it later. We can't just call dismissDialog(0) because the system
-        // can lose track of our dialog if there's an orientation change.
-        mProgressDialog = dialog;
-        return dialog;
-    }
-	*/
-    
     /**
      * Handles onClick event on the Submit button. Sends username/password to
      * the server for authentication. The button is configured to call
