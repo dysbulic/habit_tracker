@@ -23,6 +23,7 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerFuture;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -80,10 +81,15 @@ public class StatisticsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
     	Account[] accounts = mAccountManager.getAccountsByType(ACCOUNT_TYPE);
     	Toast.makeText(getActivity(), "Syncing: " + accounts.length, Toast.LENGTH_LONG).show();
-    	if(accounts.length == 1) {
+    	if(accounts.length >= 1) {
     		getExistingAccountAuthToken(accounts[0], Constants.AUTHTOKEN_TYPE);
+    		String authority = getText(R.string.oauth_authority).toString();
+    		Bundle settingsBundle = new Bundle();
+	        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+	        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+	        ContentResolver.requestSync(accounts[0], authority, settingsBundle);
     	}
-		return false;
+        return false;
     }
     
     /**

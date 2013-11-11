@@ -17,6 +17,11 @@
 package com.synaptian.smoketracker.habits.sync;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerFuture;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
+import android.app.AlertDialog;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentProviderOperation;
@@ -29,9 +34,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.android.network.sync.basicsyncadapter.net.FeedParser;
 import com.example.android.network.sync.basicsyncadapter.provider.FeedContract;
+import com.example.android.samplesync.Constants;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 
 import org.json.JSONException;
@@ -125,42 +132,47 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      * the sync.
      */
     @Override
-    public void onPerformSync(Account account, Bundle extras, String authority,
-                              ContentProviderClient provider, SyncResult syncResult) {
+    public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.i(TAG, "Beginning network synchronization");
 
         try {
+        	AccountManager mAccountManager = AccountManager.get(getContext());
+        	String authToken = mAccountManager.blockingGetAuthToken(account, Constants.AUTHTOKEN_TYPE, true);
+
+        	Log.i(TAG, "SyncAdapter: " + authToken);
+                    	
         	URL appURL = new URL(APP_URL);
             HttpURLConnection con = (HttpURLConnection) appURL.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
             con.setRequestProperty("Accept", "application/json");
             con.setRequestProperty("Accept-Encoding", "gzip, deflate");
-
-            //String userpassword = email + ":" + password;
-            //con.setRequestProperty("Authorization", "Basic " + new String(Base64.encodeBase64(userpassword.getBytes())));
+            con.setRequestProperty("Authorization", "Bearer " + authToken);
 
             JSONObject body = new JSONObject();
-            body.put("habit[color]", "green");
-            body.put("habit[name]", "Test");
-            body.put("habit[description]", "Test Habit");
+            body.put("color", "green");
+            body.put("name", "Java Test");
+            body.put("description", "Sync Test");
             
-            byte[] body_bytes = body.toString().getBytes();
+            byte[] bodyBytes = body.toString().getBytes();
 
-            con.setRequestProperty("Content-Length", Integer.toString(body_bytes.length));
-            con.setRequestProperty("Content-Language", "en-US");  
+            con.setRequestProperty("Content-Length", Integer.toString(bodyBytes.length));
 
             con.setInstanceFollowRedirects(false);
             con.setUseCaches(false);
             con.setDoInput(true);
             con.setDoOutput(true);
 
-            DataOutputStream wr = new DataOutputStream (con.getOutputStream ());
-            wr.write(body_bytes);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            wr.write(bodyBytes);
             wr.flush();
             wr.close();
-
-            InputStream is = con.getInputStream();
+            
+            int status = con.getResponseCode();
+		} catch (OperationCanceledException e) {
+			Log.e(TAG, "OperationCanceledException: " + e.getMessage());
+		} catch (AuthenticatorException e) {
+			Log.e(TAG, "AuthenticatorException: " + e.getMessage());
         } catch(MalformedURLException e) {
             Log.e(TAG, "Bad URL: " + APP_URL);        	
         } catch(IOException e) {
@@ -300,4 +312,3 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         return conn.getInputStream();
     }
 }
-	

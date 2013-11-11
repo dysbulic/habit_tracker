@@ -72,28 +72,24 @@ public class GenericAccountService extends Service {
         }
 
         @Override
-        public Bundle editProperties(AccountAuthenticatorResponse accountAuthenticatorResponse,
-                                     String s) {
+        public Bundle editProperties(AccountAuthenticatorResponse accountAuthenticatorResponse, String s) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public Bundle addAccount(AccountAuthenticatorResponse accountAuthenticatorResponse,
-                                 String s, String s2, String[] strings, Bundle bundle)
+        public Bundle addAccount(AccountAuthenticatorResponse accountAuthenticatorResponse, String s, String s2, String[] strings, Bundle bundle)
                 throws NetworkErrorException {
             return null;
         }
 
         @Override
-        public Bundle confirmCredentials(AccountAuthenticatorResponse accountAuthenticatorResponse,
-                                         Account account, Bundle bundle)
+        public Bundle confirmCredentials(AccountAuthenticatorResponse accountAuthenticatorResponse, Account account, Bundle bundle)
                 throws NetworkErrorException {
             return null;
         }
 
         @Override
-        public Bundle getAuthToken(AccountAuthenticatorResponse accountAuthenticatorResponse,
-                                   Account account, String s, Bundle bundle)
+        public Bundle getAuthToken(AccountAuthenticatorResponse accountAuthenticatorResponse, Account account, String s, Bundle bundle)
                 throws NetworkErrorException {
             throw new UnsupportedOperationException();
         }
@@ -104,15 +100,13 @@ public class GenericAccountService extends Service {
         }
 
         @Override
-        public Bundle updateCredentials(AccountAuthenticatorResponse accountAuthenticatorResponse,
-                                        Account account, String s, Bundle bundle)
+        public Bundle updateCredentials(AccountAuthenticatorResponse accountAuthenticatorResponse, Account account, String s, Bundle bundle)
                 throws NetworkErrorException {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public Bundle hasFeatures(AccountAuthenticatorResponse accountAuthenticatorResponse,
-                                  Account account, String[] strings)
+        public Bundle hasFeatures(AccountAuthenticatorResponse accountAuthenticatorResponse, Account account, String[] strings)
                 throws NetworkErrorException {
             throw new UnsupportedOperationException();
         }

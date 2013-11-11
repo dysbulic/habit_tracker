@@ -74,4 +74,5 @@
     <string name="oauth_secret">527f0f05b76617daf6ceb84263c4b0720a111926d7b3d324d89711632c654c5d</string>
     <string name="oauth_account_name">Test Account</string>
     <string name="oauth_account_type">com.synaptian.smoketracker.habits.sync</string>
+    <string name="oauth_authority">com.synaptian.smoketracker.habits.contentprovider</string>
 </resources>
