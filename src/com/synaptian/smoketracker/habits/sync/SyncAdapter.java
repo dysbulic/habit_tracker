@@ -41,8 +41,6 @@ import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
 import com.synaptian.smoketracker.habits.database.EventTable;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 
-import org.dhappy.android.widget.HeaderItem;
-import org.dhappy.android.widget.TextTimeItem;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
@@ -54,10 +52,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Define a sync adapter for the app.
@@ -145,21 +139,18 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	Log.i(TAG, "Account / Token: " + account.name + " / " + authToken);
                     	
             String[] projection = {
+            		HabitTable.COLUMN_ID,
             		HabitTable.COLUMN_NAME,
             		HabitTable.COLUMN_COLOR,
             		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
-            //Cursor cursor = getContext().getContentResolver().query(MyHabitContentProvider.HABITS_URI, projection, null, null, null);
+            Cursor cursor = getContext().getContentResolver().query(MyHabitContentProvider.HABITS_URI, projection, null, null, null);
 
-            //if(cursor.moveToFirst()) {
-            	//do {
+            if(cursor.moveToFirst()) {
+            	do {
                     JSONObject habit = new JSONObject();
-                    //habit.put("color", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_COLOR)));
-                    //habit.put("name", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
-                    //habit.put("description", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
-
-                    habit.put("color", "blue");
-                    habit.put("name", "Sync Test");
-                    habit.put("description", "Test Habit");
+                    habit.put("color", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_COLOR)));
+                    habit.put("name", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
+                    habit.put("description", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
 
                 	URL appURL = new URL(APP_URL);
                     HttpURLConnection con = (HttpURLConnection) appURL.openConnection();
@@ -184,8 +175,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                     wr.close();
                     
                     int status = con.getResponseCode();
-            	//} while(cursor.moveToNext());
-            //}
+            	} while(cursor.moveToNext());
+            }
         } catch (OperationCanceledException e) {
 			Log.e(TAG, "OperationCanceledException: " + e.getMessage());
 		} catch (AuthenticatorException e) {
