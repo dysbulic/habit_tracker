@@ -36,11 +36,13 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.android.network.sync.basicsyncadapter.net.FeedParser;
-import com.example.android.network.sync.basicsyncadapter.provider.FeedContract;
 import com.example.android.samplesync.Constants;
+import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.database.EventTable;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 
+import org.dhappy.android.widget.HeaderItem;
+import org.dhappy.android.widget.TextTimeItem;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
@@ -53,6 +55,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -138,45 +141,59 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         try {
         	AccountManager mAccountManager = AccountManager.get(getContext());
         	String authToken = mAccountManager.blockingGetAuthToken(account, Constants.AUTHTOKEN_TYPE, true);
-
-        	Log.i(TAG, "SyncAdapter: " + authToken);
+        	
+        	Log.i(TAG, "Account / Token: " + account.name + " / " + authToken);
                     	
-        	URL appURL = new URL(APP_URL);
-            HttpURLConnection con = (HttpURLConnection) appURL.openConnection();
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json");
-            con.setRequestProperty("Accept", "application/json");
-            con.setRequestProperty("Accept-Encoding", "gzip, deflate");
-            con.setRequestProperty("Authorization", "Bearer " + authToken);
+            String[] projection = {
+            		HabitTable.COLUMN_NAME,
+            		HabitTable.COLUMN_COLOR,
+            		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
+            //Cursor cursor = getContext().getContentResolver().query(MyHabitContentProvider.HABITS_URI, projection, null, null, null);
 
-            JSONObject body = new JSONObject();
-            body.put("color", "green");
-            body.put("name", "Java Test");
-            body.put("description", "Sync Test");
-            
-            byte[] bodyBytes = body.toString().getBytes();
+            //if(cursor.moveToFirst()) {
+            	//do {
+                    JSONObject habit = new JSONObject();
+                    //habit.put("color", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_COLOR)));
+                    //habit.put("name", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
+                    //habit.put("description", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
 
-            con.setRequestProperty("Content-Length", Integer.toString(bodyBytes.length));
+                    habit.put("color", "blue");
+                    habit.put("name", "Sync Test");
+                    habit.put("description", "Test Habit");
 
-            con.setInstanceFollowRedirects(false);
-            con.setUseCaches(false);
-            con.setDoInput(true);
-            con.setDoOutput(true);
+                	URL appURL = new URL(APP_URL);
+                    HttpURLConnection con = (HttpURLConnection) appURL.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setRequestProperty("Content-Type", "application/json");
+                    con.setRequestProperty("Accept", "application/json");
+                    con.setRequestProperty("Accept-Encoding", "gzip, deflate");
+                    con.setRequestProperty("Authorization", "Bearer " + authToken);
 
-            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-            wr.write(bodyBytes);
-            wr.flush();
-            wr.close();
-            
-            int status = con.getResponseCode();
-		} catch (OperationCanceledException e) {
+                    byte[] habitBytes = habit.toString().getBytes();
+
+                    con.setRequestProperty("Content-Length", Integer.toString(habitBytes.length));
+
+                    con.setInstanceFollowRedirects(false);
+                    con.setUseCaches(false);
+                    con.setDoInput(true);
+                    con.setDoOutput(true);
+
+                    DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                    wr.write(habitBytes);
+                    wr.flush();
+                    wr.close();
+                    
+                    int status = con.getResponseCode();
+            	//} while(cursor.moveToNext());
+            //}
+        } catch (OperationCanceledException e) {
 			Log.e(TAG, "OperationCanceledException: " + e.getMessage());
 		} catch (AuthenticatorException e) {
 			Log.e(TAG, "AuthenticatorException: " + e.getMessage());
         } catch(MalformedURLException e) {
             Log.e(TAG, "Bad URL: " + APP_URL);        	
         } catch(IOException e) {
-            Log.e(TAG, "IOException: " + e.getMessage());
+            Log.e(TAG, "IOException: " + e.getMessage(), e);
 		} catch(JSONException e) {
             Log.e(TAG, "JSONException: " + e.getMessage());
 		} finally {

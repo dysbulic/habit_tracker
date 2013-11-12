@@ -17,7 +17,6 @@
 package com.synaptian.smoketracker.habits.authenticator;
 
 import com.example.android.samplesync.Constants;
-import com.example.android.samplesync.client.NetworkUtilities;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -27,7 +26,6 @@ import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -98,21 +96,6 @@ class Authenticator extends AbstractAccountAuthenticator {
             final Bundle result = new Bundle();
             result.putString(AccountManager.KEY_ERROR_MESSAGE, "invalid authTokenType");
             return result;
-        }
-
-        // Extract the username and password from the Account Manager, and ask
-        // the server for an appropriate AuthToken.
-        final AccountManager am = AccountManager.get(mContext);
-        final String password = am.getPassword(account);
-        if (password != null) {
-            final String authToken = NetworkUtilities.authenticate(account.name, password);
-            if (!TextUtils.isEmpty(authToken)) {
-                final Bundle result = new Bundle();
-                result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
-                result.putString(AccountManager.KEY_ACCOUNT_TYPE, Constants.ACCOUNT_TYPE);
-                result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
-                return result;
-            }
         }
 
         // If we get here, then we couldn't access the user's password - so we

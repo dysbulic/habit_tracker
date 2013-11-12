@@ -17,8 +17,6 @@ package com.synaptian.smoketracker.habits;
 
 import java.util.ArrayList;
 
-import com.synaptian.smoketracker.habits.sync.SyncUtils;
-
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.Activity;
@@ -58,9 +56,6 @@ public class MainActivity extends Activity {
         if (savedInstanceState != null) {
             bar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
         }
-        
-        // Create account, if needed
-        SyncUtils.CreateSyncAccount(this);
     }
 
     @Override

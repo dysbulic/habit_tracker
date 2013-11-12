@@ -29,7 +29,6 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 
 import com.example.android.samplesync.Constants;
 import com.synaptian.smoketracker.habits.R;
-import com.example.android.samplesync.client.NetworkUtilities;
 
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
@@ -70,9 +69,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     /** The tag used to log to adb console. */
     private static final String TAG = "AuthenticatorActivity";
     private AccountManager mAccountManager;
-
-    /** Keep track of the login task so can cancel it if requested */
-    private UserLoginTask mAuthTask = null;
 
     /** Keep track of the progress dialog so we can dismiss it */
     private ProgressDialog mProgressDialog = null;
@@ -207,29 +203,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     }
 
     /**
-     * Handles onClick event on the Submit button. Sends username/password to
-     * the server for authentication. The button is configured to call
-     * handleLogin() in the layout XML.
-     *
-     * @param view The Submit button for which this method is invoked
-     */
-    public void handleLogin(View view) {
-        if (mRequestNewAccount) {
-            mUsername = mUsernameEdit.getText().toString();
-        }
-        mPassword = mPasswordEdit.getText().toString();
-        if (TextUtils.isEmpty(mUsername) || TextUtils.isEmpty(mPassword)) {
-            mMessage.setText(getMessage());
-        } else {
-            // Show a progress dialog, and kick off a background task to perform
-            // the user login attempt.
-            showProgress();
-            mAuthTask = new UserLoginTask();
-            mAuthTask.execute();
-        }
-    }
-
-    /**
      * Called when response is received from the server for confirm credentials
      * request. See onAuthenticationResult(). Sets the
      * AccountAuthenticatorResult which is sent back to the caller.
@@ -286,9 +259,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         boolean success = ((authToken != null) && (authToken.length() > 0));
         Log.i(TAG, "onAuthenticationResult(" + success + ")");
 
-        // Our task is complete, so clear it out
-        mAuthTask = null;
-
         // Hide the progress dialog
         hideProgress();
 
@@ -314,9 +284,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
     public void onAuthenticationCancel() {
         Log.i(TAG, "onAuthenticationCancel()");
-
-        // Our task is complete, so clear it out
-        mAuthTask = null;
 
         // Hide the progress dialog
         hideProgress();
@@ -354,41 +321,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
             mProgressDialog = null;
-        }
-    }
-
-    /**
-     * Represents an asynchronous task used to authenticate a user against the
-     * SampleSync Service
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected String doInBackground(Void... params) {
-            // We do the actual work of authenticating the user
-            // in the NetworkUtilities class.
-            try {
-                return NetworkUtilities.authenticate(mUsername, mPassword);
-            } catch (Exception ex) {
-                Log.e(TAG, "UserLoginTask.doInBackground: failed to authenticate");
-                Log.i(TAG, ex.toString());
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final String authToken) {
-            // On a successful authentication, call back into the Activity to
-            // communicate the authToken (or null for an error).
-            onAuthenticationResult(authToken);
-        }
-
-        @Override
-        protected void onCancelled() {
-            // If the action was canceled (by the user clicking the cancel
-            // button in the progress dialog), then call back into the
-            // activity to let it know.
-            onAuthenticationCancel();
         }
     }
 }
