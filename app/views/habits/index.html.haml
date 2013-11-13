@@ -2,6 +2,7 @@
 
 %table
   %tr
+    %th ID
     %th Color
     %th Name
     %th Description
@@ -11,6 +12,7 @@
 
   - @habits.each do |habit|
     %tr
+      %td= habit.id
       %td= habit.color
       %td= habit.name
       %td= habit.description
