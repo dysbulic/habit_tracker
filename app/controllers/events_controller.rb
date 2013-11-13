@@ -28,6 +28,10 @@ class EventsController < ApplicationController
   def create
     @event = Event.new(event_params)
 
+    if request.format.json?
+      @event.time = Time.at(params[:time])
+    end
+
     respond_to do |format|
       if @event.save
         format.html { redirect_to @event, notice: 'Event was successfully created.' }
