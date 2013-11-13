@@ -1,5 +1,7 @@
 package com.synaptian.smoketracker.habits.contentprovider;
 
+import java.util.Random;
+
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -114,6 +116,10 @@ public class MyHabitContentProvider extends ContentProvider {
     int uriType = sURIMatcher.match(uri);
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     Uri returnUri;
+    
+    Random generator = new Random();
+    values.put(HabitTable.COLUMN_ID, generator.nextInt());
+    
     long id = 0;
     switch (uriType) {
     case HABITS:

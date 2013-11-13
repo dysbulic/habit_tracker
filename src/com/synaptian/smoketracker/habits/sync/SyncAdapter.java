@@ -71,7 +71,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      * <p>This points to the Android Developers Blog. (Side note: We highly recommend reading the
      * Android Developer Blog to stay up to date on the latest Android platform developments!)
      */
-    private static final String APP_URL = "http://smoke-track.herokuapp.com/habits/";
+    private static final String HABIT_URL = "http://smoke-track.herokuapp.com/habits/";
+    private static final String EVENT_URL = "http://smoke-track.herokuapp.com/events/";
 
     /**
      * Network connection timeout, in milliseconds.
@@ -87,15 +88,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      * Content resolver, for performing database operations.
      */
     private final ContentResolver mContentResolver;
-
-    /**
-     * Project used when querying content provider. Returns all known fields.
-     */
-    private static final String[] PROJECTION = new String[] {
-        HabitTable.COLUMN_ID,
-        HabitTable.COLUMN_COLOR,
-        HabitTable.COLUMN_NAME,
-        HabitTable.COLUMN_DESCRIPTION};
 
     /**
      * Constructor. Obtains handle to content resolver for later use.
@@ -138,43 +130,44 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	
         	Log.i(TAG, "Account / Token: " + account.name + " / " + authToken);
                     	
-            String[] projection = {
-            		HabitTable.COLUMN_ID,
+        	URL habitURL = new URL(HABIT_URL);
+        	URL eventURL = new URL(EVENT_URL);
+
+        	String[] habitProjection = {
+            		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID,
             		HabitTable.COLUMN_NAME,
             		HabitTable.COLUMN_COLOR,
             		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
-            Cursor cursor = getContext().getContentResolver().query(MyHabitContentProvider.HABITS_URI, projection, null, null, null);
+            Cursor cursor = getContext().getContentResolver().query(MyHabitContentProvider.HABITS_URI, habitProjection, null, null, null);
 
             if(cursor.moveToFirst()) {
             	do {
                     JSONObject habit = new JSONObject();
+                    habit.put("id", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_ID)));
                     habit.put("color", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_COLOR)));
                     habit.put("name", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
                     habit.put("description", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
 
-                	URL appURL = new URL(APP_URL);
-                    HttpURLConnection con = (HttpURLConnection) appURL.openConnection();
-                    con.setRequestMethod("POST");
-                    con.setRequestProperty("Content-Type", "application/json");
-                    con.setRequestProperty("Accept", "application/json");
-                    con.setRequestProperty("Accept-Encoding", "gzip, deflate");
-                    con.setRequestProperty("Authorization", "Bearer " + authToken);
+                    postJSON(habit, habitURL, authToken);
+            	} while(cursor.moveToNext());
+            }
 
-                    byte[] habitBytes = habit.toString().getBytes();
+        	String[] eventProjection = {
+            		EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID,
+            		EventTable.COLUMN_HABIT_ID,
+            		EventTable.COLUMN_TIME,
+            		EventTable.TABLE_EVENT + "." + EventTable.COLUMN_DESCRIPTION };
+            cursor = getContext().getContentResolver().query(MyHabitContentProvider.EVENTS_URI, eventProjection, null, null, null);
 
-                    con.setRequestProperty("Content-Length", Integer.toString(habitBytes.length));
+            if(cursor.moveToFirst()) {
+            	do {
+                    JSONObject event = new JSONObject();
+                    event.put("id", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_ID)));
+                    event.put("habit_id", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_HABIT_ID)));
+                    event.put("time", cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_TIME)));
+                    event.put("description", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_DESCRIPTION)));
 
-                    con.setInstanceFollowRedirects(false);
-                    con.setUseCaches(false);
-                    con.setDoInput(true);
-                    con.setDoOutput(true);
-
-                    DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-                    wr.write(habitBytes);
-                    wr.flush();
-                    wr.close();
-                    
-                    int status = con.getResponseCode();
+                    postJSON(event, eventURL, authToken);
             	} while(cursor.moveToNext());
             }
         } catch (OperationCanceledException e) {
@@ -182,7 +175,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 		} catch (AuthenticatorException e) {
 			Log.e(TAG, "AuthenticatorException: " + e.getMessage());
         } catch(MalformedURLException e) {
-            Log.e(TAG, "Bad URL: " + APP_URL);        	
+            Log.e(TAG, "Bad URL:", e);
         } catch(IOException e) {
             Log.e(TAG, "IOException: " + e.getMessage(), e);
 		} catch(JSONException e) {
@@ -190,6 +183,31 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 		} finally {
 		}
         Log.i(TAG, "Network synchronization complete");
+    }
+
+    private int postJSON(JSONObject json, URL url, String authToken) throws IOException {
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestProperty("Accept-Encoding", "gzip, deflate");
+        con.setRequestProperty("Authorization", "Bearer " + authToken);
+
+        byte[] habitBytes = json.toString().getBytes();
+
+        con.setRequestProperty("Content-Length", Integer.toString(habitBytes.length));
+
+        con.setInstanceFollowRedirects(false);
+        con.setUseCaches(false);
+        con.setDoInput(true);
+        con.setDoOutput(true);
+
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.write(habitBytes);
+        wr.flush();
+        wr.close();
+        
+        return con.getResponseCode();
     }
 
     /**
