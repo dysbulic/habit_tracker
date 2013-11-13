@@ -11,7 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131023170740) do
+ActiveRecord::Schema.define(version: 20131113005648) do
+
+  create_table "events", force: true do |t|
+    t.integer  "habit_id"
+    t.datetime "time"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "habits", force: true do |t|
     t.string   "color"

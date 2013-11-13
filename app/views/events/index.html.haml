@@ -11,7 +11,7 @@
 
   - @events.each do |event|
     %tr
-      %td= event.habit_id
+      %td= event.habit.name
       %td= event.time
       %td= event.description
       %td= link_to 'Show', event
