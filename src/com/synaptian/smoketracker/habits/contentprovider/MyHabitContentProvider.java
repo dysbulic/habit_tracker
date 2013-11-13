@@ -29,7 +29,7 @@ public class MyHabitContentProvider extends ContentProvider {
   private static final int EVENTS = 50;
   private static final int EVENT_ID = 60;
 
-  private static final String AUTHORITY = "com.synaptian.smoketracker.habits.contentprovider";
+  public static final String AUTHORITY = "com.synaptian.smoketracker.habits.contentprovider";
 
   private static final String HABITS_PATH = "habits";
   public static final Uri HABITS_URI = Uri.parse("content://" + AUTHORITY + "/" + HABITS_PATH);

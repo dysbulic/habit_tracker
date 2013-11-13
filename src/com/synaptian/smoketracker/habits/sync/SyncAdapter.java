@@ -37,6 +37,7 @@ import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
 import com.synaptian.smoketracker.habits.database.EventTable;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
@@ -48,6 +49,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Scanner;
 
 /**
  * Define a sync adapter for the app.
@@ -63,22 +67,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     /**
      * URL to fetch content from during a sync.
-     *
-     * <p>This points to the Android Developers Blog. (Side note: We highly recommend reading the
-     * Android Developer Blog to stay up to date on the latest Android platform developments!)
      */
-    private static final String HABIT_URL = "http://smoke-track.herokuapp.com/habits/";
-    private static final String EVENT_URL = "http://smoke-track.herokuapp.com/events/";
-
-    /**
-     * Network connection timeout, in milliseconds.
-     */
-    private static final int NET_CONNECT_TIMEOUT_MILLIS = 15000;  // 15 seconds
-
-    /**
-     * Network read timeout, in milliseconds.
-     */
-    private static final int NET_READ_TIMEOUT_MILLIS = 10000;  // 10 seconds
+    private static final String HABIT_WRITE_URL = "http://smoke-track.herokuapp.com/habits/";
+    private static final String EVENT_WRITE_URL = "http://smoke-track.herokuapp.com/events/";
+    private static final String HABIT_READ_URL = "http://smoke-track.herokuapp.com/habits.json";
 
     /**
      * Content resolver, for performing database operations.
@@ -126,15 +118,28 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	
         	Log.i(TAG, "Account / Token: " + account.name + " / " + authToken);
                     	
-        	URL habitURL = new URL(HABIT_URL);
-        	URL eventURL = new URL(EVENT_URL);
+        	URL habitURL = new URL(HABIT_WRITE_URL);
+        	URL eventURL = new URL(EVENT_WRITE_URL);
+
+        	JSONArray habits = getJSON(new URL(HABIT_READ_URL));
+            ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
+            for(int i = 0; i < habits.length(); i++) {
+                JSONObject habit = habits.getJSONObject(i);
+	            batch.add(ContentProviderOperation.newInsert(MyHabitContentProvider.HABITS_URI)
+	                    .withValue(HabitTable.COLUMN_ID, habit.getInt("id"))
+	                    .withValue(HabitTable.COLUMN_NAME, habit.getString(HabitTable.COLUMN_NAME))
+	                    .withValue(HabitTable.COLUMN_COLOR, habit.getString(HabitTable.COLUMN_COLOR))
+	                    .withValue(HabitTable.COLUMN_DESCRIPTION, habit.getString(HabitTable.COLUMN_DESCRIPTION))
+	                    .build());
+            }
+            mContentResolver.applyBatch(MyHabitContentProvider.AUTHORITY, batch);
 
         	String[] habitProjection = {
             		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID,
             		HabitTable.COLUMN_NAME,
             		HabitTable.COLUMN_COLOR,
             		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
-            Cursor cursor = getContext().getContentResolver().query(MyHabitContentProvider.HABITS_URI, habitProjection, null, null, null);
+            Cursor cursor = mContentResolver.query(MyHabitContentProvider.HABITS_URI, habitProjection, null, null, null);
 
             if(cursor.moveToFirst()) {
             	do {
@@ -153,7 +158,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             		EventTable.COLUMN_HABIT_ID,
             		EventTable.COLUMN_TIME,
             		EventTable.TABLE_EVENT + "." + EventTable.COLUMN_DESCRIPTION };
-            cursor = getContext().getContentResolver().query(MyHabitContentProvider.EVENTS_URI, eventProjection, null, null, null);
+            cursor = mContentResolver.query(MyHabitContentProvider.EVENTS_URI, eventProjection, null, null, null);
 
             if(cursor.moveToFirst()) {
             	do {
@@ -176,6 +181,12 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, "IOException: " + e.getMessage(), e);
 		} catch(JSONException e) {
             Log.e(TAG, "JSONException: " + e.getMessage());
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OperationApplicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 		}
         Log.i(TAG, "Network synchronization complete");
@@ -206,6 +217,13 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         return con.getResponseCode();
     }
 
+    private JSONArray getJSON(URL url) throws IOException, JSONException {
+    	InputStream is = url.openStream();
+    	Scanner s = new Scanner(is).useDelimiter("\\A");
+    	String text = s.hasNext() ? s.next() : "";
+    	return new JSONArray(text);
+    }
+    
     /**
      * Read XML from an input stream, storing it into the content provider.
      *
@@ -318,19 +336,5 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         // This sample doesn't support uploads, but if *your* code does, make sure you set
         // syncToNetwork=false in the line above to prevent duplicate syncs.
 */
-    }
-
-    /**
-     * Given a string representation of a URL, sets up a connection and gets an input stream.
-     */
-    private InputStream downloadUrl(final URL url) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(NET_READ_TIMEOUT_MILLIS /* milliseconds */);
-        conn.setConnectTimeout(NET_CONNECT_TIMEOUT_MILLIS /* milliseconds */);
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-        // Starts the query
-        conn.connect();
-        return conn.getInputStream();
     }
 }
