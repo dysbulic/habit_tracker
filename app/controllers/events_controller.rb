@@ -6,7 +6,7 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.json
   def index
-    @events = Event.all.sort_by{|e| e.created_at}
+    @events = Event.all.sort_by{|e| e.time}
   end
 
   # GET /events/1
