@@ -28,6 +28,10 @@ class HabitsController < ApplicationController
   def create
     @habit = Habit.new(habit_params)
 
+    if params[:_id]
+      @habit.id = params[:_id]
+    end
+
     respond_to do |format|
       if @habit.save
         format.html { redirect_to @habit, notice: 'Habit was successfully created.' }
