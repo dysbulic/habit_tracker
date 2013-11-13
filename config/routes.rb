@@ -1,4 +1,6 @@
 Webapp::Application.routes.draw do
+  resources :events
+
   devise_for :users
   use_doorkeeper
   resources :habits

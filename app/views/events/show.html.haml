@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Habit:
+  = @event.habit_id
+%p
+  %b Time:
+  = @event.time
+%p
+  %b Description:
+  = @event.description
+
+= link_to 'Edit', edit_event_path(@event)
+\|
+= link_to 'Back', events_path
