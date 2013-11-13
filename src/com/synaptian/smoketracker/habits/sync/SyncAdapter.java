@@ -18,10 +18,8 @@ package com.synaptian.smoketracker.habits.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
-import android.app.AlertDialog;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentProviderOperation;
@@ -30,11 +28,9 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.android.samplesync.Constants;
 import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
@@ -115,7 +111,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      *
      * <p>This is where we actually perform any work required to perform a sync.
      * {@link AbstractThreadedSyncAdapter} guarantees that this will be called on a non-UI thread,
-     * so it is safe to peform blocking I/O here.
+     * so it is safe to perform blocking I/O here.
      *
      * <p>The syncResult argument allows you to pass information back to the method that triggered
      * the sync.
