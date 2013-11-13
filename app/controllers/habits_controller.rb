@@ -28,9 +28,9 @@ class HabitsController < ApplicationController
   def create
     @habit = Habit.new(habit_params)
 
-    if params[:_id]
-      @habit.id = params[:_id]
-    end
+    #if params[:id]
+    #  @habit.id = params[:id]
+    #end
 
     respond_to do |format|
       if @habit.save
@@ -75,6 +75,6 @@ class HabitsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def habit_params
-      params.require(:habit).permit(:color, :name, :description)
+      params.require(:habit).permit(:id, :color, :name, :description)
     end
 end
