@@ -13,7 +13,7 @@ import org.dhappy.android.widget.ListItem;
 import org.dhappy.android.widget.TextTimeItem;
 import org.dhappy.android.widget.Timer;
 
-import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 import com.synaptian.smoketracker.habits.database.GoalTable;
 import com.synaptian.smoketracker.habits.database.EventTable;
@@ -98,7 +98,7 @@ public class EventListFragment extends ListFragment
         case MENU_DELETE:
           AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
           int id = ((TextTimeItem) items.remove((int) info.position)).id;
-          Uri uri = Uri.parse(MyHabitContentProvider.EVENTS_URI + "/" + id);
+          Uri uri = Uri.parse(HabitContentProvider.EVENTS_URI + "/" + id);
 
           getActivity().getContentResolver().delete(uri, null, null);
 
@@ -113,8 +113,8 @@ public class EventListFragment extends ListFragment
     	super.onListItemClick(l, v, position, listId);
         Intent intent = new Intent(getActivity(), EventDetailActivity.class);
         int id = ((TextTimeItem) items.get((int) position)).id;
-        Uri eventUri = Uri.parse(MyHabitContentProvider.EVENTS_URI + "/" + id);
-        intent.putExtra(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE, eventUri);
+        Uri eventUri = Uri.parse(HabitContentProvider.EVENTS_URI + "/" + id);
+        intent.putExtra(HabitContentProvider.EVENT_CONTENT_ITEM_TYPE, eventUri);
 
         startActivity(intent);
     }
@@ -130,7 +130,7 @@ public class EventListFragment extends ListFragment
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
-        return new CursorLoader(getActivity(), MyHabitContentProvider.EVENTS_URI, EVENTS_PROJECTION, null, null, EventTable.COLUMN_TIME + " DESC");
+        return new CursorLoader(getActivity(), HabitContentProvider.EVENTS_URI, EVENTS_PROJECTION, null, null, EventTable.COLUMN_TIME + " DESC");
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {

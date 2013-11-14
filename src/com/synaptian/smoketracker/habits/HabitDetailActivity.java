@@ -15,7 +15,7 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.util.Log;
-import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 
 /*
@@ -43,11 +43,11 @@ public class HabitDetailActivity extends Activity {
     Bundle extras = getIntent().getExtras();
 
     // Check from the saved Instance
-    habitUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE);
+    habitUri = (bundle == null) ? null : (Uri) bundle.getParcelable(HabitContentProvider.HABIT_CONTENT_ITEM_TYPE);
 
     // Or passed from the other activity
     if (extras != null) {
-      habitUri = extras.getParcelable(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE);
+      habitUri = extras.getParcelable(HabitContentProvider.HABIT_CONTENT_ITEM_TYPE);
 
       fillData(habitUri);
     } else {
@@ -96,7 +96,7 @@ public class HabitDetailActivity extends Activity {
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     saveState();
-    outState.putParcelable(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
+    outState.putParcelable(HabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
   }
 
   @Override
@@ -123,7 +123,7 @@ public class HabitDetailActivity extends Activity {
 
     if (habitUri == null) {
       // New habit
-      habitUri = getContentResolver().insert(MyHabitContentProvider.HABITS_URI, values);
+      habitUri = getContentResolver().insert(HabitContentProvider.HABITS_URI, values);
     } else {
       // Update habit
       getContentResolver().update(habitUri, values, null, null);

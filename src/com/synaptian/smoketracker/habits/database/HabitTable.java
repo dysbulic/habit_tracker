@@ -11,6 +11,8 @@ public class HabitTable {
   public static final String COLUMN_NAME = "name";
   public static final String COLUMN_COLOR = "color";
   public static final String COLUMN_DESCRIPTION = "description";
+  public static final String COLUMN_CREATED_AT = "created_at";
+  public static final String COLUMN_UPDATED_AT = "updated_at";
 
   // Database creation SQL statement
   private static final String DATABASE_CREATE = "create table " 
@@ -19,7 +21,9 @@ public class HabitTable {
       + COLUMN_ID + " integer primary key autoincrement,"
       + COLUMN_NAME + " text not null,"
       + COLUMN_COLOR + " text not null,"
-      + COLUMN_DESCRIPTION + " text" 
+      + COLUMN_DESCRIPTION + " text,"
+      + COLUMN_CREATED_AT + " integer,"
+      + COLUMN_UPDATED_AT + " integer"
       + ");";
 
   public static void onCreate(SQLiteDatabase database) {
@@ -34,4 +38,4 @@ public class HabitTable {
     database.execSQL("DROP TABLE IF EXISTS " + TABLE_HABIT);
     onCreate(database);
   }
-} 
+}

@@ -16,7 +16,7 @@ import com.synaptian.smoketracker.habits.database.HabitTable;
 import com.synaptian.smoketracker.habits.database.GoalTable;
 import com.synaptian.smoketracker.habits.database.EventTable;
 
-public class MyHabitContentProvider extends ContentProvider {
+public class HabitContentProvider extends ContentProvider {
 
   // database
   private HabitDatabaseHelper database;
@@ -117,8 +117,11 @@ public class MyHabitContentProvider extends ContentProvider {
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     Uri returnUri;
     
-    Random generator = new Random();
-    values.put(HabitTable.COLUMN_ID, generator.nextInt());
+    // Use guids to avoid server conflicts
+    if(values.get(HabitTable.COLUMN_ID) == null) {
+    	Random generator = new Random();
+    	values.put(HabitTable.COLUMN_ID, generator.nextInt());
+    }
     
     long id = 0;
     switch (uriType) {

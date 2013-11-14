@@ -2,7 +2,7 @@ package com.synaptian.smoketracker.habits;
 
 import org.dhappy.android.widget.Timer;
 
-import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 import com.synaptian.smoketracker.habits.database.EventTable;
 
@@ -98,7 +98,7 @@ public class HabitTimeListActivity extends ListActivity implements LoaderManager
       case DELETE_ID:
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
             .getMenuInfo();
-        Uri uri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/"
+        Uri uri = Uri.parse(HabitContentProvider.HABITS_URI + "/"
             + info.id);
         getContentResolver().delete(uri, null, null);
         //fillData();
@@ -111,15 +111,15 @@ public class HabitTimeListActivity extends ListActivity implements LoaderManager
     protected void onListItemClick(ListView l, View v, int position, long id) {
       super.onListItemClick(l, v, position, id);
       Intent i = new Intent(this, HabitDetailActivity.class);
-      Uri habitUri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + id);
-      i.putExtra(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
+      Uri habitUri = Uri.parse(HabitContentProvider.HABITS_URI + "/" + id);
+      i.putExtra(HabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
 
       startActivity(i);
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = { HabitTable.COLUMN_ID, HabitTable.COLUMN_NAME, EventTable.COLUMN_TIME };
-        CursorLoader cursorLoader = new CursorLoader(this, MyHabitContentProvider.HABITS_URI, projection, null, null, null);
+        CursorLoader cursorLoader = new CursorLoader(this, HabitContentProvider.HABITS_URI, projection, null, null, null);
         return cursorLoader;
     }
     

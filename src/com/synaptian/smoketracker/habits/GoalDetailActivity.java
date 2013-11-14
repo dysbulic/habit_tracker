@@ -23,7 +23,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
-import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 import com.synaptian.smoketracker.habits.database.GoalTable;
 
@@ -58,7 +58,7 @@ public class GoalDetailActivity extends Activity
     String[] from = new String[] { HabitTable.COLUMN_COLOR, HabitTable.COLUMN_NAME };
     int[] to = new int[] { R.id.color_block, R.id.label };
 
-    Cursor cursor = getContentResolver().query(MyHabitContentProvider.HABITS_URI, queryCols, null, null, null);
+    Cursor cursor = getContentResolver().query(HabitContentProvider.HABITS_URI, queryCols, null, null, null);
     mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
 
     mAdapter.setViewBinder(new ViewBinder() {
@@ -80,11 +80,11 @@ public class GoalDetailActivity extends Activity
     Bundle extras = getIntent().getExtras();
 
     // Check from the saved Instance
-    goalUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
+    goalUri = (bundle == null) ? null : (Uri) bundle.getParcelable(HabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
 
     // Or passed from the other activity
     if (extras != null) {
-      goalUri = extras.getParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
+      goalUri = extras.getParcelable(HabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
 
       fillData(goalUri);
     }
@@ -141,7 +141,7 @@ public class GoalDetailActivity extends Activity
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     saveState();
-    outState.putParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, goalUri);
+    outState.putParcelable(HabitContentProvider.GOAL_CONTENT_ITEM_TYPE, goalUri);
   }
 
   @Override
@@ -166,7 +166,7 @@ public class GoalDetailActivity extends Activity
 
     if (goalUri == null) {
       // New habit
-      goalUri = getContentResolver().insert(MyHabitContentProvider.GOALS_URI, values);
+      goalUri = getContentResolver().insert(HabitContentProvider.GOALS_URI, values);
     } else {
       // Update habit
       getContentResolver().update(goalUri, values, null, null);

@@ -2,7 +2,7 @@ package com.synaptian.smoketracker.habits;
 
 import org.dhappy.android.widget.Timer;
 
-import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 import com.synaptian.smoketracker.habits.database.GoalTable;
 
@@ -101,7 +101,7 @@ public class GoalListFragment extends ListFragment
         switch (item.getItemId()) {
         case MENU_DELETE:
           AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-          Uri uri = Uri.parse(MyHabitContentProvider.GOALS_URI + "/" + info.id);
+          Uri uri = Uri.parse(HabitContentProvider.GOALS_URI + "/" + info.id);
           getActivity().getContentResolver().delete(uri, null, null);
           return true;
         }
@@ -111,8 +111,8 @@ public class GoalListFragment extends ListFragment
     @Override public void onListItemClick(ListView l, View v, int position, long id) {
     	super.onListItemClick(l, v, position, id);
         Intent intent = new Intent(getActivity(), GoalDetailActivity.class);
-        Uri goalUri = Uri.parse(MyHabitContentProvider.GOALS_URI + "/" + id);
-        intent.putExtra(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, goalUri);
+        Uri goalUri = Uri.parse(HabitContentProvider.GOALS_URI + "/" + id);
+        intent.putExtra(HabitContentProvider.GOAL_CONTENT_ITEM_TYPE, goalUri);
 
         startActivity(intent);
     }
@@ -128,7 +128,7 @@ public class GoalListFragment extends ListFragment
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
-        return new CursorLoader(getActivity(), MyHabitContentProvider.GOALS_URI, GOALS_PROJECTION, null, null, null);
+        return new CursorLoader(getActivity(), HabitContentProvider.GOALS_URI, GOALS_PROJECTION, null, null, null);
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

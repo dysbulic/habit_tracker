@@ -87,7 +87,7 @@
                 android:resource="@xml/authenticator" />
         </service>
         <provider
-            android:name="com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider"
+            android:name="com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider"
             android:authorities="com.synaptian.smoketracker.habits.contentprovider" >
         </provider>
 

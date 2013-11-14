@@ -33,7 +33,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.example.android.samplesync.Constants;
-import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
 import com.synaptian.smoketracker.habits.database.EventTable;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 
@@ -125,21 +125,21 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
             for(int i = 0; i < habits.length(); i++) {
                 JSONObject habit = habits.getJSONObject(i);
-	            batch.add(ContentProviderOperation.newInsert(MyHabitContentProvider.HABITS_URI)
+	            batch.add(ContentProviderOperation.newInsert(HabitContentProvider.HABITS_URI)
 	                    .withValue(HabitTable.COLUMN_ID, habit.getInt("id"))
 	                    .withValue(HabitTable.COLUMN_NAME, habit.getString(HabitTable.COLUMN_NAME))
 	                    .withValue(HabitTable.COLUMN_COLOR, habit.getString(HabitTable.COLUMN_COLOR))
 	                    .withValue(HabitTable.COLUMN_DESCRIPTION, habit.getString(HabitTable.COLUMN_DESCRIPTION))
 	                    .build());
             }
-            mContentResolver.applyBatch(MyHabitContentProvider.AUTHORITY, batch);
+            mContentResolver.applyBatch(HabitContentProvider.AUTHORITY, batch);
 
         	String[] habitProjection = {
             		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID,
             		HabitTable.COLUMN_NAME,
             		HabitTable.COLUMN_COLOR,
             		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
-            Cursor cursor = mContentResolver.query(MyHabitContentProvider.HABITS_URI, habitProjection, null, null, null);
+            Cursor cursor = mContentResolver.query(HabitContentProvider.HABITS_URI, habitProjection, null, null, null);
 
             if(cursor.moveToFirst()) {
             	do {
@@ -158,7 +158,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             		EventTable.COLUMN_HABIT_ID,
             		EventTable.COLUMN_TIME,
             		EventTable.TABLE_EVENT + "." + EventTable.COLUMN_DESCRIPTION };
-            cursor = mContentResolver.query(MyHabitContentProvider.EVENTS_URI, eventProjection, null, null, null);
+            cursor = mContentResolver.query(HabitContentProvider.EVENTS_URI, eventProjection, null, null, null);
 
             if(cursor.moveToFirst()) {
             	do {
