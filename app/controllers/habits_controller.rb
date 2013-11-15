@@ -6,7 +6,14 @@ class HabitsController < ApplicationController
   # GET /habits
   # GET /habits.json
   def index
-    @habits = Habit.all
+    if params[:created_since]
+      @habits = Habit.where("created_at >= ?", Time.at(params[:created_since].to_i))
+    elsif params[:updated_since]
+      update_time = Time.at(params[:updated_since].to_i)
+      @habits = Habit.where("created_at < ? AND updated_at >= ?", update_time, update_time)
+    else
+      @habits = Habit.all
+    end
   end
 
   # GET /habits/1
