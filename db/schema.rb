@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131113005648) do
+ActiveRecord::Schema.define(version: 20131221025814) do
 
   create_table "events", force: true do |t|
     t.integer  "habit_id"
@@ -27,7 +27,10 @@ ActiveRecord::Schema.define(version: 20131113005648) do
     t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
   end
+
+  add_index "habits", ["user_id"], name: "index_habits_on_user_id"
 
   create_table "oauth_access_grants", force: true do |t|
     t.integer  "resource_owner_id",              null: false

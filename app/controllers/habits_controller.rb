@@ -7,12 +7,12 @@ class HabitsController < ApplicationController
   # GET /habits.json
   def index
     if params[:created_since]
-      @habits = Habit.where("created_at >= ?", Time.at(params[:created_since].to_i))
+      @habits = current_user.habits.where("created_at >= ?", Time.at(params[:created_since].to_i))
     elsif params[:updated_since]
       update_time = Time.at(params[:updated_since].to_i)
-      @habits = Habit.where("created_at < ? AND updated_at >= ?", update_time, update_time)
+      @habits = current_user.habits.where("created_at < ? AND updated_at >= ?", update_time, update_time)
     else
-      @habits = Habit.all
+      @habits = current_user.habits
     end
   end
 
@@ -23,7 +23,7 @@ class HabitsController < ApplicationController
 
   # GET /habits/new
   def new
-    @habit = Habit.new
+    @habit = Habit.new(user: current_user)
   end
 
   # GET /habits/1/edit
