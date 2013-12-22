@@ -11,27 +11,109 @@ function renderTasksCalendar() {
         monthNumber = d3.time.format( '%m' ),
         percent = d3.format( '.1%' ),
         date = d3.time.format( '%Y/%m/%d' )
-    
+
+    function weeksBetween( start, end ) {
+        return Math.floor( Math.abs( end.getTime() - start.getTime() ) / ( 7 * 24 * 60 * 60 * 1000 ) )
+    }
+
     var url = window.location.pathname
-    url = url.length <= 1 ? '/shifts/open' : url
-    if( url == '/shifts' || url == '/shifts/open' || url == '/my/shifts' ) {
-        d3.json( '/tasks.json', function( error, tasks ) {
-            var newTasks = {}
-            tasks.forEach( function( t ) { newTasks[t.id] = t } )
-            tasks = newTasks
+    if( url == '/events' ) {
+        d3.json( '/habits.json', function( error, habits ) {
+            habits = d3.nest()
+                .key( function( d ) { return d.id } )
+                .rollup( function( d ) { return d[0] } )
+                .map( habits )
             
-            d3.json( url + '.json', function( error, shifts ) {
-                for( var i = 0; i < shifts.length; i++ ) {
-                    shifts[i].start = new Date( Date.parse(shifts[i].start ) )
-                    shifts[i].end = new Date( Date.parse(shifts[i].end ) )
+            console.log( habits )
+            
+            d3.json( url + '.json', function( error, events ) {
+                for( var i = 0; i < events.length; i++ ) {
+                    events[i].time = new Date( Date.parse(events[i].time ) )
                 }
                 
-                var start = new Date( d3.min( shifts, function( d ) { return d.start } ) )
-                var end = new Date( d3.max( shifts, function( d ) { return d.end } ) )
+                var start = new Date( d3.min( events, function( d ) { return d.time } ) )
+                var end = new Date( d3.max( events, function( d ) { return d.time } ) )
                 
-                start.setDate( start.getDate() - 7 ) // Range is exclusive
+                start.setDate( start.getDate() - 1 )
 
-                var interval = d3.time.weeks( start, end )
+                var width = window.innerWidth,
+                    cellSize = width / 8,
+                    height = cellSize * Math.max( 1, weeksBetween( start, end ) ),
+                    position = {
+                        x: ( width - cellSize * 7 ) / 2,
+                        y: 0
+                    }
+
+                var svg = d3.select( '#events' )
+                    .append( 'svg' )
+                    .attr( {
+                        viewBox: "0 0 " + width + " " + height,
+                        preserveAspectRatio: 'none',
+                        width: '100%',
+                        height: height * .9 // eyeballing
+                    } )
+                    .append( 'g' )
+                    .attr( 'transform', "translate(" + position.x + "," + position.y + ")" )
+
+                
+                console.log( start, end, d3.time.days( start, end ) )
+
+                var days = svg.selectAll( '.day' )
+                    .data( d3.time.days( start, end ) )
+                    .enter()
+                    .append( 'g' )
+                    .attr( {
+                        class: 'day',
+                        transform: function( d ) {
+                            return (
+                                "translate("
+                                    + weekday( d ) * cellSize
+                                    + ","
+                                    + ( week( d ) - week( start ) ) * cellSize
+                                    + ")"
+                            )
+                        }
+                    } )
+
+                           
+                days
+                    .append( 'rect' )
+                    .attr( {
+                        width: cellSize,
+                        height: cellSize
+                    } )
+
+                days
+                    .append( 'text' )
+                    .attr( {
+                        class: 'date',
+                        x: 10,
+                        y: 30,
+                    } )
+                    .text( function( d ) { return d.getDate() } )
+
+                days.selectAll( '.event' )
+                    .data( function( d ) {
+                        return events.filter( function( e ) { return date( d ) == date( e.time ) } )
+                    } )
+                    .enter()
+                    .append( 'rect' )
+                    .attr( {
+                        class: 'event',
+                        x: 0,
+                        y: cellSize * Math.random(),
+                        width: cellSize,
+                        height: cellSize * 0.025
+                    } )
+                    .style( {
+                        fill: function( d ) { return habits[d.habit_id].color }
+                    } )
+                    .append( 'title' )
+                    .text( function( d ) { return habits[d.habit_id].name } )
+                
+
+                $('#loading-modal').modal( 'hide' )
+                return
 
                 var nextWeek = function( d ) {
                     var nextWeek = new Date( d )
@@ -39,16 +121,6 @@ function renderTasksCalendar() {
                     return nextWeek
                 }
 
-                var weekBounds = d3.nest()
-                    .key( function( d ) { return week( d.start ) } )
-                    .rollup( function( d ) {
-                        return {
-                            start: d3.min( d, function( d ) { return d.start.getHours() } ),
-                            end: d3.max( d, function( d ) { return d.end.getHours() } ),
-                        }
-                    } )
-                    .map( shifts )
-                
                 var shiftStarts = d3.nest()
                     .key( function( d ) { return d.start } )
                     .rollup( function( d ) { return d } )
