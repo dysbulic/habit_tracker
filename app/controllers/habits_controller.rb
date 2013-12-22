@@ -1,6 +1,6 @@
 class HabitsController < ApplicationController
   before_action :set_habit, only: [:show, :edit, :update, :destroy]
-  doorkeeper_for :all, if: lambda { request.headers["Content-Type"] == "application/json" }
+  # doorkeeper_for :all, if: lambda { request.headers["Content-Type"] == "application/json" }
   # before_filter :authenticate_user!, unless: lambda { request.headers["Content-Type"] == "application/json" }
   skip_before_action :verify_authenticity_token, if: lambda { request.format.json? }
 
