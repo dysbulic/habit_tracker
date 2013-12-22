@@ -7,6 +7,7 @@ class HabitsController < ApplicationController
   # GET /habits
   # GET /habits.json
   def index
+    puts "Current User: " + (current_user ? current_user.email : 'nil')
     if params[:created_since]
       @habits = current_user.habits.where("created_at >= ?", Time.at(params[:created_since].to_i))
     elsif params[:updated_since]
