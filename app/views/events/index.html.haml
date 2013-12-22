@@ -1,22 +1,18 @@
-%h1 Listing events
+- if params[:layout] == 'table'
+  %h1 Listing Events
 
-%table
-  %tr
-    %th Habit
-    %th Time
-    %th Description
-    %th
-    %th
-    %th
+  = render 'table'
+- else
+  #loading-modal.modal.fade{'aria-hidden' => false}
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %button.close{ data: { dismiss: 'modal' } } ×
+          %h3.modal-title Loading
+        .modal-body
+          = image_tag 'http://dhappy.org/.../image/icon/loading/', class: 'loading-icon'
 
-  - @events.each do |event|
-    %tr
-      %td= event.habit.name
-      %td= event.time
-      %td= event.description
-      %td= link_to 'Show', event
-      %td= link_to 'Edit', edit_event_path(event)
-      %td= link_to 'Destroy', event, :method => :delete, :data => { :confirm => 'Are you sure?' }
+  #events
 
 %br
 

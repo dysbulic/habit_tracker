@@ -1,0 +1,52 @@
+== <!DOCTYPE html>
+%html{:'xmlns:fb' => 'http://ogp.me/ns/fb#'}
+  %head
+    %title Habits
+    = stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true
+    = javascript_include_tag "//cdnjs.cloudflare.com/ajax/libs/d3/3.3.10/d3.min.js"
+    = javascript_include_tag "application", "data-turbolinks-track" => true
+    = csrf_meta_tags
+    = favicon_link_tag 'favicon.png', rel: 'icon', type: 'image/png'
+  %body
+    .navbar.navbar-default.navbar-fixed-top{role: 'navigation'}
+      .container
+        .navbar-header
+          = link_to root_path, class: 'navbar-brand' do
+            = image_tag 'http://dhappy.org/.../image/golden apple/', id: 'logo'
+            Habits
+        .navbar-collapse.collapse
+          %ul.nav.navbar-nav
+            %li
+            %li{ class: params[:controller] == 'habits' ? 'active dropdown' : 'dropdown' }
+              %a.dropdown-toggle{ href: '#', data: { toggle: 'dropdown' } }
+                Habits
+                %b.caret
+              %ul.dropdown-menu
+                %li= link_to 'View All', habits_path
+                - if can? :create, Habit
+                  %li= link_to 'New', new_habit_path
+            %li{ class: params[:controller] == 'events' ? 'active dropdown' : 'dropdown' }
+              %a.dropdown-toggle{ href: '#', data: { toggle: 'dropdown' } }
+                Events
+                %b.caret
+              %ul.dropdown-menu
+                %li
+                  = link_to '', events_path + "?layout=table", class: [:glyphicon, 'glyphicon-list-alt']
+                  = link_to 'View All', events_path, class: :iconed
+                - if can? :create, Event
+                  %li= link_to 'New', new_event_path
+            -# %li{ class: (params[:controller] == 'pages' and params[:action] == 'about') ? 'active' : nil }
+              = link_to 'About', about_path
+
+          %ul.nav.navbar-nav.navbar-right
+            - if user_signed_in?
+              %li= link_to current_user.email, edit_user_registration_path
+              %li= link_to "Logout", destroy_user_session_path, method: :delete
+            - else
+              %li= link_to "Sign Up", new_user_registration_path
+              %li= link_to "Login", new_user_session_path
+    #body.container
+      %p.notice= notice
+      %p.alert= alert
+
+      = yield

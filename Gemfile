@@ -14,8 +14,11 @@ group :production do
 end
 
 gem 'haml-rails'
-gem 'doorkeeper'
+gem 'bootstrap-sass-rails'
+
 gem 'devise'
+gem 'cancan'
+gem 'doorkeeper'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
