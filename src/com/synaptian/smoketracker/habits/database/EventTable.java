@@ -11,6 +11,8 @@ public class EventTable {
   public static final String COLUMN_HABIT_ID = "habit_id";
   public static final String COLUMN_DESCRIPTION = "description";
   public static final String COLUMN_TIME = "time";
+  public static final String COLUMN_CREATED_AT = "created_at";
+  public static final String COLUMN_UPDATED_AT = "updated_at";
 
   // Database creation SQL statement
   private static final String DATABASE_CREATE = "create table " 

@@ -26,6 +26,7 @@ import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.OperationApplicationException;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -42,14 +43,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -68,10 +72,15 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     /**
      * URL to fetch content from during a sync.
      */
-    private static final String HABIT_WRITE_URL = "http://smoke-track.herokuapp.com/habits/";
-    private static final String EVENT_WRITE_URL = "http://smoke-track.herokuapp.com/events/";
-    private static final String HABIT_READ_URL = "http://smoke-track.herokuapp.com/habits.json";
+    //private static final String HOST = "http://smoke-track.herokuapp.com";
+    private static final String HOST = "http://192.168.1.113:3000";
+    private static final String HABIT_WRITE_URL = HOST + "/habits/";
+    private static final String EVENT_WRITE_URL = HOST + "/events/";
+    private static final String HABIT_READ_URL = HOST + "/habits.json";
 
+    private static final String PREFERENCES_KEY = "com.synaptian.habits";
+    private static final String SYNC_KEY = "com.synaptian.habits.sync.last";
+    
     /**
      * Content resolver, for performing database operations.
      */
@@ -121,7 +130,13 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	URL habitURL = new URL(HABIT_WRITE_URL);
         	URL eventURL = new URL(EVENT_WRITE_URL);
 
-        	JSONArray habits = getJSON(new URL(HABIT_READ_URL));
+        	int currentTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
+
+        	SharedPreferences prefs = getContext().getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
+        	int lastSyncTime = prefs.getInt(SYNC_KEY, 0);
+        	
+        	// Get new habits from server
+        	JSONArray habits = getJSON(new URL(HABIT_READ_URL + "?created_since=" + lastSyncTime), authToken);
             ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
             for(int i = 0; i < habits.length(); i++) {
                 JSONObject habit = habits.getJSONObject(i);
@@ -132,6 +147,19 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 	                    .withValue(HabitTable.COLUMN_DESCRIPTION, habit.getString(HabitTable.COLUMN_DESCRIPTION))
 	                    .build());
             }
+
+            // Get updated habits from server
+        	habits = getJSON(new URL(HABIT_READ_URL + "?updated_since=" + lastSyncTime), authToken);
+            for(int i = 0; i < habits.length(); i++) {
+                JSONObject habit = habits.getJSONObject(i);
+	            batch.add(ContentProviderOperation.newUpdate(HabitContentProvider.HABITS_URI)
+	                    .withValue(HabitTable.COLUMN_ID, habit.getInt("id"))
+	                    .withValue(HabitTable.COLUMN_NAME, habit.getString(HabitTable.COLUMN_NAME))
+	                    .withValue(HabitTable.COLUMN_COLOR, habit.getString(HabitTable.COLUMN_COLOR))
+	                    .withValue(HabitTable.COLUMN_DESCRIPTION, habit.getString(HabitTable.COLUMN_DESCRIPTION))
+	                    .build());
+            }
+
             mContentResolver.applyBatch(HabitContentProvider.AUTHORITY, batch);
 
         	String[] habitProjection = {
@@ -139,7 +167,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             		HabitTable.COLUMN_NAME,
             		HabitTable.COLUMN_COLOR,
             		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
-            Cursor cursor = mContentResolver.query(HabitContentProvider.HABITS_URI, habitProjection, null, null, null);
+            Cursor cursor = mContentResolver.query(HabitContentProvider.HABITS_URI, habitProjection, HabitTable.COLUMN_CREATED_AT + ">" + lastSyncTime, null, null);
 
             if(cursor.moveToFirst()) {
             	do {
@@ -158,7 +186,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             		EventTable.COLUMN_HABIT_ID,
             		EventTable.COLUMN_TIME,
             		EventTable.TABLE_EVENT + "." + EventTable.COLUMN_DESCRIPTION };
-            cursor = mContentResolver.query(HabitContentProvider.EVENTS_URI, eventProjection, null, null, null);
+            cursor = mContentResolver.query(HabitContentProvider.EVENTS_URI, eventProjection, EventTable.COLUMN_CREATED_AT + ">" + lastSyncTime, null, null);
 
             if(cursor.moveToFirst()) {
             	do {
@@ -200,9 +228,9 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         con.setRequestProperty("Accept-Encoding", "gzip, deflate");
         con.setRequestProperty("Authorization", "Bearer " + authToken);
 
-        byte[] habitBytes = json.toString().getBytes();
+        byte[] jsonBytes = json.toString().getBytes();
 
-        con.setRequestProperty("Content-Length", Integer.toString(habitBytes.length));
+        con.setRequestProperty("Content-Length", Integer.toString(jsonBytes.length));
 
         con.setInstanceFollowRedirects(false);
         con.setUseCaches(false);
@@ -210,15 +238,18 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         con.setDoOutput(true);
 
         DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-        wr.write(habitBytes);
+        wr.write(jsonBytes);
         wr.flush();
         wr.close();
         
         return con.getResponseCode();
     }
 
-    private JSONArray getJSON(URL url) throws IOException, JSONException {
-    	InputStream is = url.openStream();
+    private JSONArray getJSON(URL url, String authToken) throws IOException, JSONException {
+    	URLConnection con = url.openConnection();
+    	con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Authorization", "Bearer " + authToken);
+    	InputStream is = new BufferedInputStream(con.getInputStream());
     	Scanner s = new Scanner(is).useDelimiter("\\A");
     	String text = s.hasNext() ? s.next() : "";
     	return new JSONArray(text);

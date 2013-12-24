@@ -107,7 +107,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         final Intent intent = getIntent();
         setContentView(R.layout.login_activity);
 
-    	final String host = "http://smoke-track.herokuapp.com";
+    	final String host = getText(R.string.server_url).toString();
     	final String authUri = host + "/oauth/authorize";
     	final String tokenUri = host + "/oauth/token";
         final String appUri = host + "/habits";

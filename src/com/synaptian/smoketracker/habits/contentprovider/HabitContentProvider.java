@@ -24,6 +24,8 @@ public class HabitContentProvider extends ContentProvider {
   // Used for the UriMacher
   private static final int HABITS = 10;
   private static final int HABIT_ID = 20;
+  private static final int HABIT_NEW = 21;
+  private static final int HABIT_UPDATED = 22;
   private static final int GOALS = 30;
   private static final int GOAL_ID = 40;
   private static final int EVENTS = 50;
@@ -52,11 +54,13 @@ public class HabitContentProvider extends ContentProvider {
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
 	    sURIMatcher.addURI(AUTHORITY, HABITS_PATH, HABITS);
-	    sURIMatcher.addURI(AUTHORITY, HABITS_PATH + "/#", HABIT_ID);
+	    sURIMatcher.addURI(AUTHORITY, HABITS_PATH + "/*", HABIT_ID);
+	    sURIMatcher.addURI(AUTHORITY, HABITS_PATH + "/new_since/#", HABIT_NEW);
+	    sURIMatcher.addURI(AUTHORITY, HABITS_PATH + "/updated_since/#", HABIT_UPDATED);
 	    sURIMatcher.addURI(AUTHORITY, GOALS_PATH, GOALS);
-	    sURIMatcher.addURI(AUTHORITY, GOALS_PATH + "/#", GOAL_ID);
+	    sURIMatcher.addURI(AUTHORITY, GOALS_PATH + "/*", GOAL_ID);
 	    sURIMatcher.addURI(AUTHORITY, EVENTS_PATH, EVENTS);
-	    sURIMatcher.addURI(AUTHORITY, EVENTS_PATH + "/#", EVENT_ID);
+	    sURIMatcher.addURI(AUTHORITY, EVENTS_PATH + "/*", EVENT_ID);
   }
 
   @Override
@@ -81,6 +85,15 @@ public class HabitContentProvider extends ContentProvider {
     	groupBy = HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID;
         queryBuilder.setTables(HabitTable.TABLE_HABIT + " LEFT OUTER JOIN " + EventTable.TABLE_EVENT
         					   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
+        break;
+    case HABIT_NEW:
+        queryBuilder.appendWhere(HabitTable.COLUMN_CREATED_AT + "<" + uri.getLastPathSegment());
+        queryBuilder.setTables(HabitTable.TABLE_HABIT);
+        break;
+    case HABIT_UPDATED:
+        queryBuilder.appendWhere(HabitTable.COLUMN_CREATED_AT + "<" + uri.getLastPathSegment()
+        						 + " AND " + HabitTable.COLUMN_UPDATED_AT + ">" + uri.getLastPathSegment());
+        queryBuilder.setTables(HabitTable.TABLE_HABIT);
         break;
     case GOAL_ID:
         queryBuilder.appendWhere(GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID + "=" + uri.getLastPathSegment());
@@ -150,7 +163,7 @@ public class HabitContentProvider extends ContentProvider {
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     int rowsDeleted = 0;
     switch (uriType) {
-    case HABITS:
+      case HABITS:
         rowsDeleted = sqlDB.delete(HabitTable.TABLE_HABIT, selection, selectionArgs);
         break;
       case HABIT_ID:

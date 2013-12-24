@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   	<string name="hello">Hello World, Habit!</string>
-	<string name="app_name">Smoke Tracker</string>
+	<string name="app_name">Habit Tracker</string>
   	<string name="no_habits">Currently there are no habits recorded</string>
   	<string name="no_goals">Currently there are no goals recorded</string>
   	<string name="no_events">Currently there are no events recorded</string>
@@ -69,9 +69,15 @@
     <!-- Title string for Login activity-->
     <string name="ui_activity_title">Sign-in</string>
     
+    <!--
     <string name="oauth_callback">http://smoke-track.herokuapp.com/oauth_callback</string>
     <string name="oauth_id">8a97b7216e8c81d9d5e539b5c7fb6a29773f07e25fcd2d7306e1a322bf7de39a</string>
     <string name="oauth_secret">527f0f05b76617daf6ceb84263c4b0720a111926d7b3d324d89711632c654c5d</string>
+    -->
+    <string name="server_url">http://192.168.1.113:3000</string>
+    <string name="oauth_callback">http://192.168.1.113:3000/oauth_callback</string>
+    <string name="oauth_id">119a553ed218f6cb324b30ff7c1a45355074a2f48ea6dbe67d1a09e5aefade2e</string>
+    <string name="oauth_secret">2f201383995baa9f4b271786316ba0943bea1be5f181495808ab4ee59964d6a9</string>
     <string name="oauth_account_name">Test Account</string>
     <string name="oauth_account_type">com.synaptian.smoketracker.habits.sync</string>
     <string name="oauth_authority">com.synaptian.smoketracker.habits.contentprovider</string>
