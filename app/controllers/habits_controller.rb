@@ -1,19 +1,24 @@
 class HabitsController < ApplicationController
   before_action :set_habit, only: [:show, :edit, :update, :destroy]
   doorkeeper_for :all, if: lambda { request.headers["Content-Type"] == "application/json" }
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, unless: lambda { request.headers["Content-Type"] == "application/json" }
   skip_before_action :verify_authenticity_token, if: lambda { request.format.json? }
 
   # GET /habits
   # GET /habits.json
   def index
+    puts "Current User: " + (current_user ? current_user.email : 'nil')
+    user = current_user
+    user ||= User.find(doorkeeper_token[:resource_owner_id]) if doorkeeper_token
+    puts "Current User: " + (user ? user.email : 'nil')
+
     if params[:created_since]
-      @habits = current_user.habits.where("created_at >= ?", Time.at(params[:created_since].to_i))
+      @habits = user.habits.where("created_at >= ?", Time.at(params[:created_since].to_i))
     elsif params[:updated_since]
       update_time = Time.at(params[:updated_since].to_i)
-      @habits = current_user.habits.where("created_at < ? AND updated_at >= ?", update_time, update_time)
+      @habits = user.habits.where("created_at < ? AND updated_at >= ?", update_time, update_time)
     else
-      @habits = current_user.habits
+      @habits = user.habits
     end
   end
 

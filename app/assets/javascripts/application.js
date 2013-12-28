@@ -15,3 +15,10 @@
 //= require turbolinks
 //= require_tree .
 //= require twitter/bootstrap
+
+$( function() {
+    // This should be in a stylesheet
+    if( $(document).width() <= 480 ) {
+        $('#logo').css( { display: 'none' } )
+    }
+} )
