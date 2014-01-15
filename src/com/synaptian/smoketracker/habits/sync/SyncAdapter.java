@@ -29,11 +29,13 @@ import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 
 import com.example.android.samplesync.Constants;
+import com.synaptian.smoketracker.habits.R;
 import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
 import com.synaptian.smoketracker.habits.database.EventTable;
 import com.synaptian.smoketracker.habits.database.HabitTable;
@@ -60,7 +62,7 @@ import java.util.Scanner;
 /**
  * Define a sync adapter for the app.
  *
- * <p>This class is instantiated in {@link SyncService}, which also binds SyncAdapter to the system.
+ * <p>This class is instantiated in {@link SyncService}, which also 	binds SyncAdapter to the system.
  * SyncAdapter should only be initialized in SyncService, never anywhere else.
  *
  * <p>The system calls onPerformSync() via an RPC call through the IBinder object supplied by
@@ -72,6 +74,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     /**
      * URL to fetch content from during a sync.
      */
+    //private static final String HOST = getText(R.string.server_url).toString();
     //private static final String HOST = "http://smoke-track.herokuapp.com";
     private static final String HOST = "http://192.168.1.113:3000";
     private static final String HABIT_WRITE_URL = HOST + "/habits/";
@@ -127,15 +130,15 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	
         	Log.i(TAG, "Account / Token: " + account.name + " / " + authToken);
                     	
-        	URL habitURL = new URL(HABIT_WRITE_URL);
-        	URL eventURL = new URL(EVENT_WRITE_URL);
-
         	int currentTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
 
         	SharedPreferences prefs = getContext().getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
         	int lastSyncTime = prefs.getInt(SYNC_KEY, 0);
+     
+        	lastSyncTime = 0;
         	
-        	// Get new habits from server
+        	Log.i(TAG, "Get new habits from server");
+
         	JSONArray habits = getJSON(new URL(HABIT_READ_URL + "?created_since=" + lastSyncTime), authToken);
             ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
             for(int i = 0; i < habits.length(); i++) {
@@ -148,7 +151,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 	                    .build());
             }
 
-            // Get updated habits from server
+        	Log.i(TAG, "Get updated habits from server");
+
         	habits = getJSON(new URL(HABIT_READ_URL + "?updated_since=" + lastSyncTime), authToken);
             for(int i = 0; i < habits.length(); i++) {
                 JSONObject habit = habits.getJSONObject(i);
@@ -160,15 +164,25 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 	                    .build());
             }
 
-            mContentResolver.applyBatch(HabitContentProvider.AUTHORITY, batch);
+        	Log.i(TAG, "Applying batch operation");
 
+            try {
+            	mContentResolver.applyBatch(HabitContentProvider.AUTHORITY, batch);
+            } catch(SQLiteConstraintException e) {
+            	Log.e(TAG, "SQLiteConstraintException: " + e.getMessage());
+            }
+            
+        	Log.i(TAG, "Posting new habits to the server");
+            
         	String[] habitProjection = {
             		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID,
             		HabitTable.COLUMN_NAME,
             		HabitTable.COLUMN_COLOR,
             		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
-            Cursor cursor = mContentResolver.query(HabitContentProvider.HABITS_URI, habitProjection, HabitTable.COLUMN_CREATED_AT + ">" + lastSyncTime, null, null);
+            //Cursor cursor = mContentResolver.query(HabitContentProvider.HABITS_URI, habitProjection, HabitTable.COLUMN_CREATED_AT + ">=" + lastSyncTime, null, null);
+            Cursor cursor = mContentResolver.query(HabitContentProvider.HABITS_URI, habitProjection, null, null, null);
 
+            int habitCount = 0;
             if(cursor.moveToFirst()) {
             	do {
                     JSONObject habit = new JSONObject();
@@ -177,28 +191,44 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
                     habit.put("name", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
                     habit.put("description", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
 
-                    postJSON(habit, habitURL, authToken);
+                    postJSON(habit, new URL(HABIT_WRITE_URL), authToken);
+
+            		habitCount++;
             	} while(cursor.moveToNext());
             }
+
+        	Log.i(TAG, "Sent Habits: " + habitCount);
+
+        	Log.i(TAG, "Posting new events to the server");
 
         	String[] eventProjection = {
             		EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID,
             		EventTable.COLUMN_HABIT_ID,
             		EventTable.COLUMN_TIME,
             		EventTable.TABLE_EVENT + "." + EventTable.COLUMN_DESCRIPTION };
-            cursor = mContentResolver.query(HabitContentProvider.EVENTS_URI, eventProjection, EventTable.COLUMN_CREATED_AT + ">" + lastSyncTime, null, null);
+            //cursor = mContentResolver.query(HabitContentProvider.EVENTS_URI, eventProjection, EventTable.COLUMN_CREATED_AT + ">" + lastSyncTime, null, null);
+            cursor = mContentResolver.query(HabitContentProvider.EVENTS_URI, eventProjection, null, null, null);
 
+            int eventCount = 0;
             if(cursor.moveToFirst()) {
             	do {
-                    JSONObject event = new JSONObject();
+            		JSONObject event = new JSONObject();
                     event.put("id", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_ID)));
                     event.put("habit_id", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_HABIT_ID)));
                     event.put("time", cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_TIME)));
                     event.put("description", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_DESCRIPTION)));
 
-                    postJSON(event, eventURL, authToken);
+                    postJSON(event, new URL(EVENT_WRITE_URL), authToken);
+
+            		eventCount++;
             	} while(cursor.moveToNext());
             }
+            
+        	Log.i(TAG, "Sent Events: " + eventCount);
+            
+            
+        	//prefs.edit().putInt(SYNC_KEY, currentTime).apply();
+
         } catch (OperationCanceledException e) {
 			Log.e(TAG, "OperationCanceledException: " + e.getMessage());
 		} catch (AuthenticatorException e) {
