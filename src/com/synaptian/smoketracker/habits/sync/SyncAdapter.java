@@ -31,6 +31,7 @@ import android.content.SyncResult;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -38,6 +39,7 @@ import com.example.android.samplesync.Constants;
 import com.synaptian.smoketracker.habits.R;
 import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
 import com.synaptian.smoketracker.habits.database.EventTable;
+import com.synaptian.smoketracker.habits.database.HabitDatabaseHelper;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 
 import org.json.JSONArray;
@@ -47,12 +49,16 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,12 +94,14 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      * Content resolver, for performing database operations.
      */
     private final ContentResolver mContentResolver;
+    private final Context mContext;
 
     /**
      * Constructor. Obtains handle to content resolver for later use.
      */
     public SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
+        mContext = context;
         mContentResolver = context.getContentResolver();
     }
 
@@ -102,6 +110,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      */
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
+        mContext = context;
         mContentResolver = context.getContentResolver();
     }
 
@@ -136,7 +145,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	int lastSyncTime = prefs.getInt(SYNC_KEY, 0);
      
         	lastSyncTime = 0;
-        	
+        	/*
         	Log.i(TAG, "Get new habits from server");
 
         	JSONArray habits = getJSON(new URL(HABIT_READ_URL + "?created_since=" + lastSyncTime), authToken);
@@ -225,7 +234,30 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
             
         	Log.i(TAG, "Sent Events: " + eventCount);
-            
+            */
+        	
+        	String state = Environment.getExternalStorageState();
+        	if (state.equals(Environment.MEDIA_MOUNTED)) 						{
+        	    File root = Environment.getExternalStorageDirectory();
+        	    File destination = new File(root, "org.dhappy.habits.db");
+
+	        	FileChannel source = null;
+	        	FileChannel copy = null;
+        	    try {
+        	    	String db = (new HabitDatabaseHelper(mContext)).getWritableDatabase().getPath();
+                	Log.i(TAG, "Copying Database: " + db);
+        	        source = new FileInputStream(new File(db)).getChannel();
+        	        copy = new FileOutputStream(destination).getChannel();
+        	        copy.transferFrom(source, 0, source.size());
+        	    } finally {
+        	    	if(source != null) {
+        	        	source.close();
+        	        }
+        	        if(copy != null) {
+        	        	copy.close();
+        	        }
+        	    }
+        	}
             
         	//prefs.edit().putInt(SYNC_KEY, currentTime).apply();
 
@@ -237,7 +269,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, "Bad URL:", e);
         } catch(IOException e) {
             Log.e(TAG, "IOException: " + e.getMessage(), e);
-		} catch(JSONException e) {
+/*
+ 		} catch(JSONException e) {
             Log.e(TAG, "JSONException: " + e.getMessage());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -245,6 +278,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 		} catch (OperationApplicationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+ */
 		} finally {
 		}
         Log.i(TAG, "Network synchronization complete");
