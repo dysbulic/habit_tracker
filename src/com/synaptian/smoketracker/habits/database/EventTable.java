@@ -21,7 +21,9 @@ public class EventTable {
       + COLUMN_ID + " integer primary key autoincrement, " 
       + COLUMN_HABIT_ID + " integer not null,"
       + COLUMN_TIME + " integer,"
-      + COLUMN_DESCRIPTION + " text" 
+      + COLUMN_DESCRIPTION + " text,"
+      + COLUMN_CREATED_AT + " integer,"
+      + COLUMN_UPDATED_AT + " integer"
       + ");";
 
   public static void onCreate(SQLiteDatabase database) {

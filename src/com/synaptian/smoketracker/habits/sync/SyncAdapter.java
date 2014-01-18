@@ -145,7 +145,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	int lastSyncTime = prefs.getInt(SYNC_KEY, 0);
      
         	lastSyncTime = 0;
-        	/*
+
         	Log.i(TAG, "Get new habits from server");
 
         	JSONArray habits = getJSON(new URL(HABIT_READ_URL + "?created_since=" + lastSyncTime), authToken);
@@ -234,7 +234,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             }
             
         	Log.i(TAG, "Sent Events: " + eventCount);
-            */
         	
         	String state = Environment.getExternalStorageState();
         	if (state.equals(Environment.MEDIA_MOUNTED)) 						{
@@ -269,16 +268,12 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, "Bad URL:", e);
         } catch(IOException e) {
             Log.e(TAG, "IOException: " + e.getMessage(), e);
-/*
  		} catch(JSONException e) {
-            Log.e(TAG, "JSONException: " + e.getMessage());
+            Log.e(TAG, "JSONException", e);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            Log.e(TAG, "RemoteException", e);
 		} catch (OperationApplicationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
- */
+            Log.e(TAG, "OperationApplicationException", e);
 		} finally {
 		}
         Log.i(TAG, "Network synchronization complete");

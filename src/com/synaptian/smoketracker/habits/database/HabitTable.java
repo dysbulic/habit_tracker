@@ -13,7 +13,6 @@ public class HabitTable {
   public static final String COLUMN_DESCRIPTION = "description";
   public static final String COLUMN_CREATED_AT = "created_at";
   public static final String COLUMN_UPDATED_AT = "updated_at";
-  public static final String COLUMN_LAST_SYNC = "last_sync";
 
   // Database creation SQL statement
   private static final String DATABASE_CREATE = "create table " 
@@ -23,7 +22,6 @@ public class HabitTable {
       + COLUMN_NAME + " text not null,"
       + COLUMN_COLOR + " text not null,"
       + COLUMN_DESCRIPTION + " text,"
-      + COLUMN_LAST_SYNC + " integer,"
       + COLUMN_CREATED_AT + " integer,"
       + COLUMN_UPDATED_AT + " integer"
       + ");";

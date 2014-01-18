@@ -1,5 +1,6 @@
 package com.synaptian.smoketracker.habits.contentprovider;
 
+import java.util.Calendar;
 import java.util.Random;
 
 import android.content.ContentProvider;
@@ -136,6 +137,16 @@ public class HabitContentProvider extends ContentProvider {
     	values.put(HabitTable.COLUMN_ID, generator.nextInt());
     }
     
+	int currentTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
+
+	if(values.get(HabitTable.COLUMN_CREATED_AT) == null) {
+    	values.put(HabitTable.COLUMN_CREATED_AT, currentTime);
+    }
+
+	if(values.get(HabitTable.COLUMN_UPDATED_AT) == null) {
+    	values.put(HabitTable.COLUMN_UPDATED_AT, currentTime);
+    }
+
     long id = 0;
     switch (uriType) {
     case HABITS:
@@ -205,10 +216,13 @@ public class HabitContentProvider extends ContentProvider {
 
   @Override
   public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-
     int uriType = sURIMatcher.match(uri);
     SQLiteDatabase sqlDB = database.getWritableDatabase();
     int rowsUpdated = 0;
+
+	int currentTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
+	values.put(HabitTable.COLUMN_UPDATED_AT, currentTime);
+
     switch (uriType) {
     case HABITS:
       rowsUpdated = sqlDB.update(HabitTable.TABLE_HABIT, values, selection, selectionArgs);
