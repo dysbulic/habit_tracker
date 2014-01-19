@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.synaptian.smoketracker.habits.authenticator;
+package org.dhappy.habits.authenticator;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;

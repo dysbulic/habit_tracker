@@ -1,4 +1,4 @@
-package com.synaptian.smoketracker.habits;
+package org.dhappy.habits;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,11 +12,12 @@ import org.dhappy.android.widget.HeaderedListAdapter;
 import org.dhappy.android.widget.ListItem;
 import org.dhappy.android.widget.TextTimeItem;
 import org.dhappy.android.widget.Timer;
+import org.dhappy.habits.R;
+import org.dhappy.habits.contentprovider.HabitContentProvider;
+import org.dhappy.habits.database.EventTable;
+import org.dhappy.habits.database.GoalTable;
+import org.dhappy.habits.database.HabitTable;
 
-import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
-import com.synaptian.smoketracker.habits.database.HabitTable;
-import com.synaptian.smoketracker.habits.database.GoalTable;
-import com.synaptian.smoketracker.habits.database.EventTable;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;

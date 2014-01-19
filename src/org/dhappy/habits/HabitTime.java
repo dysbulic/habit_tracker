@@ -1,4 +1,4 @@
-package com.synaptian.smoketracker.habits;
+package org.dhappy.habits;
 
 public class HabitTime {
 	private String name;

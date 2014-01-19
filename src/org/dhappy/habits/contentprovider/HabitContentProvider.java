@@ -1,7 +1,12 @@
-package com.synaptian.smoketracker.habits.contentprovider;
+package org.dhappy.habits.contentprovider;
 
 import java.util.Calendar;
 import java.util.Random;
+
+import org.dhappy.habits.database.EventTable;
+import org.dhappy.habits.database.GoalTable;
+import org.dhappy.habits.database.HabitDatabaseHelper;
+import org.dhappy.habits.database.HabitTable;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -12,10 +17,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
-import com.synaptian.smoketracker.habits.database.HabitDatabaseHelper;
-import com.synaptian.smoketracker.habits.database.HabitTable;
-import com.synaptian.smoketracker.habits.database.GoalTable;
-import com.synaptian.smoketracker.habits.database.EventTable;
 
 public class HabitContentProvider extends ContentProvider {
 
@@ -32,7 +33,7 @@ public class HabitContentProvider extends ContentProvider {
   private static final int EVENTS = 50;
   private static final int EVENT_ID = 60;
 
-  public static final String AUTHORITY = "com.synaptian.smoketracker.habits.contentprovider";
+  public static final String AUTHORITY = "org.dhappy.habits.contentprovider";
 
   private static final String HABITS_PATH = "habits";
   public static final Uri HABITS_URI = Uri.parse("content://" + AUTHORITY + "/" + HABITS_PATH);

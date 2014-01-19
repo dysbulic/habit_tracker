@@ -1,6 +1,9 @@
-package com.synaptian.smoketracker.habits;
+package org.dhappy.habits;
 
 import java.util.Calendar;
+import org.dhappy.habits.R;
+import org.dhappy.habits.contentprovider.HabitContentProvider;
+import org.dhappy.habits.database.HabitTable;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -15,8 +18,6 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.util.Log;
-import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
-import com.synaptian.smoketracker.habits.database.HabitTable;
 
 /*
  * HabitDetailActivity allows to enter a new habit item 

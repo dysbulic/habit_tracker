@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.synaptian.smoketracker.habits;
+package org.dhappy.habits;
 
 import java.util.ArrayList;
+import org.dhappy.habits.R;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;

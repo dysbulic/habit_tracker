@@ -1,10 +1,11 @@
-package com.synaptian.smoketracker.habits;
+package org.dhappy.habits;
 
 import org.dhappy.android.widget.Timer;
+import org.dhappy.habits.R;
+import org.dhappy.habits.contentprovider.HabitContentProvider;
+import org.dhappy.habits.database.EventTable;
+import org.dhappy.habits.database.HabitTable;
 
-import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
-import com.synaptian.smoketracker.habits.database.HabitTable;
-import com.synaptian.smoketracker.habits.database.EventTable;
 
 import android.app.ListFragment;
 import android.app.LoaderManager;

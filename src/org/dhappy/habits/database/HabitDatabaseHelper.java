@@ -1,4 +1,4 @@
-package com.synaptian.smoketracker.habits.database;
+package org.dhappy.habits.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -2,7 +2,7 @@
 
 package org.dhappy.android.widget;
 
-import com.synaptian.smoketracker.habits.R;
+import org.dhappy.habits.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

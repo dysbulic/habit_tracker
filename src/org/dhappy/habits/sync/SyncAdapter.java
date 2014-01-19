@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.synaptian.smoketracker.habits.sync;
+package org.dhappy.habits.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -35,12 +35,12 @@ import android.os.Environment;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.synaptian.smoketracker.habits.R;
-import com.synaptian.smoketracker.habits.authenticator.AuthenticationService;
-import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
-import com.synaptian.smoketracker.habits.database.EventTable;
-import com.synaptian.smoketracker.habits.database.HabitDatabaseHelper;
-import com.synaptian.smoketracker.habits.database.HabitTable;
+import org.dhappy.habits.R;
+import org.dhappy.habits.authenticator.AuthenticationService;
+import org.dhappy.habits.contentprovider.HabitContentProvider;
+import org.dhappy.habits.database.EventTable;
+import org.dhappy.habits.database.HabitDatabaseHelper;
+import org.dhappy.habits.database.HabitTable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -87,8 +87,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String EVENT_WRITE_URL = HOST + "/events/";
     private static final String HABIT_READ_URL = HOST + "/habits.json";
 
-    private static final String PREFERENCES_KEY = "com.synaptian.habits";
-    private static final String SYNC_KEY = "com.synaptian.habits.sync.last";
+    private static final String PREFERENCES_KEY = "org.dhappy.habits";
+    private static final String SYNC_KEY = "org.dhappy.habits.sync.last";
     
     /**
      * Content resolver, for performing database operations.

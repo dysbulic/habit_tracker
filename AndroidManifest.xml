@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.synaptian.smoketracker.habits"
+    package="org.dhappy.habits"
     android:versionCode="1"
-    android:versionName="1.1" >
+    android:versionName="1.1">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Required to register a SyncStatusObserver to display a "syncing..." progress indicator. -->
@@ -22,13 +22,13 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name">
         <activity
-            android:name="com.synaptian.smoketracker.habits.HabitTimeListActivity"
+            android:name=".HabitTimeListActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.synaptian.smoketracker.habits.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,13 +37,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.synaptian.smoketracker.habits.HabitDetailActivity"
+            android:name=".HabitDetailActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name="com.synaptian.smoketracker.habits.GoalDetailActivity"
+            android:name=".GoalDetailActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name="com.synaptian.smoketracker.habits.EventDetailActivity"
+            android:name=".EventDetailActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".authenticator.AuthenticatorActivity"
@@ -58,7 +58,7 @@
         </activity>
         
         <service
-            android:name="com.synaptian.smoketracker.habits.sync.SyncService"
+            android:name=".sync.SyncService"
             android:exported="true"
             android:process=":sync" >
 
@@ -75,7 +75,7 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
-		<!-- The authenticator service -->
+                <!-- The authenticator service -->
         <service
             android:name=".authenticator.AuthenticationService"
             android:exported="true">
@@ -87,15 +87,8 @@
                 android:resource="@xml/authenticator" />
         </service>
         <provider
-            android:name="com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider"
-            android:authorities="com.synaptian.smoketracker.habits.contentprovider" >
+            android:name=".contentprovider.HabitContentProvider"
+            android:authorities="org.dhappy.habits.contentprovider" >
         </provider>
-
-        <activity
-            android:name="com.synaptian.smoketracker.habits.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
-        </activity>
     </application>
-
 </manifest>

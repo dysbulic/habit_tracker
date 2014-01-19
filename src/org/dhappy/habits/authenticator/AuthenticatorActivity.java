@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.synaptian.smoketracker.habits.authenticator;
+package org.dhappy.habits.authenticator;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +27,7 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 
-import com.synaptian.smoketracker.habits.R;
+import org.dhappy.habits.R;
 
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;

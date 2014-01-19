@@ -79,6 +79,6 @@
     <string name="oauth_id">090124fbffd7373e141956abe20a74ee7e2d9cb6c3839fa14bb5e0d7a6328dbf</string>
     <string name="oauth_secret">9202884a73244f3243b393bdb456d0439f2da37ded544a63bddba699b521c2c7</string>
     <string name="oauth_account_name">Test Account</string>
-    <string name="oauth_account_type">com.synaptian.smoketracker.habits.sync</string>
-    <string name="oauth_authority">com.synaptian.smoketracker.habits.contentprovider</string>
+    <string name="oauth_account_type">org.dhappy.habits.sync</string>
+    <string name="oauth_authority">org.dhappy.habits.contentprovider</string>
 </resources>

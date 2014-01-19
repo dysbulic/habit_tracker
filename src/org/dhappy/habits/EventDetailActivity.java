@@ -1,8 +1,11 @@
-package com.synaptian.smoketracker.habits;
+package org.dhappy.habits;
 
 import java.util.Calendar;
-
-import org.dhappy.android.widget.Timer;
+import org.dhappy.habits.R;
+import org.dhappy.habits.contentprovider.HabitContentProvider;
+import org.dhappy.habits.database.EventTable;
+import org.dhappy.habits.database.GoalTable;
+import org.dhappy.habits.database.HabitTable;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -23,22 +26,19 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
-import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
-import com.synaptian.smoketracker.habits.database.HabitTable;
-import com.synaptian.smoketracker.habits.database.GoalTable;
 
 /*
  * HabitDetailActivity allows to enter a new habit item 
  * or to change an existing
  */
-public class GoalDetailActivity extends Activity
+public class EventDetailActivity extends Activity
 	implements AdapterView.OnItemSelectedListener {
   private Spinner mHabitSelect;
   private EditText mDescriptionText;
   private TimePicker mEventTime;
   private DatePicker mEventDate;
 
-  private Uri goalUri;
+  private Uri eventUri;
   private long habitId;
   SimpleCursorAdapter mAdapter;
   
@@ -80,13 +80,13 @@ public class GoalDetailActivity extends Activity
     Bundle extras = getIntent().getExtras();
 
     // Check from the saved Instance
-    goalUri = (bundle == null) ? null : (Uri) bundle.getParcelable(HabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
+    eventUri = (bundle == null) ? null : (Uri) bundle.getParcelable(HabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
 
     // Or passed from the other activity
     if (extras != null) {
-      goalUri = extras.getParcelable(HabitContentProvider.GOAL_CONTENT_ITEM_TYPE);
+      eventUri = extras.getParcelable(HabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
 
-      fillData(goalUri);
+      fillData(eventUri);
     }
 
     confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +106,7 @@ public class GoalDetailActivity extends Activity
   }
 
   private void fillData(Uri uri) {
-    String[] projection = { GoalTable.COLUMN_HABIT_ID, GoalTable.COLUMN_TIME, GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_DESCRIPTION };
+    String[] projection = { GoalTable.COLUMN_HABIT_ID, EventTable.COLUMN_TIME, EventTable.TABLE_EVENT + "." + EventTable.COLUMN_DESCRIPTION };
     Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
     if (cursor != null) {
       cursor.moveToFirst();
@@ -119,12 +119,10 @@ public class GoalDetailActivity extends Activity
     	  }
       }
       
-      String description = cursor.getString(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_DESCRIPTION));
-      description = description == null ? "" : description;
-      mDescriptionText.setText(description);
+      mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_DESCRIPTION)));
       
       Calendar eventTime = Calendar.getInstance();
-      long seconds = cursor.getLong(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_TIME));
+      long seconds = cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_TIME));
       eventTime.setTimeInMillis(seconds * 1000);
       
       mEventDate.updateDate(eventTime.get(Calendar.YEAR),
@@ -133,7 +131,6 @@ public class GoalDetailActivity extends Activity
       mEventTime.setCurrentHour(eventTime.get(Calendar.HOUR_OF_DAY));
       mEventTime.setCurrentMinute(eventTime.get(Calendar.MINUTE));
       
-      // Always close the cursor
       cursor.close();
     }
   }
@@ -141,7 +138,7 @@ public class GoalDetailActivity extends Activity
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     saveState();
-    outState.putParcelable(HabitContentProvider.GOAL_CONTENT_ITEM_TYPE, goalUri);
+    outState.putParcelable(HabitContentProvider.GOAL_CONTENT_ITEM_TYPE, eventUri);
   }
 
   @Override
@@ -160,19 +157,19 @@ public class GoalDetailActivity extends Activity
     			  mEventTime.getCurrentMinute());
     
     ContentValues values = new ContentValues();	
-    values.put(GoalTable.COLUMN_HABIT_ID, habitId);
-    values.put(GoalTable.COLUMN_TIME, Math.floor(eventTime.getTimeInMillis() / 1000));
-    values.put(GoalTable.COLUMN_DESCRIPTION, description);
+    values.put(EventTable.COLUMN_HABIT_ID, habitId);
+    values.put(EventTable.COLUMN_TIME, Math.floor(eventTime.getTimeInMillis() / 1000));
+    values.put(EventTable.COLUMN_DESCRIPTION, description);
 
-    if (goalUri == null) {
+    if (eventUri == null) {
       // New habit
-      goalUri = getContentResolver().insert(HabitContentProvider.GOALS_URI, values);
+      eventUri = getContentResolver().insert(HabitContentProvider.EVENTS_URI, values);
     } else {
       // Update habit
-      getContentResolver().update(goalUri, values, null, null);
+      getContentResolver().update(eventUri, values, null, null);
     }
 
-    Log.w(GoalDetailActivity.class.getName(), "Event Time: " + eventTime);
+    Log.w(EventDetailActivity.class.getName(), "Event Time: " + eventTime);
   }
   
   @Override

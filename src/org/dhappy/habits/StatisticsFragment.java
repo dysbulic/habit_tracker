@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.synaptian.smoketracker.habits;
+package org.dhappy.habits;
 
-import com.synaptian.smoketracker.habits.R;
-import com.synaptian.smoketracker.habits.authenticator.AuthenticationService;
+import org.dhappy.habits.R;
+import org.dhappy.habits.authenticator.AuthenticationService;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -41,7 +41,7 @@ import android.widget.Toast;
 public class StatisticsFragment extends Fragment {
     int mNum;
     private AccountManager mAccountManager;
-    private final String ACCOUNT_TYPE = "com.synaptian.smoketracker.habits.sync";
+    private final String ACCOUNT_TYPE = "org.dhappy.habits.sync";
     public static final String AUTHTOKEN_TYPE_FULL_ACCESS = "Full access";
 
     /**

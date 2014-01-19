@@ -16,8 +16,8 @@ limitations under the License.
 -->
 
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
-              android:contentAuthority="com.synaptian.smoketracker.habits.contentprovider"
-              android:accountType="com.synaptian.smoketracker.habits.sync"
+              android:contentAuthority="org.dhappy.habits.contentprovider"
+              android:accountType="org.dhappy.habits.sync"
               android:userVisible="true"
               android:supportsUploading="true"
               android:allowParallelSyncs="false"
