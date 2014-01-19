@@ -16,8 +16,6 @@
 
 package com.synaptian.smoketracker.habits.authenticator;
 
-import com.example.android.samplesync.Constants;
-
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
@@ -92,7 +90,7 @@ class Authenticator extends AbstractAccountAuthenticator {
 
         // If the caller requested an authToken type we don't support, then
         // return an error
-        if (!authTokenType.equals(Constants.AUTHTOKEN_TYPE)) {
+        if (!authTokenType.equals(AuthenticationService.AUTHTOKEN_TYPE)) {
             final Bundle result = new Bundle();
             result.putString(AccountManager.KEY_ERROR_MESSAGE, "invalid authTokenType");
             return result;

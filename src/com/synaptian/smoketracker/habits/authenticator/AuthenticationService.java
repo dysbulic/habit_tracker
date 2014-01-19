@@ -29,6 +29,9 @@ public class AuthenticationService extends Service {
 
     private static final String TAG = "AuthenticationService";
 
+    public final static String AUTHTOKEN_TYPE = "org.dhappy.habits";
+    public final static String ACCOUNT_TYPE = "org.dhappy.habits";
+    
     private Authenticator mAuthenticator;
 
     @Override

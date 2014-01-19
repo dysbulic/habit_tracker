@@ -15,8 +15,8 @@
  */
 package com.synaptian.smoketracker.habits;
 
-import com.example.android.samplesync.Constants;
 import com.synaptian.smoketracker.habits.R;
+import com.synaptian.smoketracker.habits.authenticator.AuthenticationService;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -82,7 +82,7 @@ public class StatisticsFragment extends Fragment {
     	Account[] accounts = mAccountManager.getAccountsByType(ACCOUNT_TYPE);
     	Toast.makeText(getActivity(), "Syncing: " + accounts.length, Toast.LENGTH_LONG).show();
     	if(accounts.length >= 1) {
-    		getExistingAccountAuthToken(accounts[0], Constants.AUTHTOKEN_TYPE);
+    		getExistingAccountAuthToken(accounts[0], AuthenticationService.AUTHTOKEN_TYPE);
     		String authority = getText(R.string.oauth_authority).toString();
     		Bundle settingsBundle = new Bundle();
 	        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);

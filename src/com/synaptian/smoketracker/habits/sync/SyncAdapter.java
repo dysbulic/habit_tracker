@@ -35,8 +35,8 @@ import android.os.Environment;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.example.android.samplesync.Constants;
 import com.synaptian.smoketracker.habits.R;
+import com.synaptian.smoketracker.habits.authenticator.AuthenticationService;
 import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
 import com.synaptian.smoketracker.habits.database.EventTable;
 import com.synaptian.smoketracker.habits.database.HabitDatabaseHelper;
@@ -135,7 +135,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
         	AccountManager mAccountManager = AccountManager.get(getContext());
-        	String authToken = mAccountManager.blockingGetAuthToken(account, Constants.AUTHTOKEN_TYPE, true);
+        	String authToken = mAccountManager.blockingGetAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, true);
         	
         	Log.i(TAG, "Account / Token: " + account.name + " / " + authToken);
                     	

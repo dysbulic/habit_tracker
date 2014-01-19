@@ -27,7 +27,6 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 
-import com.example.android.samplesync.Constants;
 import com.synaptian.smoketracker.habits.R;
 
 import android.accounts.Account;
@@ -182,7 +181,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     	                        final Account account = new Account(accountName, accountType);
     	                        AccountManager mAccountManager = AccountManager.get(getBaseContext());
 	                            mAccountManager.addAccountExplicitly(account, null, null);
-	                            mAccountManager.setAuthToken(account, Constants.AUTHTOKEN_TYPE, authToken);
+	                            mAccountManager.setAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, authToken);
 
 	                            Bundle data = new Bundle();
 	                            data.putString(AccountManager.KEY_ACCOUNT_NAME, accountName);
@@ -211,7 +210,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      */
     private void finishConfirmCredentials(boolean result) {
         Log.i(TAG, "finishConfirmCredentials()");
-        final Account account = new Account(mUsername, Constants.ACCOUNT_TYPE);
+        final Account account = new Account(mUsername, AuthenticationService.ACCOUNT_TYPE);
         mAccountManager.setPassword(account, mPassword);
         final Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_BOOLEAN_RESULT, result);
@@ -232,7 +231,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     private void finishLogin(String authToken) {
 
         Log.i(TAG, "finishLogin()");
-        final Account account = new Account(mUsername, Constants.ACCOUNT_TYPE);
+        final Account account = new Account(mUsername, AuthenticationService.ACCOUNT_TYPE);
         if (mRequestNewAccount) {
             mAccountManager.addAccountExplicitly(account, mPassword, null);
             // Set contacts sync for this account.
@@ -242,7 +241,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         }
         final Intent intent = new Intent();
         intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUsername);
-        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, Constants.ACCOUNT_TYPE);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, AuthenticationService.ACCOUNT_TYPE);
         setAccountAuthenticatorResult(intent.getExtras());
         setResult(RESULT_OK, intent);
         finish();
