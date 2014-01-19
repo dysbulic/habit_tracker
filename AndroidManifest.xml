@@ -5,41 +5,97 @@
     android:versionName="1.1" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <!-- Required to register a SyncStatusObserver to display a "syncing..." progress indicator. -->
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <!-- Required to enable our SyncAdapter after it's created. -->
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <!-- Required because we're manually creating a new account. -->
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
     <application
+        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:allowBackup="true">
+        android:label="@string/app_name" >
         <activity
-            android:name=".HabitTimeListActivity"
-            android:label="@string/app_name">
+            android:name="com.synaptian.smoketracker.habits.HabitTimeListActivity"
+            android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.synaptian.smoketracker.habits.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".HabitDetailActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize"/>
+            android:name="com.synaptian.smoketracker.habits.HabitDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name=".GoalDetailActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize"/>
+            android:name="com.synaptian.smoketracker.habits.GoalDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
-            android:name=".EventDetailActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize"/>
+            android:name="com.synaptian.smoketracker.habits.EventDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".authenticator.AuthenticatorActivity"
+            android:label="@string/ui_activity_title"
+            android:excludeFromRecents="true"
+            android:configChanges="orientation"
+            >
+            <!--
+                No intent-filter here! This activity is only ever launched by
+                someone who explicitly knows the class name
+            -->
+        </activity>
         
+        <service
+            android:name="com.synaptian.smoketracker.habits.sync.SyncService"
+            android:exported="true"
+            android:process=":sync" >
+
+            <!--
+            This intent filter is required. It allows the system to launch our sync service
+            as needed.
+            -->
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+            <!-- This points to a required XML file which describes our SyncAdapter. -->
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
+
+		<!-- The authenticator service -->
+        <service
+            android:name=".authenticator.AuthenticationService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
         <provider
-            android:name=".contentprovider.MyHabitContentProvider"
+            android:name="com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider"
             android:authorities="com.synaptian.smoketracker.habits.contentprovider" >
         </provider>
+
+        <activity
+            android:name="com.synaptian.smoketracker.habits.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
     </application>
 
 </manifest>

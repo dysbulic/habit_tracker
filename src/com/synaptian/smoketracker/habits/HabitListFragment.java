@@ -2,7 +2,7 @@ package com.synaptian.smoketracker.habits;
 
 import org.dhappy.android.widget.Timer;
 
-import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 import com.synaptian.smoketracker.habits.database.EventTable;
 
@@ -92,8 +92,8 @@ public class HabitListFragment extends ListFragment
         getLoaderManager().initLoader(0, null, this);
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Place an action bar item for searching.
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         MenuItem item = menu.add("New");
         item.setIcon(android.R.drawable.ic_input_add);
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -114,23 +114,24 @@ public class HabitListFragment extends ListFragment
         switch (item.getItemId()) {
         case MENU_EDIT:
             Intent intent = new Intent(getActivity(), HabitDetailActivity.class);
-            Uri habitUri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + info.id);
-            intent.putExtra(MyHabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
+            Uri habitUri = Uri.parse(HabitContentProvider.HABITS_URI + "/" + info.id);
+            intent.putExtra(HabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
             startActivity(intent);
             return true;
         case MENU_DELETE:
-        	Uri uri = Uri.parse(MyHabitContentProvider.HABITS_URI + "/" + info.id);
+        	Uri uri = Uri.parse(HabitContentProvider.HABITS_URI + "/" + info.id);
         	getActivity().getContentResolver().delete(uri, null, null);
         	return true;
         }
         return super.onContextItemSelected(item);
     }
     
-    @Override public void onListItemClick(ListView l, View v, int position, long id) {
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
         ContentValues values = new ContentValues();	
         values.put(EventTable.COLUMN_HABIT_ID, id);
         values.put(EventTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
-        getActivity().getContentResolver().insert(MyHabitContentProvider.EVENTS_URI, values);
+        getActivity().getContentResolver().insert(HabitContentProvider.EVENTS_URI, values);
 
       	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
 
@@ -149,7 +150,7 @@ public class HabitListFragment extends ListFragment
     };
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), MyHabitContentProvider.HABITS_URI, HABITS_PROJECTION, null, null, null);
+        return new CursorLoader(getActivity(), HabitContentProvider.HABITS_URI, HABITS_PROJECTION, null, null, null);
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

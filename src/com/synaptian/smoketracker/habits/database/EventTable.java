@@ -11,6 +11,8 @@ public class EventTable {
   public static final String COLUMN_HABIT_ID = "habit_id";
   public static final String COLUMN_DESCRIPTION = "description";
   public static final String COLUMN_TIME = "time";
+  public static final String COLUMN_CREATED_AT = "created_at";
+  public static final String COLUMN_UPDATED_AT = "updated_at";
 
   // Database creation SQL statement
   private static final String DATABASE_CREATE = "create table " 
@@ -19,7 +21,9 @@ public class EventTable {
       + COLUMN_ID + " integer primary key autoincrement, " 
       + COLUMN_HABIT_ID + " integer not null,"
       + COLUMN_TIME + " integer,"
-      + COLUMN_DESCRIPTION + " text" 
+      + COLUMN_DESCRIPTION + " text,"
+      + COLUMN_CREATED_AT + " integer,"
+      + COLUMN_UPDATED_AT + " integer"
       + ");";
 
   public static void onCreate(SQLiteDatabase database) {

@@ -21,7 +21,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
-import com.synaptian.smoketracker.habits.contentprovider.MyHabitContentProvider;
+import com.synaptian.smoketracker.habits.contentprovider.HabitContentProvider;
 import com.synaptian.smoketracker.habits.database.HabitTable;
 import com.synaptian.smoketracker.habits.database.GoalTable;
 import com.synaptian.smoketracker.habits.database.EventTable;
@@ -57,7 +57,7 @@ public class EventDetailActivity extends Activity
     String[] from = new String[] { HabitTable.COLUMN_COLOR, HabitTable.COLUMN_NAME };
     int[] to = new int[] { R.id.color_block, R.id.label };
 
-    Cursor cursor = getContentResolver().query(MyHabitContentProvider.HABITS_URI, queryCols, null, null, null);
+    Cursor cursor = getContentResolver().query(HabitContentProvider.HABITS_URI, queryCols, null, null, null);
     mAdapter = new SimpleCursorAdapter(this, R.layout.habit_select_row, cursor, from, to, 0);
 
     mAdapter.setViewBinder(new ViewBinder() {
@@ -79,11 +79,11 @@ public class EventDetailActivity extends Activity
     Bundle extras = getIntent().getExtras();
 
     // Check from the saved Instance
-    eventUri = (bundle == null) ? null : (Uri) bundle.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
+    eventUri = (bundle == null) ? null : (Uri) bundle.getParcelable(HabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
 
     // Or passed from the other activity
     if (extras != null) {
-      eventUri = extras.getParcelable(MyHabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
+      eventUri = extras.getParcelable(HabitContentProvider.EVENT_CONTENT_ITEM_TYPE);
 
       fillData(eventUri);
     }
@@ -137,7 +137,7 @@ public class EventDetailActivity extends Activity
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     saveState();
-    outState.putParcelable(MyHabitContentProvider.GOAL_CONTENT_ITEM_TYPE, eventUri);
+    outState.putParcelable(HabitContentProvider.GOAL_CONTENT_ITEM_TYPE, eventUri);
   }
 
   @Override
@@ -162,7 +162,7 @@ public class EventDetailActivity extends Activity
 
     if (eventUri == null) {
       // New habit
-      eventUri = getContentResolver().insert(MyHabitContentProvider.EVENTS_URI, values);
+      eventUri = getContentResolver().insert(HabitContentProvider.EVENTS_URI, values);
     } else {
       // Update habit
       getContentResolver().update(eventUri, values, null, null);
