@@ -1,6 +1,5 @@
 package org.dhappy.habits.util;
 
-
 import java.io.*;
 import java.security.InvalidParameterException;
 import java.security.MessageDigest;
