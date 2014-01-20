@@ -50,9 +50,9 @@ public class BootstrapPagerAdapter extends FragmentPagerAdapter {
             checkInsFragment.setArguments(bundle);
             return checkInsFragment;
         case 3:
-            CheckInsListFragment checkInsFragment2 = new CheckInsListFragment();
-            checkInsFragment2.setArguments(bundle);
-            return checkInsFragment2;
+            HabitsListFragment habitsFragment = new HabitsListFragment();
+            habitsFragment.setArguments(bundle);
+            return habitsFragment;
         default:
             return null;
         }
