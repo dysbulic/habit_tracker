@@ -47,7 +47,7 @@ public class DescriptorDetailActivity extends Activity {
 
     // Or passed from the other activity
     if (extras != null) {
-      habitUri = extras.getParcelable(HabitContentProvider.HABIT_CONTENT_ITEM_TYPE);
+      habitUri = extras.getParcelable(HabitContentProvider.DESCRIPTOR_CONTENT_ITEM_TYPE);
 
       fillData(habitUri);
     } else {
@@ -77,9 +77,8 @@ public class DescriptorDetailActivity extends Activity {
 
   private void fillData(Uri uri) {
     String[] projection = {
-    		HabitTable.COLUMN_NAME,
-    		HabitTable.COLUMN_COLOR,
-    		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
+    		DescriptorTable.COLUMN_NAME,
+    		DescriptorTable.COLUMN_COLOR };
     Cursor cursor = getContentResolver().query(uri, projection, null, null,
         null);
     if (cursor != null) {
@@ -95,7 +94,7 @@ public class DescriptorDetailActivity extends Activity {
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     saveState();
-    outState.putParcelable(HabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
+    outState.putParcelable(HabitContentProvider.DESCRIPTOR_CONTENT_ITEM_TYPE, habitUri);
   }
 
   @Override
@@ -120,7 +119,7 @@ public class DescriptorDetailActivity extends Activity {
 
     if (habitUri == null) {
       // New habit
-      habitUri = getContentResolver().insert(HabitContentProvider.HABITS_URI, values);
+      habitUri = getContentResolver().insert(HabitContentProvider.DESCRIPTORS_URI, values);
     } else {
       // Update habit
       getContentResolver().update(habitUri, values, null, null);

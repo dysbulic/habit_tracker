@@ -49,7 +49,7 @@ public class GoalListFragment extends ListFragment
         
         registerForContextMenu(getListView());
 
-        String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, GoalTable.COLUMN_TIME };
+        String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, GoalTable.COLUMN_END };
         int[] to = new int[] { R.id.label, R.id.color_block, R.id.timer };
 
         mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.goal_row, null, from, to, 0);
@@ -123,7 +123,7 @@ public class GoalListFragment extends ListFragment
     	GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
         HabitTable.COLUMN_COLOR,
-        GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_TIME
+        GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_END
     };
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

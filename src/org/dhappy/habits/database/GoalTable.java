@@ -11,7 +11,7 @@ public class GoalTable {
   public static final String COLUMN_HABIT_ID = "habit_id";
   public static final String COLUMN_DESCRIPTION = "description";
   public static final String COLUMN_START = "start";
-  public static final String COLUMN_TIME = "time";
+  public static final String COLUMN_END = "end";
   public static final String COLUMN_CREATED_AT = "created_at";
   public static final String COLUMN_UPDATED_AT = "updated_at";
 
@@ -22,7 +22,7 @@ public class GoalTable {
       + COLUMN_ID + " integer primary key autoincrement, " 
       + COLUMN_HABIT_ID + " integer not null,"
       + COLUMN_START + " integer,"
-      + COLUMN_TIME + " integer,"
+      + COLUMN_END + " integer,"
       + COLUMN_DESCRIPTION + " text,"
       + COLUMN_CREATED_AT + " integer,"
       + COLUMN_UPDATED_AT + " integer"

@@ -107,7 +107,7 @@ public class GoalDetailActivity extends Activity
   }
 
   private void fillData(Uri uri) {
-    String[] projection = { GoalTable.COLUMN_HABIT_ID, GoalTable.COLUMN_TIME, GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_DESCRIPTION };
+    String[] projection = { GoalTable.COLUMN_HABIT_ID, GoalTable.COLUMN_END, GoalTable.TABLE_GOAL + "." + GoalTable.COLUMN_DESCRIPTION };
     Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
     if (cursor != null) {
       cursor.moveToFirst();
@@ -125,7 +125,7 @@ public class GoalDetailActivity extends Activity
       mDescriptionText.setText(description);
       
       Calendar eventTime = Calendar.getInstance();
-      long seconds = cursor.getLong(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_TIME));
+      long seconds = cursor.getLong(cursor.getColumnIndexOrThrow(GoalTable.COLUMN_END));
       eventTime.setTimeInMillis(seconds * 1000);
       
       mEventDate.updateDate(eventTime.get(Calendar.YEAR),
@@ -162,7 +162,7 @@ public class GoalDetailActivity extends Activity
     
     ContentValues values = new ContentValues();	
     values.put(GoalTable.COLUMN_HABIT_ID, habitId);
-    values.put(GoalTable.COLUMN_TIME, Math.floor(eventTime.getTimeInMillis() / 1000));
+    values.put(GoalTable.COLUMN_END, Math.floor(eventTime.getTimeInMillis() / 1000));
     values.put(GoalTable.COLUMN_DESCRIPTION, description);
 
     if (goalUri == null) {

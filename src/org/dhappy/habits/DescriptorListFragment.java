@@ -6,6 +6,7 @@ import org.dhappy.habits.contentprovider.HabitContentProvider;
 import org.dhappy.habits.database.DescriptorTable;
 import org.dhappy.habits.database.EventTable;
 import org.dhappy.habits.database.HabitTable;
+import org.dhappy.habits.database.ReadingTable;
 
 
 import android.app.ListFragment;
@@ -40,9 +41,6 @@ public class DescriptorListFragment extends ListFragment
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
 
-    // If non-null, this is the current filter the user has provided.
-    String mCurFilter;
-
     @Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -58,7 +56,7 @@ public class DescriptorListFragment extends ListFragment
         String[] from = new String[] { DescriptorTable.COLUMN_NAME, DescriptorTable.COLUMN_COLOR };
         int[] to = new int[] { R.id.label, R.id.color_block };
 
-        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.habit_row, null, from, to, 0);
+        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.descriptor_row, null, from, to, 0);
 
         mAdapter.setViewBinder(new ViewBinder() {
     		@Override
@@ -105,7 +103,7 @@ public class DescriptorListFragment extends ListFragment
     @Override  
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {  
     	super.onCreateContextMenu(menu, v, menuInfo);  
-    	menu.setHeaderTitle("Habit Options");
+    	menu.setHeaderTitle("Descriptor Options");
     	menu.add(ContextMenu.NONE, MENU_EDIT, ContextMenu.NONE, R.string.menu_edit);
     	menu.add(ContextMenu.NONE, MENU_DELETE, ContextMenu.NONE, R.string.menu_delete);
     }
@@ -116,12 +114,12 @@ public class DescriptorListFragment extends ListFragment
         switch (item.getItemId()) {
         case MENU_EDIT:
             Intent intent = new Intent(getActivity(), DescriptorDetailActivity.class);
-            Uri habitUri = Uri.parse(HabitContentProvider.HABITS_URI + "/" + info.id);
-            intent.putExtra(HabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
+            Uri habitUri = Uri.parse(HabitContentProvider.DESCRIPTORS_URI + "/" + info.id);
+            intent.putExtra(HabitContentProvider.DESCRIPTOR_CONTENT_ITEM_TYPE, habitUri);
             startActivity(intent);
             return true;
         case MENU_DELETE:
-        	Uri uri = Uri.parse(HabitContentProvider.HABITS_URI + "/" + info.id);
+        	Uri uri = Uri.parse(HabitContentProvider.DESCRIPTORS_URI + "/" + info.id);
         	getActivity().getContentResolver().delete(uri, null, null);
         	return true;
         }
@@ -131,9 +129,9 @@ public class DescriptorListFragment extends ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         ContentValues values = new ContentValues();	
-        values.put(EventTable.COLUMN_HABIT_ID, id);
-        values.put(EventTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
-        getActivity().getContentResolver().insert(HabitContentProvider.EVENTS_URI, values);
+        values.put(ReadingTable.COLUMN_DESCRIPTOR_ID, id);
+        values.put(ReadingTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
+        //getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
 
       	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
 
@@ -144,15 +142,14 @@ public class DescriptorListFragment extends ListFragment
     }
 
     // These are the rows that we will retrieve.
-    static final String[] HABITS_PROJECTION = new String[] {
-    	HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID,
-        HabitTable.COLUMN_NAME,
-        HabitTable.COLUMN_COLOR,
-        "MAX(" + EventTable.COLUMN_TIME + ") as " + EventTable.COLUMN_TIME
+    static final String[] DESCRIPTORS_PROJECTION = new String[] {
+    	DescriptorTable.COLUMN_ID,
+    	DescriptorTable.COLUMN_NAME,
+    	DescriptorTable.COLUMN_COLOR
     };
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(), HabitContentProvider.HABITS_URI, HABITS_PROJECTION, null, null, null);
+        return new CursorLoader(getActivity(), HabitContentProvider.DESCRIPTORS_URI, DESCRIPTORS_PROJECTION, null, null, null);
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

@@ -3,6 +3,7 @@ package org.dhappy.habits.contentprovider;
 import java.util.Calendar;
 import java.util.Random;
 
+import org.dhappy.habits.database.DescriptorTable;
 import org.dhappy.habits.database.EventTable;
 import org.dhappy.habits.database.GoalTable;
 import org.dhappy.habits.database.HabitDatabaseHelper;
@@ -32,6 +33,8 @@ public class HabitContentProvider extends ContentProvider {
   private static final int GOAL_ID = 40;
   private static final int EVENTS = 50;
   private static final int EVENT_ID = 60;
+  private static final int DESCRIPTORS = 70;
+  private static final int DESCRIPTOR_ID = 80;
 
   public static final String AUTHORITY = "org.dhappy.habits.contentprovider";
 
@@ -44,6 +47,9 @@ public class HabitContentProvider extends ContentProvider {
   private static final String EVENTS_PATH = "events";
   public static final Uri EVENTS_URI = Uri.parse("content://" + AUTHORITY + "/" + EVENTS_PATH);
 
+  private static final String DESCRIPTORS_PATH = "descriptors";
+  public static final Uri DESCRIPTORS_URI = Uri.parse("content://" + AUTHORITY + "/" + DESCRIPTORS_PATH);
+
   public static final String HABIT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/habits";
   public static final String HABIT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/habit";
   
@@ -52,6 +58,9 @@ public class HabitContentProvider extends ContentProvider {
 
   public static final String EVENT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/events";
   public static final String EVENT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/event";
+
+  public static final String DESCRIPTOR_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/events";
+  public static final String DESCRIPTOR_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/event";
 
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
@@ -63,8 +72,10 @@ public class HabitContentProvider extends ContentProvider {
 	    sURIMatcher.addURI(AUTHORITY, GOALS_PATH + "/*", GOAL_ID);
 	    sURIMatcher.addURI(AUTHORITY, EVENTS_PATH, EVENTS);
 	    sURIMatcher.addURI(AUTHORITY, EVENTS_PATH + "/*", EVENT_ID);
+	    sURIMatcher.addURI(AUTHORITY, DESCRIPTORS_PATH, DESCRIPTORS);
+	    sURIMatcher.addURI(AUTHORITY, DESCRIPTORS_PATH + "/*", DESCRIPTOR_ID);
   }
-
+  
   @Override
   public boolean onCreate() {
     database = new HabitDatabaseHelper(getContext());
@@ -108,6 +119,11 @@ public class HabitContentProvider extends ContentProvider {
     case EVENTS:
         queryBuilder.setTables(HabitTable.TABLE_HABIT + " JOIN " + EventTable.TABLE_EVENT
 				   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
+        break;
+    case DESCRIPTOR_ID:
+        queryBuilder.appendWhere(DescriptorTable.TABLE_DESCRIPTOR + "." + DescriptorTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+    case DESCRIPTORS:
+        queryBuilder.setTables(DescriptorTable.TABLE_DESCRIPTOR);
         break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -162,6 +178,10 @@ public class HabitContentProvider extends ContentProvider {
         id = sqlDB.insert(EventTable.TABLE_EVENT, null, values);
         returnUri = Uri.parse(EVENTS_PATH + "/" + id);
         break;
+    case DESCRIPTORS:
+        id = sqlDB.insert(DescriptorTable.TABLE_DESCRIPTOR, null, values);
+        returnUri = Uri.parse(DESCRIPTORS_PATH + "/" + id);
+        break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }
@@ -201,15 +221,26 @@ public class HabitContentProvider extends ContentProvider {
         rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, selection, selectionArgs);
         break;
       case EVENT_ID:
+	    id = uri.getLastPathSegment();
+	    if (TextUtils.isEmpty(selection)) {
+	        rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, EventTable.COLUMN_ID + "=" + id, null);
+	    } else {
+	        rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, EventTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+	    }
+	    break;
+      case DESCRIPTORS:
+        rowsDeleted = sqlDB.delete(DescriptorTable.TABLE_DESCRIPTOR, selection, selectionArgs);
+        break;
+      case DESCRIPTOR_ID:
         id = uri.getLastPathSegment();
         if (TextUtils.isEmpty(selection)) {
-          rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, EventTable.COLUMN_ID + "=" + id, null);
+            rowsDeleted = sqlDB.delete(DescriptorTable.TABLE_DESCRIPTOR, DescriptorTable.COLUMN_ID + "=" + id, null);
         } else {
-          rowsDeleted = sqlDB.delete(EventTable.TABLE_EVENT, EventTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+            rowsDeleted = sqlDB.delete(DescriptorTable.TABLE_DESCRIPTOR, DescriptorTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
         }
         break;
     default:
-      throw new IllegalArgumentException("Unknown URI: " + uri);
+        throw new IllegalArgumentException("Unknown URI: " + uri);
     }
     getContext().getContentResolver().notifyChange(uri, null);
     return rowsDeleted;
