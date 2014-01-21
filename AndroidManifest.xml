@@ -46,6 +46,9 @@
             android:name=".EventDetailActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
+            android:name=".DescriptorDetailActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
             android:name=".authenticator.AuthenticatorActivity"
             android:label="@string/ui_activity_title"
             android:excludeFromRecents="true"

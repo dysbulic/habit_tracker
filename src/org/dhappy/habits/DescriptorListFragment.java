@@ -3,6 +3,7 @@ package org.dhappy.habits;
 import org.dhappy.android.widget.Timer;
 import org.dhappy.habits.R;
 import org.dhappy.habits.contentprovider.HabitContentProvider;
+import org.dhappy.habits.database.DescriptorTable;
 import org.dhappy.habits.database.EventTable;
 import org.dhappy.habits.database.HabitTable;
 
@@ -31,7 +32,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.SimpleCursorAdapter.ViewBinder;
 
 
-public class MoodListFragment extends ListFragment
+public class DescriptorListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final int MENU_EDIT = Menu.FIRST + 1;
 	private static final int MENU_DELETE = Menu.FIRST + 2;
@@ -54,8 +55,8 @@ public class MoodListFragment extends ListFragment
 
         registerForContextMenu(getListView());
 
-        String[] from = new String[] { HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, EventTable.COLUMN_TIME };
-        int[] to = new int[] { R.id.label, R.id.color_block, R.id.timer };
+        String[] from = new String[] { DescriptorTable.COLUMN_NAME, DescriptorTable.COLUMN_COLOR };
+        int[] to = new int[] { R.id.label, R.id.color_block };
 
         mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.habit_row, null, from, to, 0);
 
@@ -98,7 +99,7 @@ public class MoodListFragment extends ListFragment
         MenuItem item = menu.add("New");
         item.setIcon(android.R.drawable.ic_input_add);
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        item.setIntent(new Intent(getActivity(), HabitDetailActivity.class));
+        item.setIntent(new Intent(getActivity(), DescriptorDetailActivity.class));
     }
 
     @Override  
@@ -114,7 +115,7 @@ public class MoodListFragment extends ListFragment
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
         case MENU_EDIT:
-            Intent intent = new Intent(getActivity(), HabitDetailActivity.class);
+            Intent intent = new Intent(getActivity(), DescriptorDetailActivity.class);
             Uri habitUri = Uri.parse(HabitContentProvider.HABITS_URI + "/" + info.id);
             intent.putExtra(HabitContentProvider.HABIT_CONTENT_ITEM_TYPE, habitUri);
             startActivity(intent);
