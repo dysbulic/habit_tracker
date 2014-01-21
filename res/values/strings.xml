@@ -5,7 +5,8 @@
   	<string name="no_habits">Currently there are no habits recorded</string>
   	<string name="no_goals">Currently there are no goals recorded</string>
   	<string name="no_events">Currently there are no events recorded</string>
-  	<string name="menu_insert">Add Item</string>
+  	<string name="no_moods">Currently there are no descriptors</string>
+  		<string name="menu_insert">Add Item</string>
   	<string name="menu_edit">Edit</string>
   	<string name="menu_new">New</string>
   	<string name="menu_delete">Delete</string>
@@ -22,7 +23,8 @@
     <string name="events_tab">Events</string>
     <string name="goals_tab">Goals</string>
     <string name="statistics_tab">Stats</string>
-        
+    <string name="mood_tab">Mood</string>
+    
   	<string name="action_insert">New</string>
   	
     <string name="hello_world"><b>Hello, <i>World!</i></b></string>

@@ -50,6 +50,7 @@ public class MainActivity extends Activity {
 
         mTabsAdapter = new TabsAdapter(this, mViewPager);
         mTabsAdapter.addTab(bar.newTab().setText(R.string.habits_tab), HabitListFragment.class, null);
+        mTabsAdapter.addTab(bar.newTab().setText(R.string.mood_tab), MoodListFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText(R.string.events_tab), EventListFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText(R.string.goals_tab), GoalListFragment.class, null);
         mTabsAdapter.addTab(bar.newTab().setText(R.string.statistics_tab), StatisticsFragment.class, null);
