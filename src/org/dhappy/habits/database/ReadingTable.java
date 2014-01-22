@@ -6,7 +6,7 @@ import android.util.Log;
 public class ReadingTable {
 
   // Database table
-  public static final String TABLE_READING = "event";
+  public static final String TABLE_READING = "reading";
   public static final String COLUMN_ID = "_id";
   public static final String COLUMN_DESCRIPTOR_ID = "descriptor_id";
   public static final String COLUMN_DESCRIPTION = "description";

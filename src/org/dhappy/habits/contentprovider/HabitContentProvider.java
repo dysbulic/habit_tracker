@@ -1,5 +1,11 @@
 package org.dhappy.habits.contentprovider;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.Calendar;
 import java.util.Random;
 
@@ -17,7 +23,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class HabitContentProvider extends ContentProvider {
 
@@ -85,7 +93,46 @@ public class HabitContentProvider extends ContentProvider {
   @Override
   public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
-    // Using SQLiteQueryBuilder instead of query() method
+  	String state = Environment.getExternalStorageState();
+  	if (state.equals(Environment.MEDIA_MOUNTED)) 						{
+  	    File root = Environment.getExternalStorageDirectory();
+  	    File destination = new File(root, "org.dhappy.habits.db");
+
+      	FileChannel source = null;
+      	FileChannel copy = null;
+  	    try {
+  	    	String db = database.getWritableDatabase().getPath();
+          	Log.i("Copy", "Copying Database: " + db);
+  	        source = new FileInputStream(new File(db)).getChannel();
+  	        copy = new FileOutputStream(destination).getChannel();
+  	        copy.transferFrom(source, 0, source.size());
+  	    } catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+  	    	if(source != null) {
+  	        	try {
+					source.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+  	        }
+  	        if(copy != null) {
+  	        	try {
+					copy.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+  	        }
+  	    }
+  	}
+
+  	// Using SQLiteQueryBuilder instead of query() method
     SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
     String groupBy = null;
