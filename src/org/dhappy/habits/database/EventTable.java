@@ -18,7 +18,7 @@ public class EventTable {
   private static final String DATABASE_CREATE = "create table " 
       + TABLE_EVENT
       + "(" 
-      + COLUMN_ID + " integer primary key autoincrement, " 
+      + COLUMN_ID + " integer primary key autoincrement," 
       + COLUMN_HABIT_ID + " integer not null,"
       + COLUMN_TIME + " integer,"
       + COLUMN_DESCRIPTION + " text,"
