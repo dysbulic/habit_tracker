@@ -7,10 +7,8 @@ class HabitsController < ApplicationController
   # GET /habits
   # GET /habits.json
   def index
-    puts "Current User: " + (current_user ? current_user.email : 'nil')
     user = current_user
     user ||= User.find(doorkeeper_token[:resource_owner_id]) if doorkeeper_token
-    puts "Current User: " + (user ? user.email : 'nil')
 
     if params[:created_since]
       @habits = user.habits.where("created_at >= ?", Time.at(params[:created_since].to_i))

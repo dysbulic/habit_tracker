@@ -8,7 +8,11 @@ class EventsController < ApplicationController
   # GET /events.json
   def index
     @events = []
-    current_user.habits.find_each do |habit|
+
+    user = current_user
+    user ||= User.find(doorkeeper_token[:resource_owner_id]) if doorkeeper_token
+
+    user.habits.find_each do |habit|
       @events.concat(habit.events)
     end
     @events = @events.sort_by{|e| e.time}
