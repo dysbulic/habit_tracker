@@ -80,12 +80,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     /**
      * URL to fetch content from during a sync.
      */
-    //private static final String HOST = getText(R.string.server_url).toString();
-    //private static final String HOST = "http://smoke-track.herokuapp.com";
-    private static final String HOST = "http://192.168.1.113:3000";
-    private static final String HABIT_WRITE_URL = HOST + "/habits/";
-    private static final String EVENT_WRITE_URL = HOST + "/events/";
-    private static final String HABIT_READ_URL = HOST + "/habits.json";
+    private static String HOST;
+    private static String HABIT_WRITE_URL;
+    private static String EVENT_WRITE_URL;
+    private static String HABIT_READ_URL;
 
     private static final String PREFERENCES_KEY = "org.dhappy.habits";
     private static final String SYNC_KEY = "org.dhappy.habits.sync.last";
@@ -93,16 +91,15 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     /**
      * Content resolver, for performing database operations.
      */
-    private final ContentResolver mContentResolver;
-    private final Context mContext;
+    private ContentResolver mContentResolver;
+    private Context mContext;
 
     /**
      * Constructor. Obtains handle to content resolver for later use.
      */
     public SyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
-        mContext = context;
-        mContentResolver = context.getContentResolver();
+        init(context);
     }
 
     /**
@@ -110,10 +107,19 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      */
     public SyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
-        mContext = context;
-        mContentResolver = context.getContentResolver();
+        init(context);
     }
 
+    final private void init(Context context) {
+    	mContext = context;
+    	mContentResolver = context.getContentResolver();
+    	
+    	HOST = context.getText(R.string.server_url).toString();
+        HABIT_WRITE_URL = HOST + "/habits/";
+        EVENT_WRITE_URL = HOST + "/events/";
+        HABIT_READ_URL = HOST + "/habits.json";
+    }
+    
     /**
      * Called by the Android system in response to a request to run the sync adapter. The work
      * required to read data from the network, parse it, and store it in the content provider is
