@@ -41,6 +41,9 @@ class HabitsController < ApplicationController
   def create
     @habit = Habit.new(habit_params)
 
+    @habit.user ||= current_user
+    @habit.user ||= User.find(doorkeeper_token[:resource_owner_id]) if doorkeeper_token
+
     respond_to do |format|
       if @habit.save
         format.html { redirect_to @habit, notice: 'Habit was successfully created.' }

@@ -4,6 +4,8 @@ Webapp::Application.routes.draw do
   resources :habits
   resources :events
 
+  get '/oauth_callback', to: 'pages#oauth_callback'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

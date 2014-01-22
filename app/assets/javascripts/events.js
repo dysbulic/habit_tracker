@@ -1,6 +1,4 @@
 function renderTasksCalendar() {
-    $('#loading-modal').modal()
-
     var day = d3.time.format( '%-d' ),
         weekday = d3.time.format( '%w' ),
         week = d3.time.format( '%U' ),
@@ -18,6 +16,8 @@ function renderTasksCalendar() {
 
     var url = window.location.pathname
     if( url == '/events' ) {
+        $('#loading-modal').modal()
+
         d3.json( '/habits.json', function( error, habits ) {
             habits = d3.nest()
                 .key( function( d ) { return d.id } )
@@ -101,7 +101,7 @@ function renderTasksCalendar() {
                     .attr( {
                         class: 'event',
                         x: 0,
-                        y: cellSize * Math.random(),
+                        y: function( d ) { return cellSize * Math.random() },
                         width: cellSize,
                         height: cellSize * 0.025
                     } )
