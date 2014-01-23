@@ -92,46 +92,6 @@ public class HabitContentProvider extends ContentProvider {
 
   @Override
   public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-
-  	String state = Environment.getExternalStorageState();
-  	if (state.equals(Environment.MEDIA_MOUNTED)) 						{
-  	    File root = Environment.getExternalStorageDirectory();
-  	    File destination = new File(root, "org.dhappy.habits.db");
-
-      	FileChannel source = null;
-      	FileChannel copy = null;
-  	    try {
-  	    	String db = database.getWritableDatabase().getPath();
-          	Log.i("Copy", "Copying Database: " + db);
-  	        source = new FileInputStream(new File(db)).getChannel();
-  	        copy = new FileOutputStream(destination).getChannel();
-  	        copy.transferFrom(source, 0, source.size());
-  	    } catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-  	    	if(source != null) {
-  	        	try {
-					source.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-  	        }
-  	        if(copy != null) {
-  	        	try {
-					copy.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-  	        }
-  	    }
-  	}
-
   	// Using SQLiteQueryBuilder instead of query() method
     SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 

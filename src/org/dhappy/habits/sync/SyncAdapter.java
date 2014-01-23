@@ -59,7 +59,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.FileChannel;
+import java.sql.Time;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -84,6 +86,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static String HABIT_WRITE_URL;
     private static String EVENT_WRITE_URL;
     private static String HABIT_READ_URL;
+    private static String EVENT_READ_URL;
 
     private static final String PREFERENCES_KEY = "org.dhappy.habits";
     private static final String SYNC_KEY = "org.dhappy.habits.sync.last";
@@ -118,6 +121,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         HABIT_WRITE_URL = HOST + "/habits/";
         EVENT_WRITE_URL = HOST + "/events/";
         HABIT_READ_URL = HOST + "/habits.json";
+        EVENT_READ_URL = HOST + "/events.json";
     }
     
     /**
@@ -214,6 +218,29 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         	Log.i(TAG, "Sent Habits: " + habitCount);
 
+        	Log.i(TAG, "Get new events from server");
+
+        	JSONArray events = getJSON(new URL(EVENT_READ_URL + "?created_since=" + lastSyncTime), authToken);
+        	SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            batch = new ArrayList<ContentProviderOperation>();
+            for(int i = 0; i < habits.length(); i++) {
+                JSONObject event = events.getJSONObject(i);
+	            batch.add(ContentProviderOperation.newInsert(HabitContentProvider.EVENTS_URI)
+	                    .withValue(EventTable.COLUMN_ID, event.getInt("id"))
+	                    .withValue(EventTable.COLUMN_HABIT_ID, event.getInt(EventTable.COLUMN_HABIT_ID))
+	                    .withValue(EventTable.COLUMN_TIME, timeFormat.parse(event.getString(EventTable.COLUMN_TIME)).getTime() / 1000)
+	                    .withValue(EventTable.COLUMN_DESCRIPTION, event.getString(HabitTable.COLUMN_DESCRIPTION))
+	                    .build());
+            }
+
+        	Log.i(TAG, "Applying batch operation");
+
+            try {
+            	mContentResolver.applyBatch(HabitContentProvider.AUTHORITY, batch);
+            } catch(SQLiteConstraintException e) {
+            	Log.e(TAG, "SQLiteConstraintException: " + e.getMessage());
+            }
+
         	Log.i(TAG, "Posting new events to the server");
 
         	String[] eventProjection = {
@@ -280,6 +307,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, "RemoteException", e);
 		} catch (OperationApplicationException e) {
             Log.e(TAG, "OperationApplicationException", e);
+		} catch (ParseException e) {
+            Log.e(TAG, "ParseException", e);
 		} finally {
 		}
         Log.i(TAG, "Network synchronization complete");
