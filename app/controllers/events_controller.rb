@@ -16,6 +16,10 @@ class EventsController < ApplicationController
       @events.concat(habit.events)
     end
     @events = @events.sort_by{|e| e.time}
+
+    if params[:page]
+      @events = @events.paginate(page: params[:page], per_page: params[:per_page])
+    end
   end
 
   # GET /events/1
