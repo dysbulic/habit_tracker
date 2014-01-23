@@ -237,7 +237,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         	JSONArray events;
         	int page = 1;
-        	SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        	SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             batch = new ArrayList<ContentProviderOperation>();
 
             do {
