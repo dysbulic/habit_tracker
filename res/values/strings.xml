@@ -6,7 +6,7 @@
   	<string name="no_goals">Currently there are no goals recorded</string>
   	<string name="no_events">Currently there are no events recorded</string>
   	<string name="no_moods">Currently there are no descriptors</string>
-  		<string name="menu_insert">Add Item</string>
+  	<string name="menu_insert">Add Item</string>
   	<string name="menu_edit">Edit</string>
   	<string name="menu_new">New</string>
   	<string name="menu_delete">Delete</string>
@@ -65,8 +65,7 @@
         name="login_activity_newaccount_text">Sign in to your Habit Tracker account. </string>
     
     <!-- Label for this package -->
-    <string
-        name="label">Habit Tracker</string>
+    <string name="label">Habit Tracker</string>
     
     <!-- Title string for Login activity-->
     <string name="ui_activity_title">Sign-in</string>
@@ -83,4 +82,7 @@
     <string name="oauth_account_name">Test Account</string>
     <string name="oauth_account_type">org.dhappy.habits.sync</string>
     <string name="oauth_authority">org.dhappy.habits.contentprovider</string>
+
+    <string name="weight_confirm">Record</string>
+    <string name="weight_cancel">Cancel</string>
 </resources>

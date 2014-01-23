@@ -131,8 +131,11 @@ public class DescriptorListFragment extends ListFragment
         ContentValues values = new ContentValues();	
         values.put(ReadingTable.COLUMN_DESCRIPTOR_ID, id);
         values.put(ReadingTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
+
         //getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
 
+        (new DescriptorWeightDialog()).show(getFragmentManager(), "Weight");
+        
       	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
 
       	getLoaderManager().restartLoader(0, null, this);
