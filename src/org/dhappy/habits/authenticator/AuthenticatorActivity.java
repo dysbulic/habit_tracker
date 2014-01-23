@@ -103,13 +103,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         Log.i(TAG, "onCreate(" + icicle + ")");
         super.onCreate(icicle);
         Log.i(TAG, "loading data from Intent");
-        final Intent intent = getIntent();
         setContentView(R.layout.login_activity);
 
     	final String host = getText(R.string.server_url).toString();
     	final String authUri = host + "/oauth/authorize";
     	final String tokenUri = host + "/oauth/token";
-        final String appUri = host + "/habits";
 
         final String callback = getText(R.string.oauth_callback).toString();
     	
@@ -129,9 +127,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             WebView webView = (WebView) findViewById(R.id.webview);
             webView.setWebViewClient(new WebViewClient() {
                 @Override
-                public void onReceivedError(WebView view, int errorCode,
-                        String description, String failingUrl) {
-                    Log.i(TAG, "WebView Error: " + description);
+                public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                    Log.e(TAG, "WebView Error: " + description);
                 }
 
                 @Override
@@ -229,7 +226,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      * @param result the confirmCredentials result.
      */
     private void finishLogin(String authToken) {
-
         Log.i(TAG, "finishLogin()");
         final Account account = new Account(mUsername, AuthenticationService.ACCOUNT_TYPE);
         if (mRequestNewAccount) {
@@ -304,13 +300,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             return getText(R.string.login_activity_loginfail_text_pwmissing);
         }
         return null;
-    }
-
-    /**
-     * Shows the progress UI for a lengthy operation.
-     */
-    private void showProgress() {
-        showDialog(0);
     }
 
     /**

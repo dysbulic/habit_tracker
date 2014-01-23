@@ -86,7 +86,7 @@ class Authenticator extends AbstractAccountAuthenticator {
     @Override
     public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account,
             String authTokenType, Bundle loginOptions) throws NetworkErrorException {
-        Log.v(TAG, "getAuthToken()");
+        Log.i(TAG, "getAuthToken()");
 
         // If the caller requested an authToken type we don't support, then
         // return an error
@@ -111,7 +111,7 @@ class Authenticator extends AbstractAccountAuthenticator {
     @Override
     public String getAuthTokenLabel(String authTokenType) {
         // null means we don't support multiple authToken types
-        Log.v(TAG, "getAuthTokenLabel()");
+        Log.i(TAG, "getAuthTokenLabel()");
         return null;
     }
 
@@ -121,7 +121,7 @@ class Authenticator extends AbstractAccountAuthenticator {
         // This call is used to query whether the Authenticator supports
         // specific features. We don't expect to get called, so we always
         // return false (no) for any queries.
-        Log.v(TAG, "hasFeatures()");
+        Log.i(TAG, "hasFeatures()");
         final Bundle result = new Bundle();
         result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, false);
         return result;
@@ -130,7 +130,7 @@ class Authenticator extends AbstractAccountAuthenticator {
     @Override
     public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account,
             String authTokenType, Bundle loginOptions) {
-        Log.v(TAG, "updateCredentials()");
+        Log.i(TAG, "updateCredentials()");
         return null;
     }
 }

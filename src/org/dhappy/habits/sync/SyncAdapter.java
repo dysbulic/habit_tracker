@@ -18,6 +18,7 @@ package org.dhappy.habits.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.content.AbstractThreadedSyncAdapter;
@@ -145,7 +146,9 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
         	AccountManager mAccountManager = AccountManager.get(getContext());
-        	String authToken = mAccountManager.blockingGetAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, true);
+        	AccountManagerFuture<Bundle> future = mAccountManager.getAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, null, false, null, null);
+        	String authToken = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
+        	//String authToken = mAccountManager.blockingGetAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, true);
         	
         	Log.i(TAG, "Account / Token: " + account.name + " / " + authToken);
                     	
@@ -158,8 +161,20 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         	Log.i(TAG, "Get new habits from server");
 
-        	JSONArray habits = getJSON(new URL(HABIT_READ_URL + "?created_since=" + lastSyncTime), authToken);
-            ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
+        	JSONArray habits;
+        	try {
+        		habits = getJSON(new URL(HABIT_READ_URL + "?created_since=" + lastSyncTime), authToken);
+        	} catch(IOException ioe) {
+            	Log.i(TAG, "Expired auth token; invalidating");
+        		mAccountManager.invalidateAuthToken(AuthenticationService.ACCOUNT_TYPE, authToken);
+        		future = mAccountManager.getAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, null, false, null, null);
+        		//authToken = mAccountManager.blockingGetAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, true);
+        		authToken = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
+        		Log.i(TAG, "New auth token: " + authToken);
+        		habits = getJSON(new URL(HABIT_READ_URL + "?created_since=" + lastSyncTime), authToken);
+        	}
+
+        	ArrayList<ContentProviderOperation> batch = new ArrayList<ContentProviderOperation>();
             for(int i = 0; i < habits.length(); i++) {
                 JSONObject habit = habits.getJSONObject(i);
 	            batch.add(ContentProviderOperation.newInsert(HabitContentProvider.HABITS_URI)
@@ -220,19 +235,24 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         	Log.i(TAG, "Get new events from server");
 
-        	JSONArray events = getJSON(new URL(EVENT_READ_URL + "?created_since=" + lastSyncTime), authToken);
+        	JSONArray events;
+        	int page = 1;
         	SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             batch = new ArrayList<ContentProviderOperation>();
-            for(int i = 0; i < habits.length(); i++) {
-                JSONObject event = events.getJSONObject(i);
-	            batch.add(ContentProviderOperation.newInsert(HabitContentProvider.EVENTS_URI)
+
+            do {
+        		events = getJSON(new URL(EVENT_READ_URL + "?created_since=" + lastSyncTime + "&page=" + (page++)), authToken);
+                for(int i = 0; i < events.length(); i++) {
+                	JSONObject event = events.getJSONObject(i);
+                	batch.add(ContentProviderOperation.newInsert(HabitContentProvider.EVENTS_URI)
 	                    .withValue(EventTable.COLUMN_ID, event.getInt("id"))
 	                    .withValue(EventTable.COLUMN_HABIT_ID, event.getInt(EventTable.COLUMN_HABIT_ID))
 	                    .withValue(EventTable.COLUMN_TIME, timeFormat.parse(event.getString(EventTable.COLUMN_TIME)).getTime() / 1000)
 	                    .withValue(EventTable.COLUMN_DESCRIPTION, event.getString(HabitTable.COLUMN_DESCRIPTION))
 	                    .build());
-            }
-
+                }
+            } while(events.length() > 0);
+            
         	Log.i(TAG, "Applying batch operation");
 
             try {
@@ -346,6 +366,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     	InputStream is = new BufferedInputStream(con.getInputStream());
     	Scanner s = new Scanner(is).useDelimiter("\\A");
     	String text = s.hasNext() ? s.next() : "";
+        Log.i(TAG, "Length: " + text.length());
     	return new JSONArray(text);
     }
     
