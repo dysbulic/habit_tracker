@@ -9,6 +9,7 @@ public class ReadingTable {
   public static final String TABLE_READING = "reading";
   public static final String COLUMN_ID = "_id";
   public static final String COLUMN_DESCRIPTOR_ID = "descriptor_id";
+  public static final String COLUMN_WEIGHT = "weight";
   public static final String COLUMN_DESCRIPTION = "description";
   public static final String COLUMN_TIME = "time";
   public static final String COLUMN_CREATED_AT = "created_at";
@@ -21,6 +22,7 @@ public class ReadingTable {
       + COLUMN_ID + " integer primary key autoincrement, " 
       + COLUMN_DESCRIPTOR_ID + " integer not null,"
       + COLUMN_TIME + " integer,"
+      + COLUMN_WEIGHT + " real,"
       + COLUMN_DESCRIPTION + " text,"
       + COLUMN_CREATED_AT + " integer,"
       + COLUMN_UPDATED_AT + " integer"
