@@ -24,8 +24,6 @@ function renderTasksCalendar() {
                 .rollup( function( d ) { return d[0] } )
                 .map( habits )
             
-            console.log( habits )
-            
             d3.json( url + '.json', function( error, events ) {
                 for( var i = 0; i < events.length; i++ ) {
                     events[i].time = new Date( Date.parse(events[i].time ) )
@@ -56,8 +54,6 @@ function renderTasksCalendar() {
                     .attr( 'transform', "translate(" + position.x + "," + position.y + ")" )
 
                 
-                console.log( start, end, d3.time.days( start, end ) )
-
                 var days = svg.selectAll( '.day' )
                     .data( d3.time.days( start, end ) )
                     .enter()
@@ -101,7 +97,7 @@ function renderTasksCalendar() {
                     .attr( {
                         class: 'event',
                         x: 0,
-                        y: function( d ) { return cellSize * Math.random() },
+                        y: function( d ) { return cellSize * ( ( d.time.getHours() + d.time.getMinutes() / 60 ) / 24 ) },
                         width: cellSize,
                         height: cellSize * 0.025
                     } )
