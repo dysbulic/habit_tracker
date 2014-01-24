@@ -18,7 +18,7 @@ class EventsController < ApplicationController
     @events = @events.sort_by{|e| e.time}
 
     if params[:page]
-      @events = @events.paginate(page: params[:page], per_page: params[:per_page])
+      @events = @events.paginate(page: params[:page], per_page: params[:per_page] || 300)
     end
   end
 
