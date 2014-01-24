@@ -139,7 +139,7 @@ public class HabitListFragment extends ListFragment
       	getLoaderManager().restartLoader(0, null, this);
         mAdapter.notifyDataSetChanged();
       	
-      	((MainActivity) getActivity()).setActiveTab(1);
+      	((MainActivity) getActivity()).setActiveTab(2);
     }
 
     // These are the rows that we will retrieve.
