@@ -1,8 +1,12 @@
 package org.dhappy.habits;
 
+import org.dhappy.habits.database.ReadingTable;
+
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,12 +14,29 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.SeekBar;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class DescriptorWeightDialog extends DialogFragment {
 	private String TAG = "DescriptorWeightDialog";
 	public final static String DESCRIPTOR_NAME = "org.dhappy.habits.mood.descriptor.name";
+	
+	public interface DescriptorWeightDialogListener {
+        public void onRecordWeight(DialogFragment dialog);
+    }
+
+	DescriptorWeightDialogListener mListener;
+    
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            //mListener = (DescriptorWeightDialogListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
+        }
+    }
 	
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -49,17 +70,26 @@ public class DescriptorWeightDialog extends DialogFragment {
         });
 
         String descriptor = this.getArguments().getString(DESCRIPTOR_NAME, "Unset");
+        final DescriptorWeightDialog self = this;
         
         builder.setView(view)
                .setMessage(descriptor)
                .setPositiveButton(R.string.weight_confirm, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                       // FIRE ZE MISSILES!
+                	   //mListener.onRecordWeight(self);
+                       ContentValues values = new ContentValues();
+                       //values.put(ReadingTable.COLUMN_DESCRIPTOR_ID, id);
+                       values.put(ReadingTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
+
+                       //getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
+
+                     	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
+
+                     	((MainActivity) getActivity()).setActiveTab(2);
                    }
                })
                .setNegativeButton(R.string.weight_cancel, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                       // User cancelled the dialog
                    }
                });
         return builder.create();

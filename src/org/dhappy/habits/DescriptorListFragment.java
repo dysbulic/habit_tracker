@@ -9,6 +9,7 @@ import org.dhappy.habits.database.HabitTable;
 import org.dhappy.habits.database.ReadingTable;
 
 
+import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -34,7 +35,7 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 
 
 public class DescriptorListFragment extends ListFragment
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>, DescriptorWeightDialog.DescriptorWeightDialogListener {
 	private static final int MENU_EDIT = Menu.FIRST + 1;
 	private static final int MENU_DELETE = Menu.FIRST + 2;
 	
@@ -128,24 +129,11 @@ public class DescriptorListFragment extends ListFragment
     
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        ContentValues values = new ContentValues();	
-        values.put(ReadingTable.COLUMN_DESCRIPTOR_ID, id);
-        values.put(ReadingTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
-
-        //getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
-
         DescriptorWeightDialog dialog = new DescriptorWeightDialog();
         Bundle bundle = new Bundle();
         bundle.putString(DescriptorWeightDialog.DESCRIPTOR_NAME, "Unknown");
         dialog.setArguments(bundle);
         dialog.show(getFragmentManager(), "Weight");
-        
-      	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
-
-      	getLoaderManager().restartLoader(0, null, this);
-        mAdapter.notifyDataSetChanged();
-      	
-      	((MainActivity) getActivity()).setActiveTab(2);
     }
 
     // These are the rows that we will retrieve.
@@ -178,4 +166,20 @@ public class DescriptorListFragment extends ListFragment
         // longer using it.
         mAdapter.swapCursor(null);
     }
+
+	@Override
+	public void onRecordWeight(DialogFragment dialog) {
+        ContentValues values = new ContentValues();	
+        //values.put(ReadingTable.COLUMN_DESCRIPTOR_ID, id);
+        values.put(ReadingTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
+
+        //getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
+
+      	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
+
+      	getLoaderManager().restartLoader(0, null, this);
+        mAdapter.notifyDataSetChanged();
+      	
+      	((MainActivity) getActivity()).setActiveTab(2);
+	}
 }
