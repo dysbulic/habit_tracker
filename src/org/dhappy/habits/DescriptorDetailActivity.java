@@ -79,8 +79,7 @@ public class DescriptorDetailActivity extends Activity {
     String[] projection = {
     		DescriptorTable.COLUMN_NAME,
     		DescriptorTable.COLUMN_COLOR };
-    Cursor cursor = getContentResolver().query(uri, projection, null, null,
-        null);
+    Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
     if (cursor != null) {
       cursor.moveToFirst();
 

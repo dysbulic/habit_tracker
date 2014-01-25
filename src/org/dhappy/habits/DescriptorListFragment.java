@@ -131,7 +131,7 @@ public class DescriptorListFragment extends ListFragment
     public void onListItemClick(ListView l, View v, int position, long id) {
         DescriptorWeightDialog dialog = new DescriptorWeightDialog();
         Bundle bundle = new Bundle();
-        bundle.putString(DescriptorWeightDialog.DESCRIPTOR_NAME, "Unknown");
+        bundle.putInt(DescriptorWeightDialog.DESCRIPTOR_ID, (int) id);
         dialog.setArguments(bundle);
         dialog.show(getFragmentManager(), "Weight");
     }
