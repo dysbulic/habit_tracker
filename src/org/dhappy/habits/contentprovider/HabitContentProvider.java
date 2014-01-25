@@ -14,6 +14,7 @@ import org.dhappy.habits.database.EventTable;
 import org.dhappy.habits.database.GoalTable;
 import org.dhappy.habits.database.HabitDatabaseHelper;
 import org.dhappy.habits.database.HabitTable;
+import org.dhappy.habits.database.ReadingTable;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -43,6 +44,8 @@ public class HabitContentProvider extends ContentProvider {
   private static final int EVENT_ID = 60;
   private static final int DESCRIPTORS = 70;
   private static final int DESCRIPTOR_ID = 80;
+  private static final int READINGS = 90;
+  private static final int READING_ID = 100;
 
   public static final String AUTHORITY = "org.dhappy.habits.contentprovider";
 
@@ -58,6 +61,9 @@ public class HabitContentProvider extends ContentProvider {
   private static final String DESCRIPTORS_PATH = "descriptors";
   public static final Uri DESCRIPTORS_URI = Uri.parse("content://" + AUTHORITY + "/" + DESCRIPTORS_PATH);
 
+  private static final String READINGS_PATH = "readings";
+  public static final Uri READINGS_URI = Uri.parse("content://" + AUTHORITY + "/" + READINGS_PATH);
+
   public static final String HABIT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/habits";
   public static final String HABIT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/habit";
   
@@ -67,8 +73,11 @@ public class HabitContentProvider extends ContentProvider {
   public static final String EVENT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/events";
   public static final String EVENT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/event";
 
-  public static final String DESCRIPTOR_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/events";
-  public static final String DESCRIPTOR_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/event";
+  public static final String DESCRIPTOR_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/descriptors";
+  public static final String DESCRIPTOR_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/descriptor";
+
+  public static final String READING_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/readings";
+  public static final String READING_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/reading";
 
   private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
   static {
@@ -82,6 +91,8 @@ public class HabitContentProvider extends ContentProvider {
 	    sURIMatcher.addURI(AUTHORITY, EVENTS_PATH + "/*", EVENT_ID);
 	    sURIMatcher.addURI(AUTHORITY, DESCRIPTORS_PATH, DESCRIPTORS);
 	    sURIMatcher.addURI(AUTHORITY, DESCRIPTORS_PATH + "/*", DESCRIPTOR_ID);
+	    sURIMatcher.addURI(AUTHORITY, READINGS_PATH, READINGS);
+	    sURIMatcher.addURI(AUTHORITY, READINGS_PATH + "/*", READING_ID);
   }
   
   @Override
@@ -131,6 +142,11 @@ public class HabitContentProvider extends ContentProvider {
         queryBuilder.appendWhere(DescriptorTable.TABLE_DESCRIPTOR + "." + DescriptorTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case DESCRIPTORS:
         queryBuilder.setTables(DescriptorTable.TABLE_DESCRIPTOR);
+        break;
+    case READING_ID:
+        queryBuilder.appendWhere(ReadingTable.TABLE_READING + "." + ReadingTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+    case READINGS:
+        queryBuilder.setTables(ReadingTable.TABLE_READING);
         break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -189,6 +205,10 @@ public class HabitContentProvider extends ContentProvider {
         id = sqlDB.insert(DescriptorTable.TABLE_DESCRIPTOR, null, values);
         returnUri = Uri.parse(DESCRIPTORS_PATH + "/" + id);
         break;
+    case READINGS:
+        id = sqlDB.insert(ReadingTable.TABLE_READING, null, values);
+        returnUri = Uri.parse(READINGS_PATH + "/" + id);
+        break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }
@@ -246,6 +266,17 @@ public class HabitContentProvider extends ContentProvider {
             rowsDeleted = sqlDB.delete(DescriptorTable.TABLE_DESCRIPTOR, DescriptorTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
         }
         break;
+      case READINGS:
+        rowsDeleted = sqlDB.delete(ReadingTable.TABLE_READING, selection, selectionArgs);
+        break;
+      case READING_ID:
+        id = uri.getLastPathSegment();
+        if (TextUtils.isEmpty(selection)) {
+            rowsDeleted = sqlDB.delete(ReadingTable.TABLE_READING, ReadingTable.COLUMN_ID + "=" + id, null);
+        } else {
+            rowsDeleted = sqlDB.delete(ReadingTable.TABLE_READING, ReadingTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+        }
+        break;
     default:
         throw new IllegalArgumentException("Unknown URI: " + uri);
     }
@@ -291,11 +322,22 @@ public class HabitContentProvider extends ContentProvider {
     case EVENT_ID:
       id = uri.getLastPathSegment();
       if (TextUtils.isEmpty(selection)) {
-        rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, values, EventTable.COLUMN_ID + "=" + id, null);
+          rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, values, EventTable.COLUMN_ID + "=" + id, null);
       } else {
-        rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, values, EventTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+          rowsUpdated = sqlDB.update(EventTable.TABLE_EVENT, values, EventTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
       }
       break;
+    case READINGS:
+      rowsUpdated = sqlDB.update(ReadingTable.TABLE_READING, values, selection, selectionArgs);
+      break;
+	case READING_ID:
+	  id = uri.getLastPathSegment();
+	  if (TextUtils.isEmpty(selection)) {
+	      rowsUpdated = sqlDB.update(ReadingTable.TABLE_READING, values, ReadingTable.COLUMN_ID + "=" + id, null);
+	  } else {
+	      rowsUpdated = sqlDB.update(ReadingTable.TABLE_READING, values, ReadingTable.COLUMN_ID + "=" + id + " and " + selection, selectionArgs);
+	  }
+	  break;
     default:
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }

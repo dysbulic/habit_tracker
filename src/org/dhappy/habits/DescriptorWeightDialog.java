@@ -93,8 +93,6 @@ public class DescriptorWeightDialog extends DialogFragment {
                .setMessage(descriptor)
                .setPositiveButton(R.string.weight_confirm, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                	   //mListener.onRecordWeight(self);
-
                        int weight = weightSelect.getProgress() - 100;
 
                        ContentValues values = new ContentValues();
@@ -102,7 +100,7 @@ public class DescriptorWeightDialog extends DialogFragment {
                        values.put(ReadingTable.COLUMN_WEIGHT, weight);
                        values.put(ReadingTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
 
-                       //getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
+                       getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
 
                      	Toast.makeText(getActivity(), descriptor + ":" + weight, Toast.LENGTH_LONG).show();
 
