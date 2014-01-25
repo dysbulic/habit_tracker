@@ -15,17 +15,19 @@ import android.widget.TextView;
 
 public class DescriptorWeightDialog extends DialogFragment {
 	private String TAG = "DescriptorWeightDialog";
+	public final static String DESCRIPTOR_NAME = "org.dhappy.habits.mood.descriptor.name";
 	
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.weight_dialog, null);
         
         final TextView weight = (TextView) view.findViewById(R.id.weight);
         SeekBar weightSelect = (SeekBar) view.findViewById(R.id.weight_select);
-        weightSelect.setMax(200);
+        weightSelect.setMax(200); // -100–100
         weightSelect.setProgress(100);
+
         weightSelect.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int position, boolean fromUser) {
@@ -45,9 +47,11 @@ public class DescriptorWeightDialog extends DialogFragment {
 			@Override
 			public void onStopTrackingTouch(SeekBar arg0) {}
         });
+
+        String descriptor = this.getArguments().getString(DESCRIPTOR_NAME, "Unset");
         
         builder.setView(view)
-               .setMessage(R.string.habit_edit_cancel)
+               .setMessage(descriptor)
                .setPositiveButton(R.string.weight_confirm, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
                        // FIRE ZE MISSILES!

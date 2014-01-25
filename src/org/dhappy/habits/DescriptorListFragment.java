@@ -134,14 +134,18 @@ public class DescriptorListFragment extends ListFragment
 
         //getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
 
-        (new DescriptorWeightDialog()).show(getFragmentManager(), "Weight");
+        DescriptorWeightDialog dialog = new DescriptorWeightDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString(DescriptorWeightDialog.DESCRIPTOR_NAME, "Unknown");
+        dialog.setArguments(bundle);
+        dialog.show(getFragmentManager(), "Weight");
         
       	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
 
       	getLoaderManager().restartLoader(0, null, this);
         mAdapter.notifyDataSetChanged();
       	
-      	((MainActivity) getActivity()).setActiveTab(1);
+      	((MainActivity) getActivity()).setActiveTab(2);
     }
 
     // These are the rows that we will retrieve.
