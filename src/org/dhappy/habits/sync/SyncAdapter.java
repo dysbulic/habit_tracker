@@ -238,9 +238,9 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	JSONArray events;
         	int page = 1;
         	SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            batch = new ArrayList<ContentProviderOperation>();
 
             do {
+                batch = new ArrayList<ContentProviderOperation>();
         		events = getJSON(new URL(EVENT_READ_URL + "?created_since=" + lastSyncTime + "&page=" + (page++)), authToken);
                 for(int i = 0; i < events.length(); i++) {
                 	JSONObject event = events.getJSONObject(i);
@@ -251,16 +251,14 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 	                    .withValue(EventTable.COLUMN_DESCRIPTION, event.getString(HabitTable.COLUMN_DESCRIPTION))
 	                    .build());
                 }
+
+                try {
+                	mContentResolver.applyBatch(HabitContentProvider.AUTHORITY, batch);
+                } catch(SQLiteConstraintException e) {
+                	Log.e(TAG, "SQLiteConstraintException: " + e.getMessage());
+                }
             } while(events.length() > 0);
             
-        	Log.i(TAG, "Applying batch operation");
-
-            try {
-            	mContentResolver.applyBatch(HabitContentProvider.AUTHORITY, batch);
-            } catch(SQLiteConstraintException e) {
-            	Log.e(TAG, "SQLiteConstraintException: " + e.getMessage());
-            }
-
         	Log.i(TAG, "Posting new events to the server");
 
         	String[] eventProjection = {
