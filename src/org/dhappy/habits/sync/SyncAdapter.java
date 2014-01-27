@@ -142,7 +142,10 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
      */
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        Log.i(TAG, "Beginning network synchronization");
+    	SharedPreferences prefs = getContext().getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
+    	int lastSyncTime = prefs.getInt(SYNC_KEY, 0);
+ 
+        Log.i(TAG, "Beginning network synchronization: " + lastSyncTime);
 
         try {
         	AccountManager mAccountManager = AccountManager.get(getContext());
@@ -153,11 +156,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	Log.i(TAG, "Account / Token: " + account.name + " / " + authToken);
                     	
         	int currentTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
-
-        	SharedPreferences prefs = getContext().getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
-        	int lastSyncTime = prefs.getInt(SYNC_KEY, 0);
-     
-        	lastSyncTime = 0;
 
         	Log.i(TAG, "Get new habits from server");
 
@@ -213,25 +211,24 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             		HabitTable.COLUMN_NAME,
             		HabitTable.COLUMN_COLOR,
             		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
-            //Cursor cursor = mContentResolver.query(HabitContentProvider.HABITS_URI, habitProjection, HabitTable.COLUMN_CREATED_AT + ">=" + lastSyncTime, null, null);
-            Cursor cursor = mContentResolver.query(HabitContentProvider.HABITS_URI, habitProjection, null, null, null);
+            Cursor cursor = mContentResolver.query(HabitContentProvider.HABITS_URI, habitProjection, HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_CREATED_AT + ">=" + lastSyncTime, null, null);
+            //Cursor cursor = mContentResolver.query(HabitContentProvider.HABITS_URI, habitProjection, null, null, null);
 
-            int habitCount = 0;
             if(cursor.moveToFirst()) {
+            	JSONArray habitList = new JSONArray();
             	do {
                     JSONObject habit = new JSONObject();
                     habit.put("id", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_ID)));
                     habit.put("color", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_COLOR)));
                     habit.put("name", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
                     habit.put("description", cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
-
-                    postJSON(habit, new URL(HABIT_WRITE_URL), authToken);
-
-            		habitCount++;
+                    habitList.put(habit);
             	} while(cursor.moveToNext());
+                postJSON(habitList, new URL(HABIT_WRITE_URL), authToken);
+
+            	Log.i(TAG, "Sent Habits: " + habitList.length());
             }
 
-        	Log.i(TAG, "Sent Habits: " + habitCount);
 
         	Log.i(TAG, "Get new events from server");
 
@@ -266,26 +263,27 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             		EventTable.COLUMN_HABIT_ID,
             		EventTable.COLUMN_TIME,
             		EventTable.TABLE_EVENT + "." + EventTable.COLUMN_DESCRIPTION };
-            //cursor = mContentResolver.query(HabitContentProvider.EVENTS_URI, eventProjection, EventTable.COLUMN_CREATED_AT + ">" + lastSyncTime, null, null);
-            cursor = mContentResolver.query(HabitContentProvider.EVENTS_URI, eventProjection, null, null, null);
+            cursor = mContentResolver.query(HabitContentProvider.EVENTS_URI, eventProjection, EventTable.TABLE_EVENT + "." + EventTable.COLUMN_CREATED_AT + ">" + lastSyncTime, null, null);
+            //cursor = mContentResolver.query(HabitContentProvider.EVENTS_URI, eventProjection, null, null, null);
 
-            int eventCount = 0;
             if(cursor.moveToFirst()) {
-            	do {
-            		JSONObject event = new JSONObject();
-                    event.put("id", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_ID)));
-                    event.put("habit_id", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_HABIT_ID)));
-                    event.put("time", cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_TIME)));
-                    event.put("description", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_DESCRIPTION)));
+            	while(!cursor.isAfterLast()) {
+            		JSONArray eventList = new JSONArray();
 
-                    postJSON(event, new URL(EVENT_WRITE_URL), authToken);
+            		do {
+            			JSONObject event = new JSONObject();
+            			event.put("id", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_ID)));
+            			event.put("habit_id", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_HABIT_ID)));
+            			event.put("time", cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_TIME)));
+            			event.put("description", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_DESCRIPTION)));
+                	} while(cursor.moveToNext() && eventList.length() < 500);
 
-            		eventCount++;
-            	} while(cursor.moveToNext());
+                    postJSON(eventList, new URL(EVENT_WRITE_URL), authToken);
+
+                    Log.i(TAG, "Sent Events: " + eventList.length());
+            	}
             }
             
-        	Log.i(TAG, "Sent Events: " + eventCount);
-        	
         	String state = Environment.getExternalStorageState();
         	if (state.equals(Environment.MEDIA_MOUNTED)) 						{
         	    File root = Environment.getExternalStorageDirectory();
@@ -310,7 +308,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	}
             
         	//prefs.edit().putInt(SYNC_KEY, currentTime).apply();
-
         } catch (OperationCanceledException e) {
 			Log.e(TAG, "OperationCanceledException: " + e.getMessage());
 		} catch (AuthenticatorException e) {
@@ -333,6 +330,31 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private int postJSON(JSONObject json, URL url, String authToken) throws IOException {
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestProperty("Accept-Encoding", "gzip, deflate");
+        con.setRequestProperty("Authorization", "Bearer " + authToken);
+
+        byte[] jsonBytes = json.toString().getBytes();
+
+        con.setRequestProperty("Content-Length", Integer.toString(jsonBytes.length));
+
+        con.setInstanceFollowRedirects(false);
+        con.setUseCaches(false);
+        con.setDoInput(true);
+        con.setDoOutput(true);
+
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        wr.write(jsonBytes);
+        wr.flush();
+        wr.close();
+        
+        return con.getResponseCode();
+    }
+
+    private int postJSON(JSONArray json, URL url, String authToken) throws IOException {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json");
