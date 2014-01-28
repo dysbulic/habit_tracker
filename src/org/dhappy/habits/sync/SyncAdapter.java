@@ -276,6 +276,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             			event.put("habit_id", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_HABIT_ID)));
             			event.put("time", cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_TIME)));
             			event.put("description", cursor.getString(cursor.getColumnIndexOrThrow(EventTable.COLUMN_DESCRIPTION)));
+            			eventList.put(event);
                 	} while(cursor.moveToNext() && eventList.length() < 500);
 
                     postJSON(eventList, new URL(EVENT_WRITE_URL), authToken);
