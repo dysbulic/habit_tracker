@@ -150,8 +150,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         try {
         	AccountManager mAccountManager = AccountManager.get(getContext());
         	AccountManagerFuture<Bundle> future = mAccountManager.getAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, null, false, null, null);
-        	String authToken = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
-        	//String authToken = mAccountManager.blockingGetAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, true);
+        	String authToken = mAccountManager.blockingGetAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, true);
         	
         	Log.i(TAG, "Account / Token: " + account.name + " / " + authToken);
                     	
@@ -165,9 +164,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	} catch(IOException ioe) {
             	Log.i(TAG, "Expired auth token; invalidating");
         		mAccountManager.invalidateAuthToken(AuthenticationService.ACCOUNT_TYPE, authToken);
-        		future = mAccountManager.getAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, null, false, null, null);
-        		//authToken = mAccountManager.blockingGetAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, true);
-        		authToken = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
+        		authToken = mAccountManager.blockingGetAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, true);
         		Log.i(TAG, "New auth token: " + authToken);
         		habits = getJSON(new URL(HABIT_READ_URL + "?created_since=" + lastSyncTime), authToken);
         	}
