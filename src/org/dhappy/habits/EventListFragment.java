@@ -122,10 +122,10 @@ public class EventListFragment extends ListFragment
 
     // These are the rows that we will retrieve.
     static final String[] EVENTS_PROJECTION = new String[] {
-    	EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID,
+    	EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID + " AS " + EventTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
         HabitTable.COLUMN_COLOR,
-        EventTable.TABLE_EVENT + "." + EventTable.COLUMN_TIME
+        EventTable.TABLE_EVENT + "." + EventTable.COLUMN_TIME + " AS " + EventTable.COLUMN_TIME
     };
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

@@ -35,7 +35,7 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 
 
 public class DescriptorListFragment extends ListFragment
-        implements LoaderManager.LoaderCallbacks<Cursor>, DescriptorWeightDialog.DescriptorWeightDialogListener {
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final int MENU_EDIT = Menu.FIRST + 1;
 	private static final int MENU_DELETE = Menu.FIRST + 2;
 	
@@ -166,20 +166,4 @@ public class DescriptorListFragment extends ListFragment
         // longer using it.
         mAdapter.swapCursor(null);
     }
-
-	@Override
-	public void onRecordWeight(DialogFragment dialog) {
-        ContentValues values = new ContentValues();	
-        //values.put(ReadingTable.COLUMN_DESCRIPTOR_ID, id);
-        values.put(ReadingTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
-
-        //getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
-
-      	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
-
-      	getLoaderManager().restartLoader(0, null, this);
-        mAdapter.notifyDataSetChanged();
-      	
-      	((MainActivity) getActivity()).setActiveTab(2);
-	}
 }

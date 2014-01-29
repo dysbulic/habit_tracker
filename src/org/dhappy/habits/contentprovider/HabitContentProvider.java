@@ -6,7 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 import org.dhappy.habits.database.DescriptorTable;
@@ -29,58 +32,59 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class HabitContentProvider extends ContentProvider {
+	private final static String TAG = "HabitContentProvider";
+	
+	private HabitDatabaseHelper database;
 
-  // database
-  private HabitDatabaseHelper database;
+	// Used for the UriMacher
+	private static final int HABITS = 10;
+	private static final int HABIT_ID = 20;
+	private static final int HABIT_NEW = 21;
+	private static final int HABIT_UPDATED = 22;
+	private static final int GOALS = 30;
+	private static final int GOAL_ID = 40;
+	private static final int EVENTS = 50;
+	private static final int EVENT_ID = 60;
+	private static final int DESCRIPTORS = 70;
+	private static final int DESCRIPTOR_ID = 80;
+	private static final int READINGS = 90;
+	private static final int READING_ID = 100;
 
-  // Used for the UriMacher
-  private static final int HABITS = 10;
-  private static final int HABIT_ID = 20;
-  private static final int HABIT_NEW = 21;
-  private static final int HABIT_UPDATED = 22;
-  private static final int GOALS = 30;
-  private static final int GOAL_ID = 40;
-  private static final int EVENTS = 50;
-  private static final int EVENT_ID = 60;
-  private static final int DESCRIPTORS = 70;
-  private static final int DESCRIPTOR_ID = 80;
-  private static final int READINGS = 90;
-  private static final int READING_ID = 100;
+	public static final String AUTHORITY = "org.dhappy.habits.contentprovider";
 
-  public static final String AUTHORITY = "org.dhappy.habits.contentprovider";
+	private static final String HABITS_PATH = "habits";
+	public static final Uri HABITS_URI = Uri.parse("content://" + AUTHORITY + "/" + HABITS_PATH);
 
-  private static final String HABITS_PATH = "habits";
-  public static final Uri HABITS_URI = Uri.parse("content://" + AUTHORITY + "/" + HABITS_PATH);
+	private static final String GOALS_PATH = "goals";
+	public static final Uri GOALS_URI = Uri.parse("content://" + AUTHORITY + "/" + GOALS_PATH);
 
-  private static final String GOALS_PATH = "goals";
-  public static final Uri GOALS_URI = Uri.parse("content://" + AUTHORITY + "/" + GOALS_PATH);
+	private static final String EVENTS_PATH = "events";
+	public static final Uri EVENTS_URI = Uri.parse("content://" + AUTHORITY + "/" + EVENTS_PATH);
 
-  private static final String EVENTS_PATH = "events";
-  public static final Uri EVENTS_URI = Uri.parse("content://" + AUTHORITY + "/" + EVENTS_PATH);
+	private static final String DESCRIPTORS_PATH = "descriptors";
+	public static final Uri DESCRIPTORS_URI = Uri.parse("content://" + AUTHORITY + "/" + DESCRIPTORS_PATH);
 
-  private static final String DESCRIPTORS_PATH = "descriptors";
-  public static final Uri DESCRIPTORS_URI = Uri.parse("content://" + AUTHORITY + "/" + DESCRIPTORS_PATH);
+	private static final String READINGS_PATH = "readings";
+	public static final Uri READINGS_URI = Uri.parse("content://" + AUTHORITY + "/" + READINGS_PATH);
 
-  private static final String READINGS_PATH = "readings";
-  public static final Uri READINGS_URI = Uri.parse("content://" + AUTHORITY + "/" + READINGS_PATH);
-
-  public static final String HABIT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/habits";
-  public static final String HABIT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/habit";
+	public static final String HABIT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/habits";
+	public static final String HABIT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/habit";
   
-  public static final String GOAL_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/goals";
-  public static final String GOAL_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/goal";
+	public static final String GOAL_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/goals";
+	public static final String GOAL_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/goal";
 
-  public static final String EVENT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/events";
-  public static final String EVENT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/event";
+	public static final String EVENT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/events";
+	public static final String EVENT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/event";
 
-  public static final String DESCRIPTOR_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/descriptors";
-  public static final String DESCRIPTOR_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/descriptor";
+	public static final String DESCRIPTOR_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/descriptors";
+	public static final String DESCRIPTOR_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/descriptor";
 
-  public static final String READING_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/readings";
-  public static final String READING_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/reading";
+	public static final String READING_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/readings";
+	public static final String READING_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/reading";
 
-  private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-  static {
+	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+	static {
 	    sURIMatcher.addURI(AUTHORITY, HABITS_PATH, HABITS);
 	    sURIMatcher.addURI(AUTHORITY, HABITS_PATH + "/*", HABIT_ID);
 	    sURIMatcher.addURI(AUTHORITY, HABITS_PATH + "/new_since/#", HABIT_NEW);
@@ -93,7 +97,7 @@ public class HabitContentProvider extends ContentProvider {
 	    sURIMatcher.addURI(AUTHORITY, DESCRIPTORS_PATH + "/*", DESCRIPTOR_ID);
 	    sURIMatcher.addURI(AUTHORITY, READINGS_PATH, READINGS);
 	    sURIMatcher.addURI(AUTHORITY, READINGS_PATH + "/*", READING_ID);
-  }
+	}
   
   @Override
   public boolean onCreate() {
@@ -103,10 +107,10 @@ public class HabitContentProvider extends ContentProvider {
 
   @Override
   public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-  	// Using SQLiteQueryBuilder instead of query() method
     SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 
     String groupBy = null;
+    SQLiteDatabase db = database.getReadableDatabase();
     
     int uriType = sURIMatcher.match(uri);
     switch (uriType) {
@@ -134,11 +138,44 @@ public class HabitContentProvider extends ContentProvider {
         break;
     case EVENT_ID:
         queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID + "=" + uri.getLastPathSegment());
-    case EVENTS:
         queryBuilder.setTables(HabitTable.TABLE_HABIT + " JOIN " + EventTable.TABLE_EVENT
 				   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
         break;
-    case DESCRIPTOR_ID:
+    case EVENTS:
+        queryBuilder.setTables(HabitTable.TABLE_HABIT + " JOIN " + EventTable.TABLE_EVENT
+				   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
+        List<String> habitsProjection = new ArrayList<String>();
+        for(String column : projection) {
+        	if(column == ReadingTable.COLUMN_WEIGHT) {
+        		habitsProjection.add(null);	
+        	} else {
+        		habitsProjection.add(column);
+        	}
+        }
+        String habitsQuery = queryBuilder.buildQuery(Arrays.copyOf(habitsProjection.toArray(), habitsProjection.size(), String[].class), selection, groupBy, null, null, null);
+        
+        queryBuilder = new SQLiteQueryBuilder();
+        queryBuilder.setTables(DescriptorTable.TABLE_DESCRIPTOR + " JOIN " + ReadingTable.TABLE_READING
+				   + " ON " + DescriptorTable.TABLE_DESCRIPTOR + "." + DescriptorTable.COLUMN_ID + " = " + ReadingTable.TABLE_READING + "." + ReadingTable.COLUMN_DESCRIPTOR_ID);
+        List<String> descriptorsProjection = new ArrayList<String>();
+        for(String column : projection) {
+        	if(column.startsWith(EventTable.TABLE_EVENT)) {
+        		descriptorsProjection.add(column.replace(EventTable.TABLE_EVENT, ReadingTable.TABLE_READING));
+        	} else {
+        		descriptorsProjection.add(column);
+        	}
+        }
+        String descriptorsQuery = queryBuilder.buildQuery(Arrays.copyOf(descriptorsProjection.toArray(), descriptorsProjection.size(), String[].class), selection, groupBy, null, null, null);
+
+        queryBuilder = new SQLiteQueryBuilder();
+        String[] queries = { habitsQuery, descriptorsQuery };
+        String query = queryBuilder.buildUnionQuery(queries, sortOrder, null);
+        
+        Log.i(TAG, "Union Query: " + query);
+        
+        Cursor cursor = db.rawQuery(query, null);
+        return cursor;
+	case DESCRIPTOR_ID:
         queryBuilder.appendWhere(DescriptorTable.TABLE_DESCRIPTOR + "." + DescriptorTable.COLUMN_ID + "=" + uri.getLastPathSegment());
     case DESCRIPTORS:
         queryBuilder.setTables(DescriptorTable.TABLE_DESCRIPTOR);
@@ -152,9 +189,7 @@ public class HabitContentProvider extends ContentProvider {
       throw new IllegalArgumentException("Unknown URI: " + uri);
     }
 
-    SQLiteDatabase db = database.getWritableDatabase();
     Cursor cursor = queryBuilder.query(db, projection, selection, selectionArgs, groupBy, null, sortOrder);
-    // Make sure that potential listeners are getting notified
     cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
     return cursor;

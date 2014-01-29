@@ -104,6 +104,9 @@ public class DescriptorWeightDialog extends DialogFragment {
 
                      	Toast.makeText(getActivity(), descriptor + ":" + weight, Toast.LENGTH_LONG).show();
 
+                      	//getLoaderManager().restartLoader(0, null, this);
+                        //mAdapter.notifyDataSetChanged();
+
                      	((MainActivity) getActivity()).setActiveTab(2);
                    }
                })

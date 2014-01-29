@@ -86,14 +86,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
     private String mPassword;
 
-    private EditText mPasswordEdit;
-
     /** Was the original caller asking for an entirely new account? */
     protected boolean mRequestNewAccount = false;
 
     private String mUsername;
-
-    private EditText mUsernameEdit;
 
     /**
      * {@inheritDoc}
