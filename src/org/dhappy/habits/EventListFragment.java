@@ -49,7 +49,8 @@ import android.widget.TextView;
 public class EventListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final int MENU_DELETE = Menu.FIRST + 3;
-
+	public static final String FRAGMENT_KEY = "org.dhappy.habits.event.list";
+	
     List<ListItem> items = new ArrayList<ListItem>();
     HeaderedListAdapter mAdapter;
     
@@ -72,8 +73,10 @@ public class EventListFragment extends ListFragment
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
         getLoaderManager().initLoader(0, null, this);
+        
+        getFragmentManager().putFragment(null, FRAGMENT_KEY, this);
     }
-
+    
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         MenuItem item = menu.add(R.string.menu_new);

@@ -181,7 +181,7 @@ public class DescriptorListFragment extends ListFragment
       	getLoaderManager().restartLoader(0, null, this);
         mAdapter.notifyDataSetChanged();
         
-        EventListFragment eventsList = ((EventListFragment) getFragmentManager().findFragmentByTag("events-list"));
+        EventListFragment eventsList = ((EventListFragment) getFragmentManager().getFragment(null, EventListFragment.FRAGMENT_KEY));
         if(eventsList != null) {
         	((HeaderedListAdapter) eventsList.getListAdapter()).notifyDataSetChanged();
         }
