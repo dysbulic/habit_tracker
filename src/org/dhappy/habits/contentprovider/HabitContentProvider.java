@@ -147,7 +147,7 @@ public class HabitContentProvider extends ContentProvider {
         List<String> habitsProjection = new ArrayList<String>();
         for(String column : projection) {
         	if(column == ReadingTable.COLUMN_WEIGHT) {
-        		habitsProjection.add(null);	
+        		habitsProjection.add("null");	
         	} else {
         		habitsProjection.add(column);
         	}

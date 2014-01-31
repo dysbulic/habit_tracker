@@ -28,7 +28,7 @@ public class DescriptorWeightDialog extends DialogFragment {
 	public final static String DESCRIPTOR_ID = "org.dhappy.habits.mood.descriptor.id";
 	
 	public interface DescriptorWeightDialogListener {
-        public void onRecordWeight(DialogFragment dialog);
+        public void onRecordWeight(int descriptorId, double weight);
     }
 
 	DescriptorWeightDialogListener mListener;
@@ -95,19 +95,7 @@ public class DescriptorWeightDialog extends DialogFragment {
                    public void onClick(DialogInterface dialog, int id) {
                        int weight = weightSelect.getProgress() - 100;
 
-                       ContentValues values = new ContentValues();
-                       values.put(ReadingTable.COLUMN_DESCRIPTOR_ID, descriptorId);
-                       values.put(ReadingTable.COLUMN_WEIGHT, weight);
-                       values.put(ReadingTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
-
-                       getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
-
-                     	Toast.makeText(getActivity(), descriptor + ":" + weight, Toast.LENGTH_LONG).show();
-
-                      	//getLoaderManager().restartLoader(0, null, this);
-                        //mAdapter.notifyDataSetChanged();
-
-                     	((MainActivity) getActivity()).setActiveTab(2);
+                     	((DescriptorWeightDialogListener) getTargetFragment()).onRecordWeight(descriptorId, weight);
                    }
                })
                .setNegativeButton(R.string.weight_cancel, new DialogInterface.OnClickListener() {

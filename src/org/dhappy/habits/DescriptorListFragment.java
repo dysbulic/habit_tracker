@@ -1,5 +1,6 @@
 package org.dhappy.habits;
 
+import org.dhappy.android.widget.HeaderedListAdapter;
 import org.dhappy.android.widget.Timer;
 import org.dhappy.habits.R;
 import org.dhappy.habits.contentprovider.HabitContentProvider;
@@ -35,7 +36,7 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
 
 
 public class DescriptorListFragment extends ListFragment
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>, DescriptorWeightDialog.DescriptorWeightDialogListener {
 	private static final int MENU_EDIT = Menu.FIRST + 1;
 	private static final int MENU_DELETE = Menu.FIRST + 2;
 	
@@ -133,6 +134,7 @@ public class DescriptorListFragment extends ListFragment
         Bundle bundle = new Bundle();
         bundle.putInt(DescriptorWeightDialog.DESCRIPTOR_ID, (int) id);
         dialog.setArguments(bundle);
+        dialog.setTargetFragment(this, 0);
         dialog.show(getFragmentManager(), "Weight");
     }
 
@@ -166,4 +168,24 @@ public class DescriptorListFragment extends ListFragment
         // longer using it.
         mAdapter.swapCursor(null);
     }
+
+	@Override
+	public void onRecordWeight(int descriptorId, double weight) {
+        ContentValues values = new ContentValues();
+        values.put(ReadingTable.COLUMN_DESCRIPTOR_ID, descriptorId);
+        values.put(ReadingTable.COLUMN_WEIGHT, weight);
+        values.put(ReadingTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
+
+        getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
+
+      	getLoaderManager().restartLoader(0, null, this);
+        mAdapter.notifyDataSetChanged();
+        
+        EventListFragment eventsList = ((EventListFragment) getFragmentManager().findFragmentByTag("events-list"));
+        if(eventsList != null) {
+        	((HeaderedListAdapter) eventsList.getListAdapter()).notifyDataSetChanged();
+        }
+        
+     	((MainActivity) getActivity()).setActiveTab(2);
+	}
 }

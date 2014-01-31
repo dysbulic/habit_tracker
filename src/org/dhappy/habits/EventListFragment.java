@@ -17,6 +17,7 @@ import org.dhappy.habits.contentprovider.HabitContentProvider;
 import org.dhappy.habits.database.EventTable;
 import org.dhappy.habits.database.GoalTable;
 import org.dhappy.habits.database.HabitTable;
+import org.dhappy.habits.database.ReadingTable;
 
 
 import android.app.ListFragment;
@@ -50,25 +51,20 @@ public class EventListFragment extends ListFragment
 	private static final int MENU_DELETE = Menu.FIRST + 3;
 
     List<ListItem> items = new ArrayList<ListItem>();
-    HeaderedListAdapter adapter;
+    HeaderedListAdapter mAdapter;
     
     @Override public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Give some text to display if there is no data.  In a real
-        // application this would come from a resource.
+        // Give some text to display if there is no data.
         setEmptyText(getString(R.string.no_events));
 
-        // We have a menu iteArraym to show in action bar.
         setHasOptionsMenu(true);
         
         registerForContextMenu(getListView());
 
-        //String[] queryCols = new String[] { EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID, HabitTable.COLUMN_NAME, HabitTable.COLUMN_COLOR, EventTable.COLUMN_TIME };
-        //Cursor cursor = getActivity().getContentResolver().query(MyHabitContentProvider.EVENTS_URI, queryCols, null, null, EventTable.COLUMN_TIME + " DESC");
-        
-        adapter = new HeaderedListAdapter(getActivity(), items);
-        setListAdapter(adapter);
+        mAdapter = new HeaderedListAdapter(getActivity(), items);
+        setListAdapter(mAdapter);
         
         // Start out with a progress indicator.
         setListShown(false);
@@ -103,7 +99,7 @@ public class EventListFragment extends ListFragment
 
           getActivity().getContentResolver().delete(uri, null, null);
 
-          adapter.notifyDataSetChanged();
+          mAdapter.notifyDataSetChanged();
           
           return true;
         }
@@ -125,6 +121,7 @@ public class EventListFragment extends ListFragment
     	EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID + " AS " + EventTable.COLUMN_ID,
         HabitTable.COLUMN_NAME,
         HabitTable.COLUMN_COLOR,
+        ReadingTable.COLUMN_WEIGHT,
         EventTable.TABLE_EVENT + "." + EventTable.COLUMN_TIME + " AS " + EventTable.COLUMN_TIME
     };
 
@@ -156,7 +153,7 @@ public class EventListFragment extends ListFragment
         	} while(cursor.moveToNext());
         }
 
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
         
         // The list should now be shown.
         if (isResumed()) {
@@ -171,5 +168,6 @@ public class EventListFragment extends ListFragment
         // above is about to be closed.  We need to make sure we are no
         // longer using it.
         //mAdapter.swapCursor(null);
+        mAdapter.notifyDataSetChanged();
     }
 }
