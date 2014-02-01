@@ -36,6 +36,7 @@ import android.support.v4.view.ViewPager;
 public class MainActivity extends Activity {
     ViewPager mViewPager;
     TabsAdapter mTabsAdapter;
+    Bundle mSharedBundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,10 @@ public class MainActivity extends Activity {
     public void setActiveTab(int index) {
     	mViewPager.setCurrentItem(index, true);;
 	}
+    
+    public Bundle getSharedBundle() {
+    	return mSharedBundle;
+    }
     
     /**
      * This is a helper class that implements the management of tabs and all

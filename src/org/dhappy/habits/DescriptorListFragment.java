@@ -181,11 +181,12 @@ public class DescriptorListFragment extends ListFragment
       	getLoaderManager().restartLoader(0, null, this);
         mAdapter.notifyDataSetChanged();
         
-        EventListFragment eventsList = ((EventListFragment) getFragmentManager().getFragment(null, EventListFragment.FRAGMENT_KEY));
+        MainActivity activity = (MainActivity) getActivity();
+        EventListFragment eventsList = ((EventListFragment) getFragmentManager().getFragment(activity.getSharedBundle(), EventListFragment.FRAGMENT_KEY));
         if(eventsList != null) {
         	((HeaderedListAdapter) eventsList.getListAdapter()).notifyDataSetChanged();
         }
         
-     	((MainActivity) getActivity()).setActiveTab(2);
+        activity.setActiveTab(2);
 	}
 }

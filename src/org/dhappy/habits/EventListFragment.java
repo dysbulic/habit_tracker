@@ -74,7 +74,8 @@ public class EventListFragment extends ListFragment
         // or start a new one.
         getLoaderManager().initLoader(0, null, this);
         
-        getFragmentManager().putFragment(null, FRAGMENT_KEY, this);
+        MainActivity activity = (MainActivity) getActivity();
+        getFragmentManager().putFragment(activity.getSharedBundle(), FRAGMENT_KEY, this);
     }
     
     @Override
