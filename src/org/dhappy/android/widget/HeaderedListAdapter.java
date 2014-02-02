@@ -2,6 +2,7 @@
 
 package org.dhappy.android.widget;
 
+import org.dhappy.habits.DescriptorWeightDialog;
 import org.dhappy.habits.R;
 
 import java.text.SimpleDateFormat;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 	private Context context;
 	private List<ListItem> items;
 	private LayoutInflater mLayoutInflater;
+	private static final String TAG = "HeaderedListAdapter";
 
 	public HeaderedListAdapter(Context context,List<ListItem> items) {
 		super(context,0, items);
@@ -57,6 +60,12 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 				
 				if (title != null) {
 					title.setText(ei.title);
+					if(ei.weight != null) {
+						Log.i(TAG, "Setting Text Color: " + ei.weight);
+						title.setTextColor(DescriptorWeightDialog.colorForWeight(ei.weight));
+					} else {
+						Log.i(TAG, "Skipping Text Color: " + ei.title);
+					}
 				}
 				if(time != null) {
 	                 SimpleDateFormat timeFormat = new SimpleDateFormat("H:mm:ss");
