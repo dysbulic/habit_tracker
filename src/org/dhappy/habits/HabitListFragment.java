@@ -122,6 +122,7 @@ public class HabitListFragment extends ListFragment
         case MENU_DELETE:
         	Uri uri = Uri.parse(HabitContentProvider.HABITS_URI + "/" + info.id);
         	getActivity().getContentResolver().delete(uri, null, null);
+          	getLoaderManager().restartLoader(0, null, this);
         	return true;
         }
         return super.onContextItemSelected(item);
