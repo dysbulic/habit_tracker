@@ -98,7 +98,7 @@ public class DescriptorWeightDialog extends DialogFragment {
                .setMessage(descriptor)
                .setPositiveButton(R.string.weight_confirm, new DialogInterface.OnClickListener() {
                    public void onClick(DialogInterface dialog, int id) {
-                       int weight = weightSelect.getProgress() - 100;
+                       double weight = (weightSelect.getProgress() - 100) / 100f;
 
                      	((DescriptorWeightDialogListener) getTargetFragment()).onRecordWeight(descriptorId, weight);
                    }
