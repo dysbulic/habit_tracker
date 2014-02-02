@@ -20,13 +20,13 @@ import android.widget.TextView;
 public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 	private Context context;
 	private List<ListItem> items;
-	private LayoutInflater vi;
+	private LayoutInflater mLayoutInflater;
 
 	public HeaderedListAdapter(Context context,List<ListItem> items) {
 		super(context,0, items);
 		this.context = context;
 		this.items = items;
-		vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 		if (i != null) {
 			if(i.isHeader()){
 				HeaderItem si = (HeaderItem)i;
-				view = vi.inflate(R.layout.header, null);
+				view = mLayoutInflater.inflate(R.layout.header, null);
 
 				view.setOnClickListener(null);
 				view.setOnLongClickListener(null);
@@ -47,7 +47,7 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 				sectionView.setText(si.getTitle());
 			} else {
 				TextTimeItem ei = (TextTimeItem)i;
-				view = vi.inflate(R.layout.event_row, null);
+				view = mLayoutInflater.inflate(R.layout.event_row, null);
 				
 				final TextView color = (TextView)view.findViewById(R.id.color_block);
 				color.setBackgroundColor(Color.parseColor(ei.color));

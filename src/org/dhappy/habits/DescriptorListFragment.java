@@ -40,6 +40,8 @@ public class DescriptorListFragment extends ListFragment
 	private static final int MENU_EDIT = Menu.FIRST + 1;
 	private static final int MENU_DELETE = Menu.FIRST + 2;
 	
+	String TAG = "DescriptorListFragment";
+	
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
 
@@ -178,13 +180,16 @@ public class DescriptorListFragment extends ListFragment
 
         getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
 
-      	getLoaderManager().restartLoader(0, null, this);
         mAdapter.notifyDataSetChanged();
         
         MainActivity activity = (MainActivity) getActivity();
         EventListFragment eventsList = ((EventListFragment) getFragmentManager().getFragment(activity.getSharedBundle(), EventListFragment.FRAGMENT_KEY));
         if(eventsList != null) {
+        	Log.i(TAG, "EventListFragment.getListAdapter().notifyDataSetChanged()");
+          	getLoaderManager().restartLoader(0, null, eventsList);
         	((HeaderedListAdapter) eventsList.getListAdapter()).notifyDataSetChanged();
+        } else {
+        	Log.i(TAG, "EventListFragment is null");
         }
         
         activity.setActiveTab(2);

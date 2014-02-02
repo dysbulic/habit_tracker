@@ -159,8 +159,7 @@ public class EventListFragment extends ListFragment
 
         mAdapter.notifyDataSetChanged();
         
-        // The list should now be shown.
-        if (isResumed()) {
+        if(isResumed()) {
             setListShown(true);
         } else {
             setListShownNoAnimation(true);
@@ -172,6 +171,5 @@ public class EventListFragment extends ListFragment
         // above is about to be closed.  We need to make sure we are no
         // longer using it.
         //mAdapter.swapCursor(null);
-        mAdapter.notifyDataSetChanged();
     }
 }
