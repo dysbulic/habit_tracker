@@ -2,7 +2,8 @@
 
 package org.dhappy.android.widget;
 
-import com.synaptian.smoketracker.habits.R;
+import org.dhappy.habits.DescriptorWeightDialog;
+import org.dhappy.habits.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +22,14 @@ import android.widget.TextView;
 public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 	private Context context;
 	private List<ListItem> items;
-	private LayoutInflater vi;
+	private LayoutInflater mLayoutInflater;
+	private static final String TAG = "HeaderedListAdapter";
 
 	public HeaderedListAdapter(Context context,List<ListItem> items) {
 		super(context,0, items);
 		this.context = context;
 		this.items = items;
-		vi = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	@Override
@@ -37,7 +40,7 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 		if (i != null) {
 			if(i.isHeader()){
 				HeaderItem si = (HeaderItem)i;
-				view = vi.inflate(R.layout.header, null);
+				view = mLayoutInflater.inflate(R.layout.header, null);
 
 				view.setOnClickListener(null);
 				view.setOnLongClickListener(null);
@@ -47,7 +50,7 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 				sectionView.setText(si.getTitle());
 			} else {
 				TextTimeItem ei = (TextTimeItem)i;
-				view = vi.inflate(R.layout.event_row, null);
+				view = mLayoutInflater.inflate(R.layout.event_row, null);
 				
 				final TextView color = (TextView)view.findViewById(R.id.color_block);
 				color.setBackgroundColor(Color.parseColor(ei.color));
@@ -57,6 +60,12 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 				
 				if (title != null) {
 					title.setText(ei.title);
+					if(ei.weight != null) {
+						Log.i(TAG, "Setting Text Color: " + ei.weight);
+						title.setTextColor(DescriptorWeightDialog.colorForWeight(ei.weight));
+					} else {
+						Log.i(TAG, "Skipping Text Color: " + ei.title);
+					}
 				}
 				if(time != null) {
 	                 SimpleDateFormat timeFormat = new SimpleDateFormat("H:mm:ss");

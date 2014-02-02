@@ -20,5 +20,11 @@ local.properties
 .project
 keystore
 
-# db from app
+# db from app via adb
 habits.db
+
+# db via in-app copy
+org.dhappy.habits.db
+
+# signing keys
+keys/
