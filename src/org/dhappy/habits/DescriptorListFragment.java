@@ -179,17 +179,11 @@ public class DescriptorListFragment extends ListFragment
         values.put(ReadingTable.COLUMN_TIME, Math.floor(System.currentTimeMillis() / 1000));
 
         getActivity().getContentResolver().insert(HabitContentProvider.READINGS_URI, values);
-
-        mAdapter.notifyDataSetChanged();
         
         MainActivity activity = (MainActivity) getActivity();
         EventListFragment eventsList = ((EventListFragment) getFragmentManager().getFragment(activity.getSharedBundle(), EventListFragment.FRAGMENT_KEY));
         if(eventsList != null) {
-        	Log.i(TAG, "EventListFragment.getListAdapter().notifyDataSetChanged()");
-          	getLoaderManager().restartLoader(0, null, eventsList);
-        	((HeaderedListAdapter) eventsList.getListAdapter()).notifyDataSetChanged();
-        } else {
-        	Log.i(TAG, "EventListFragment is null");
+          	getLoaderManager().restartLoader(EventListFragment.LOADER_KEY, null, eventsList);
         }
         
         activity.setActiveTab(2);

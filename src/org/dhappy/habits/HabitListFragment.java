@@ -136,8 +136,11 @@ public class HabitListFragment extends ListFragment
 
       	Toast.makeText(getActivity(), "Added new event", Toast.LENGTH_LONG).show();
 
-      	getLoaderManager().restartLoader(0, null, this);
-        mAdapter.notifyDataSetChanged();
+        MainActivity activity = (MainActivity) getActivity();
+        EventListFragment eventsList = ((EventListFragment) getFragmentManager().getFragment(activity.getSharedBundle(), EventListFragment.FRAGMENT_KEY));
+        if(eventsList != null) {
+          	getLoaderManager().restartLoader(EventListFragment.LOADER_KEY, null, eventsList);
+        }
       	
       	((MainActivity) getActivity()).setActiveTab(2);
     }

@@ -50,6 +50,7 @@ public class EventListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final int MENU_DELETE = Menu.FIRST + 3;
 	public static final String FRAGMENT_KEY = "org.dhappy.habits.event.list";
+	public static final int LOADER_KEY = 10;
 	
     List<ListItem> items = new ArrayList<ListItem>();
     HeaderedListAdapter mAdapter;
@@ -72,7 +73,7 @@ public class EventListFragment extends ListFragment
 
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(10, null, this);
         
         MainActivity activity = (MainActivity) getActivity();
         getFragmentManager().putFragment(activity.getSharedBundle(), FRAGMENT_KEY, this);
