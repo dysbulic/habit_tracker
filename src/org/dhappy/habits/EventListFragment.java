@@ -95,30 +95,37 @@ public class EventListFragment extends ListFragment
     }
 
     @Override  
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onContextItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
         case MENU_DELETE:
-          AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-          int id = ((TextTimeItem) items.remove((int) info.position)).id;
-          Uri uri = Uri.parse(HabitContentProvider.EVENTS_URI + "/" + id);
+          AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuItem.getMenuInfo();
+          TextTimeItem item = (TextTimeItem) items.remove((int) info.position);
+          Uri uri = 
+        		  item.weight == null
+        		  ? Uri.parse(HabitContentProvider.EVENTS_URI + "/" + item.id)
+        		  : Uri.parse(HabitContentProvider.READINGS_URI + "/" + item.id);
 
+          Toast.makeText(getActivity(), uri.toString(), Toast.LENGTH_LONG).show();
+          
           getActivity().getContentResolver().delete(uri, null, null);
 
-          mAdapter.notifyDataSetChanged();
+          getLoaderManager().restartLoader(LOADER_KEY, null, this);
           
           return true;
         }
-        return super.onContextItemSelected(item);
+        return super.onContextItemSelected(menuItem);
     }
     
     @Override public void onListItemClick(ListView l, View v, int position, long listId) {
     	super.onListItemClick(l, v, position, listId);
-        Intent intent = new Intent(getActivity(), EventDetailActivity.class);
-        int id = ((TextTimeItem) items.get((int) position)).id;
-        Uri eventUri = Uri.parse(HabitContentProvider.EVENTS_URI + "/" + id);
-        intent.putExtra(HabitContentProvider.EVENT_CONTENT_ITEM_TYPE, eventUri);
+    	TextTimeItem item = (TextTimeItem) items.get(position);
+    	if(item.weight == null) { // is an event
+    		Intent intent = new Intent(getActivity(), EventDetailActivity.class);
+    		Uri eventUri = Uri.parse(HabitContentProvider.EVENTS_URI + "/" + item.id);
+    		intent.putExtra(HabitContentProvider.EVENT_CONTENT_ITEM_TYPE, eventUri);
 
-        startActivity(intent);
+    		startActivity(intent);
+    	}
     }
 
     // These are the rows that we will retrieve.
