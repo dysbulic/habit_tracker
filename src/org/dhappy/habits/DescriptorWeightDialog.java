@@ -42,6 +42,14 @@ public class DescriptorWeightDialog extends DialogFragment {
             throw new ClassCastException(activity.toString() + " must implement NoticeDialogListener");
         }
     }
+    
+    public static int colorForWeight(double weight) {
+    	return Color.rgb(
+    			(int) (255 * Math.max(0, -weight)),
+                (int) (255 * Math.max(0, weight)),
+                (int) (255 * (1 - Math.abs(weight)))
+        );
+    }
 	
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -61,10 +69,7 @@ public class DescriptorWeightDialog extends DialogFragment {
             	
                 weight.setText(Integer.toString(position));
                 float pos = position / 100f;
-                int color = Color.rgb((int) (255 * Math.max(0, -pos)),
-			                          (int) (255 * Math.max(0, pos)),
-			                          (int) (255 * (1 - Math.abs(pos))));
-                weight.setTextColor(color);
+                weight.setTextColor(colorForWeight(pos));
             }
 
 			@Override

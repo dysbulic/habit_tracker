@@ -148,6 +148,7 @@ public class EventListFragment extends ListFragment
         		String name = cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME));
         		long time = cursor.getInt(cursor.getColumnIndexOrThrow(EventTable.COLUMN_TIME));
         		String color = cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_COLOR));
+        		Double weight = cursor.getDouble(cursor.getColumnIndexOrThrow(ReadingTable.COLUMN_WEIGHT));
         		TextTimeItem nextItem = new TextTimeItem(name, time, color, id);
         		
         		if(lastItem == null || nextItem.time.get(Calendar.DAY_OF_YEAR) != lastItem.time.get(Calendar.DAY_OF_YEAR)) {
