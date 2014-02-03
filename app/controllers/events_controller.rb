@@ -19,7 +19,7 @@ class EventsController < ApplicationController
         update_time = Time.at(params[:updated_since].to_i)
         @events << habit.events.where("created_at < ? AND updated_at >= ?", update_time, update_time)
       else
-        @events.concat << habit.events
+        @events << habit.events
       end
     end
     @events = @events.sort_by{|e| e.time}
