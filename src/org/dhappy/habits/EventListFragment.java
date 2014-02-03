@@ -140,7 +140,7 @@ public class EventListFragment extends ListFragment
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
-        return new CursorLoader(getActivity(), HabitContentProvider.EVENTS_URI, EVENTS_PROJECTION, null, null, EventTable.COLUMN_TIME + " DESC");
+        return new CursorLoader(getActivity(), HabitContentProvider.INSTANCES_URI, EVENTS_PROJECTION, null, null, EventTable.COLUMN_TIME + " DESC");
     }
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {

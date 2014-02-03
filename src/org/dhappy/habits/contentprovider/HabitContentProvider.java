@@ -49,6 +49,7 @@ public class HabitContentProvider extends ContentProvider {
 	private static final int DESCRIPTOR_ID = 80;
 	private static final int READINGS = 90;
 	private static final int READING_ID = 100;
+	private static final int INSTANCES = 110;
 
 	public static final String AUTHORITY = "org.dhappy.habits.contentprovider";
 
@@ -66,6 +67,9 @@ public class HabitContentProvider extends ContentProvider {
 
 	private static final String READINGS_PATH = "readings";
 	public static final Uri READINGS_URI = Uri.parse("content://" + AUTHORITY + "/" + READINGS_PATH);
+
+	private static final String INSTANCES_PATH = "instances";
+	public static final Uri INSTANCES_URI = Uri.parse("content://" + AUTHORITY + "/" + INSTANCES_PATH);
 
 	public static final String HABIT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/habits";
 	public static final String HABIT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/habit";
@@ -97,6 +101,7 @@ public class HabitContentProvider extends ContentProvider {
 	    sURIMatcher.addURI(AUTHORITY, DESCRIPTORS_PATH + "/*", DESCRIPTOR_ID);
 	    sURIMatcher.addURI(AUTHORITY, READINGS_PATH, READINGS);
 	    sURIMatcher.addURI(AUTHORITY, READINGS_PATH + "/*", READING_ID);
+	    sURIMatcher.addURI(AUTHORITY, INSTANCES_PATH, INSTANCES);
 	}
   
   @Override
@@ -138,10 +143,11 @@ public class HabitContentProvider extends ContentProvider {
         break;
     case EVENT_ID:
         queryBuilder.appendWhere(EventTable.TABLE_EVENT + "." + EventTable.COLUMN_ID + "=" + uri.getLastPathSegment());
+    case EVENTS:
         queryBuilder.setTables(HabitTable.TABLE_HABIT + " JOIN " + EventTable.TABLE_EVENT
 				   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
         break;
-    case EVENTS:
+    case INSTANCES:
         queryBuilder.setTables(HabitTable.TABLE_HABIT + " JOIN " + EventTable.TABLE_EVENT
 				   + " ON " + HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_ID + " = " + EventTable.TABLE_EVENT + "." + EventTable.COLUMN_HABIT_ID);
         List<String> habitsProjection = new ArrayList<String>();
