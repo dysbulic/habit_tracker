@@ -39,19 +39,29 @@ class EventsController < ApplicationController
   # POST /events
   # POST /events.json
   def create
-    @event = Event.new(event_params)
-
-    if request.format.json?
-      @event.time = Time.at(params[:time])
-    end
-
-    respond_to do |format|
-      if @event.save
-        format.html { redirect_to @event, notice: 'Event was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @event }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
+    if params[:_json] and params[:_json].kind_of?(Array)
+      @events = []
+      params[:_json].each{ |event| event[:time] = Time.at(event[:time]) }
+      begin
+        @events << Event.create(params[:_json])
+      rescue SQLite3::ConstraintException => e
+        puts e
+      end
+    else
+      @event = Event.new(event_params)
+      
+      if request.format.json?
+        @event.time = Time.at(params[:time])
+      end
+      
+      respond_to do |format|
+        if @event.save
+          format.html { redirect_to @event, notice: 'Event was successfully created.' }
+          format.json { render action: 'show', status: :created, location: @event }
+        else
+          format.html { render action: 'new' }
+          format.json { render json: @event.errors, status: :unprocessable_entity }
+        end
       end
     end
   end

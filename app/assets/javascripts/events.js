@@ -14,6 +14,23 @@ function renderTasksCalendar() {
         return Math.floor( Math.abs( end.getTime() - start.getTime() ) / ( 7 * 24 * 60 * 60 * 1000 ) )
     }
 
+    function statsList( events ) {
+        var $list = $('<ul/>')
+        var habits = events.map( function( event ) { return event.habit } )
+        habits = habits.filter( function( habit, index, habits ) {
+            return habits.lastIndexOf( habit ) === index
+        } )
+        habits.forEach( function( habit ) {
+            var instances = events.filter( function( event, index ) {
+                return event.habit == habit
+            } )
+            $list.append( $('<li/>')
+                          .append( $('<span/>').addClass( 'color' ).css( { 'background-color': habit.color } ) )
+                          .append( $('<span/>').text( habit.name + ": " + instances.length ) ) )
+        } )
+        return $list
+    }
+
     var url = window.location.pathname
     if( url == '/events' ) {
         $('#loading-modal').modal()
@@ -26,9 +43,12 @@ function renderTasksCalendar() {
             
             d3.json( url + '.json', function( error, events ) {
                 for( var i = 0; i < events.length; i++ ) {
-                    events[i].time = new Date( Date.parse(events[i].time ) )
+                    events[i].time = new Date( Date.parse( events[i].time ) )
+                    events[i].habit = habits[events[i].habit_id]
                 }
                 
+                $('#stats').append( statsList( events ) )
+
                 var start = new Date( d3.min( events, function( d ) { return d.time } ) )
                 var end = new Date( d3.max( events, function( d ) { return d.time } ) )
                 
@@ -99,7 +119,7 @@ function renderTasksCalendar() {
                         x: 0,
                         y: function( d ) { return cellSize * ( ( d.time.getHours() + d.time.getMinutes() / 60 ) / 24 ) },
                         width: cellSize,
-                        height: cellSize * 0.025
+                        height: cellSize * 0.01
                     } )
                     .style( {
                         fill: function( d ) { return habits[d.habit_id].color }

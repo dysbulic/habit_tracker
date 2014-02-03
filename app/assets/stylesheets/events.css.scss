@@ -10,3 +10,15 @@
 .day text {
     font-size: 20pt;
 }
+
+#stats {
+    ul {
+        list-style: none;
+    }
+
+    .color {
+        display: inline-block;
+        width: 1.5em;
+        height: 1em;
+    }
+}
