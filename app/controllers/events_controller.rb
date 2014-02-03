@@ -44,6 +44,11 @@ class EventsController < ApplicationController
       params[:_json].each{ |event| event[:time] = Time.at(event[:time]) }
       begin
         @events << Event.create(params[:_json])
+
+        respond_to do |format|
+          format.html { render action: 'index' }
+          format.json { render json: @events, status: :created }
+        end
       rescue SQLite3::ConstraintException => e
         puts e
       end

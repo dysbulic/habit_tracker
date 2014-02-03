@@ -37,18 +37,32 @@ class HabitsController < ApplicationController
   # POST /habits
   # POST /habits.json
   def create
-    @habit = Habit.new(habit_params)
+    user ||= current_user
+    user ||= User.find(doorkeeper_token[:resource_owner_id]) if doorkeeper_token
 
-    @habit.user ||= current_user
-    @habit.user ||= User.find(doorkeeper_token[:resource_owner_id]) if doorkeeper_token
+    if params[:_json] and params[:_json].kind_of?(Array)
+      params[:_json].each{ |habit| habit[:user] = user }
+      begin
+        @habits = Habit.create(params[:_json])
 
-    respond_to do |format|
-      if @habit.save
-        format.html { redirect_to @habit, notice: 'Habit was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @habit }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @habit.errors, status: :unprocessable_entity }
+        respond_to do |format|
+          format.html { render action: 'index' }
+          format.json { render json: @habits, status: :created }
+        end
+      rescue SQLite3::ConstraintException => e
+        puts e
+      end
+    else
+      @habit = Habit.new(habit_params)
+
+      respond_to do |format|
+        if @habit.save
+          format.html { redirect_to @habit, notice: 'Habit was successfully created.' }
+          format.json { render action: 'show', status: :created, location: @habit }
+        else
+          format.html { render action: 'new' }
+          format.json { render json: @habit.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
