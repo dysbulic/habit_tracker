@@ -36,6 +36,8 @@ public class HabitListFragment extends ListFragment
 	private static final int MENU_EDIT = Menu.FIRST + 1;
 	private static final int MENU_DELETE = Menu.FIRST + 2;
 	
+	private static final String TAG = "HabitListFragment";
+	
     // This is the Adapter being used to display the list's data.
     SimpleCursorAdapter mAdapter;
 
@@ -63,7 +65,11 @@ public class HabitListFragment extends ListFragment
     		@Override
     		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
     			if(columnIndex == 2) { // Color
-    				view.setBackgroundColor(Color.parseColor(cursor.getString(columnIndex)));
+    				try {
+    					view.setBackgroundColor(Color.parseColor(cursor.getString(columnIndex)));
+    				} catch(IllegalArgumentException e) {
+    					Log.e(TAG, "Bad Color: " + cursor.getString(columnIndex));
+    				}
     				return true;
     			}
 

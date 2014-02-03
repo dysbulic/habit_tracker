@@ -153,9 +153,7 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	String authToken = mAccountManager.blockingGetAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, true);
         	
         	Log.i(TAG, "Account / Token: " + account.name + " / " + authToken);
-                    	
-        	int currentTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
-
+        	
         	Log.i(TAG, "Get new habits from server");
 
         	JSONArray habits;
@@ -193,14 +191,6 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
 	                    .build());
             }
 
-        	Log.i(TAG, "Applying batch operation");
-
-            try {
-            	mContentResolver.applyBatch(HabitContentProvider.AUTHORITY, batch);
-            } catch(SQLiteConstraintException e) {
-            	Log.e(TAG, "SQLiteConstraintException: " + e.getMessage());
-            }
-            
         	Log.i(TAG, "Posting new habits to the server");
             
         	String[] habitProjection = {
@@ -226,7 +216,14 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
             	Log.i(TAG, "Sent Habits: " + habitList.length());
             }
 
+        	Log.i(TAG, "Applying batch operation");
 
+            try {
+            	mContentResolver.applyBatch(HabitContentProvider.AUTHORITY, batch);
+            } catch(SQLiteConstraintException e) {
+            	Log.e(TAG, "SQLiteConstraintException: " + e.getMessage());
+            }
+            
         	Log.i(TAG, "Get new events from server");
 
         	JSONArray events;
@@ -305,7 +302,8 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         	    }
         	}
             
-        	//prefs.edit().putInt(SYNC_KEY, currentTime).apply();
+        	int currentTime = (int) (Calendar.getInstance().getTimeInMillis() / 1000);
+        	prefs.edit().putInt(SYNC_KEY, currentTime).apply();
         } catch (OperationCanceledException e) {
 			Log.e(TAG, "OperationCanceledException: " + e.getMessage());
 		} catch (AuthenticatorException e) {

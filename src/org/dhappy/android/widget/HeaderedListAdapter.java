@@ -53,7 +53,11 @@ public class HeaderedListAdapter extends ArrayAdapter<ListItem> {
 				view = mLayoutInflater.inflate(R.layout.event_row, null);
 				
 				final TextView color = (TextView)view.findViewById(R.id.color_block);
-				color.setBackgroundColor(Color.parseColor(ei.color));
+				try {
+					color.setBackgroundColor(Color.parseColor(ei.color));
+				} catch(IllegalArgumentException e) {
+					Log.e(TAG, "Bad Color: " + ei.color);
+				}
 
 				final TextView title = (TextView)view.findViewById(R.id.name);
 				final TextView time = (TextView)view.findViewById(R.id.time);
