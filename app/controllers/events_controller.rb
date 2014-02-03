@@ -13,7 +13,14 @@ class EventsController < ApplicationController
     user ||= User.find(doorkeeper_token[:resource_owner_id]) if doorkeeper_token
 
     user.habits.find_each do |habit|
-      @events.concat(habit.events)
+      if params[:created_since]
+        @events << habit.events.where("created_at >= ?", Time.at(params[:created_since].to_i))
+      elsif params[:updated_since]
+        update_time = Time.at(params[:updated_since].to_i)
+        @events << habit.events.where("created_at < ? AND updated_at >= ?", update_time, update_time)
+      else
+        @events.concat << habit.events
+      end
     end
     @events = @events.sort_by{|e| e.time}
 
