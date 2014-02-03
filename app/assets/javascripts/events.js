@@ -122,10 +122,10 @@ function renderTasksCalendar() {
                         height: cellSize * 0.01
                     } )
                     .style( {
-                        fill: function( d ) { return habits[d.habit_id].color }
+                        fill: function( d ) { return d.habit.color }
                     } )
                     .append( 'title' )
-                    .text( function( d ) { return habits[d.habit_id].name } )
+                    .text( function( d ) { return d.habit.name + " @ " + time( d.time ) } )
                 
 
                 $('#loading-modal').modal( 'hide' )
