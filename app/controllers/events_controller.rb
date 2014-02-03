@@ -14,12 +14,12 @@ class EventsController < ApplicationController
 
     user.habits.find_each do |habit|
       if params[:created_since]
-        @events << habit.events.where("created_at >= ?", Time.at(params[:created_since].to_i))
+        @events.concat(habit.events.where("created_at >= ?", Time.at(params[:created_since].to_i)))
       elsif params[:updated_since]
         update_time = Time.at(params[:updated_since].to_i)
-        @events << habit.events.where("created_at < ? AND updated_at >= ?", update_time, update_time)
+        @events.concat(habit.events.where("created_at < ? AND updated_at >= ?", update_time, update_time))
       else
-        @events << habit.events
+        @events.concat(habit.events)
       end
     end
     @events = @events.sort_by{|e| e.time}
