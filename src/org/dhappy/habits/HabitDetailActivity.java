@@ -81,11 +81,8 @@ public class HabitDetailActivity extends Activity {
     		HabitTable.COLUMN_NAME,
     		HabitTable.COLUMN_COLOR,
     		HabitTable.TABLE_HABIT + "." + HabitTable.COLUMN_DESCRIPTION };
-    Cursor cursor = getContentResolver().query(uri, projection, null, null,
-        null);
-    if (cursor != null) {
-      cursor.moveToFirst();
-
+    Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+    if(cursor != null && cursor.moveToFirst()) {
       mNameText.setText(cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_NAME)));
       mColorText.setText(cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_COLOR)));
       mDescriptionText.setText(cursor.getString(cursor.getColumnIndexOrThrow(HabitTable.COLUMN_DESCRIPTION)));
