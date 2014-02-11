@@ -36,6 +36,8 @@ public class HabitListFragment extends ListFragment
 	private static final int MENU_EDIT = Menu.FIRST + 1;
 	private static final int MENU_DELETE = Menu.FIRST + 2;
 	
+	public final static int LOADER_KEY = 20;
+	
 	private static final String TAG = "HabitListFragment";
 	
     // This is the Adapter being used to display the list's data.
@@ -96,7 +98,7 @@ public class HabitListFragment extends ListFragment
 
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(LOADER_KEY, null, this);
     }
 
     @Override
@@ -148,7 +150,9 @@ public class HabitListFragment extends ListFragment
         if(eventsList != null) {
           	getLoaderManager().restartLoader(EventListFragment.LOADER_KEY, null, eventsList);
         }
-      	
+        
+      	getLoaderManager().restartLoader(LOADER_KEY, null, this);
+              	
       	((MainActivity) getActivity()).setActiveTab(2);
     }
 
