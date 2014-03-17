@@ -34,7 +34,7 @@ $(function() {
             }
         });
     };
-    drawItems();
+    //drawItems(); // disabling execution
     var changesRunning = false;
     function setupChanges(since) {
         if (!changesRunning) {
