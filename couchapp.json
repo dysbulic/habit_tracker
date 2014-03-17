@@ -1,4 +1,4 @@
 {
-    "name": "Basic CouchApp",
-    "description": "CouchApp with changes feed and form support."
+    "name": "Habit Tracker",
+    "description": "Track habit expressions and moods."
 }
