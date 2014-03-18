@@ -9,7 +9,7 @@ The [current test server](http://doh.cloudant.com/habits/_design/habits/index.ht
 
 # Running
 
-* `sudo apt-get install couchdb'
+* `sudo apt-get install couchdb`
 * `sudo apt-get install python-setuptools`
 * `sudo easy_install pip`
 * `sudo apt-get install python-dev`
