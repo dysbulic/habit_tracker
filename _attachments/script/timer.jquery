@@ -1,0 +1,15 @@
+$( function() {
+    var counter = setInterval( timer, 1000 )
+
+    function timer() {
+        $('[data-role="timer"]').each( function( timer ) {
+            var epoch = $(this).data( 'timer-epoch' )
+            if( ! epoch ) {
+                epoch = Date.parse( $(this).text() )
+                $(this).data( 'timer-epoch', epoch )
+            }
+            var now = ( new Date() ).getTime()
+            $(this).text( now - epoch )
+        } )
+    }
+} )
