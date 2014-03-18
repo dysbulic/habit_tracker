@@ -9,7 +9,21 @@ $( function() {
                 $(this).data( 'timer-epoch', epoch )
             }
             var now = ( new Date() ).getTime()
-            $(this).text( now - epoch )
+            var offset = ( now - epoch ) / 1000
+            
+            var seconds = offset % 60
+            offset /= 60
+
+            var minutes = offset % 60
+            offset /= 60
+
+            var hours = offset % 24
+            offset /= 24
+
+            var days = offset
+
+            var text = sprintf( '%d:%02d:%02d:%02d', days, hours, minutes, seconds )
+            $(this).text( text )
         } )
     }
 } )
