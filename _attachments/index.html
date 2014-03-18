@@ -2,7 +2,8 @@
 <html>
   <head>
     <title>Habit Tracker</title>
-    <link rel="stylesheet" href="style/main.css" type="text/css">
+    <link rel="stylesheet" href="style/main.css" type="text/css"/>
+    <link rel="stylesheet" href="vendor/couchapp/jquery.mobile-1.4.2.css" type="text/css"/>
   </head>
   <body>
     <div id="account"></div>
@@ -14,15 +15,33 @@
       <div data-role="tabs" id="tabs">
         <div data-role="navbar">
           <ul>
-            <li><a href="#one" data-ajax="false">one</a></li>
-            <li><a href="#two" data-ajax="false">two</a></li>
-            <li><a href="ajax-content.html" data-ajax="false">three</a></li>
+            <li><a href="#habits" data-ajax="false">Habits</a></li>
+            <li><a href="#mood" data-ajax="false">Mood</a></li>
+            <li><a href="#events" data-ajax="false">Events</a></li>
+            <li><a href="#stats" data-ajax="false">Stats</a></li>
           </ul>
         </div>
-        <div id="one" class="ui-body-d ui-content">
-          <h1>First tab contents</h1>
+        <div id="habits" class="ui-body-d ui-content">
+          <ul data-role="listview" data-inset="true">
+            <li><a href="#">
+              <span>Pipe Of Tobacco</span>
+              <span data-role="timer">1:20:32</span>
+            </a></li>
+            <li><a href="#">
+              <span>Pipe Of Tobacco</span>
+              <span data-role="timer">1:20:32</span>
+            </a></li>
+            <li><a href="#">
+              <span>Pipe Of Tobacco</span>
+              <span data-role="timer">1:20:32</span>
+            </a></li>
+            <li><a href="#">
+              <span>Pipe Of Tobacco</span>
+              <span data-role="timer">1:20:32</span>
+            </a></li>
+          </ul>
         </div>
-        <div id="two">
+        <div id="mood">
           <ul data-role="listview" data-inset="true">
             <li><a href="#">Acura</a></li>
             <li><a href="#">Audi</a></li>
@@ -30,6 +49,10 @@
             <li><a href="#">Cadillac</a></li>
             <li><a href="#">Ferrari</a></li>
           </ul>
+        </div>
+        <div id="events">
+        </div>
+        <div id="stats">
         </div>
       </div>
     </div>
