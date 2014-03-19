@@ -13,111 +13,121 @@
     <div id="profile"></div>
     <div id="content">
 
-      <script type="text/x-handlebars" data-template-name="habits">
-        <div data-role="tabs" id="tabs">
-          <div data-role="navbar">
-            <ul>
-              <li><a href="#habits" data-ajax="false">Habits</a></li>
-              <li><a href="#mood" data-ajax="false">Mood</a></li>
-              <li><a href="#events" data-ajax="false">Events</a></li>
-              <li><a href="#stats" data-ajax="false">Stats</a></li>
-            </ul>
-          </div>
-          <div id="habits" class="ui-body-d ui-content">
-            <ul data-role="listview" data-inset="true">
-              <li><a href="#">
-                <span>Pipe Of Tobacco</span>
-                <span data-role="timer">1995-12-17T03:24:00</span>
-              </a></li>
-              <li><a href="#">
-                <span>Pipe Of Tobacco</span>
-                <span data-role="timer">1995-12-17T03:24:00</span>
-              </a></li>
-              <li><a href="#">
-                <span>Pipe Of Tobacco</span>
-                <span data-role="timer">1995-12-17T03:24:00</span>
-              </a></li>
-              <li><a href="#">
-                <span>Pipe Of Tobacco</span>
-                <span data-role="timer">1995-12-17T03:24:00</span>
-              </a></li>
-            </ul>
-          </div>
-          <div id="mood">
-            <ul data-role="listview" data-inset="true">
-              <li><a href="#">Acura</a></li>
-              <li><a href="#">Audi</a></li>
-              <li><a href="#">BMW</a></li>
-              <li><a href="#">Cadillac</a></li>
-              <li><a href="#">Ferrari</a></li>
-            </ul>
-          </div>
-          <div id="events">
-          </div>
-          <div id="stats">
-          </div>
-        </div>
-      </script>
     </div>
 
     <div id="sidebar">
       <p>Track your habits.</p>
     </div>
+    
+    <!-- 
+    <script src="/_utils/script/sha1.js"></script>
+    <script src="/_utils/script/json2.js"></script>
+    -->
+    <script src="vendor/couchapp/jquery-1.8.3.js"></script>
+    <!--
+    <script src="/_utils/script/jquery.couch.js"></script>
+    <script src="vendor/couchapp/jquery.couchLogin.js"></script>
+    <script src="vendor/couchapp/jquery.couchProfile.js"></script>
+    <script src="vendor/couchapp/md5.js"></script>
+    <script src="vendor/couchapp/jquery.mustache.js"></script>
+    -->
+    <script src="vendor/couchapp/handlebars-1.0.0.js"></script>
+    <script src="vendor/couchapp/ember.js"></script>
+    <!--
+    <script src="vendor/couchapp/ember-states.js"></script>
+    <script src="vendor/couchapp/ember-data-latest.js"></script>
+    <script src="vendor/couchapp/couchdb_adapter.js"></script>
+    <script src="vendor/couchapp/sprintf.js"></script>
+    -->
 
-  <script src="/_utils/script/sha1.js"></script>
-  <script src="/_utils/script/json2.js"></script>
-  <script src="vendor/couchapp/jquery-1.8.3.js"></script>
-  <script src="/_utils/script/jquery.couch.js"></script>
-  <script src="vendor/couchapp/jquery.couchLogin.js"></script>
-  <script src="vendor/couchapp/jquery.couchProfile.js"></script>
-  <script src="vendor/couchapp/md5.js"></script>
-  <script src="vendor/couchapp/jquery.mustache.js"></script>
-  <script src="vendor/couchapp/jquery.mobile-1.4.2.min.js"></script>
-  <script src="vendor/couchapp/handlebars-1.0.0.js"></script>
-  <script src="vendor/couchapp/ember.js"></script>
-  <script src="vendor/couchapp/ember-states.js"></script>
-  <script src="vendor/couchapp/ember-data-latest.js"></script>
-  <script src="vendor/couchapp/couchdb_adapter.js"></script>
-  <script src="vendor/couchapp/sprintf.js"></script>
-
-  <!-- templates used by app.js -->
-  <script id="new-message" type="text/x-mustache" charset="utf-8">
-    <div class="avatar">
-      {{#gravatar_url}}<img src="{{gravatar_url}}"/>{{/gravatar_url}}
-      <div class="name">
-        {{name}}
-      </div>
-    </div>
-    <form id="create-message">
-      <label>New message from {{nickname}}: <input type="text" name="message" size=60 value=""></label>
-    </form>
-    <div style="clear:left;"></div>
-  </script>
-
-  <script id="recent-messages" type="text/x-mustache" charset="utf-8">
-    <h3>Recent Messages</h3>
-    <ul id="items">
-      {{#items}}
-      <li>
-        <div class="avatar">
-          {{#gravatar_url}}<img src="{{gravatar_url}}" alt="{{name}}"/>{{/gravatar_url}}
-          <div class="name">
-            {{nickname}}
-          </div>
+    <script type="text/x-handlebars" data-template-name="habits">
+      <div data-role="tabs" id="tabs">
+        <div data-role="navbar">
+          <ul>
+            <li><a href="#habits" data-ajax="false">Habits</a></li>
+            <li><a href="#mood" data-ajax="false">Mood</a></li>
+            <li><a href="#events" data-ajax="false">Events</a></li>
+            <li><a href="#stats" data-ajax="false">Stats</a></li>
+          </ul>
         </div>
-        <p>{{message}}</p>
-        <div style="clear:left;"></div>
-      </li>
-      {{/items}}
-    </ul>
-    <p><em>Protip:</em> If you setup continuous replication between this database and a remote one, this list will reflect remote changes in near real-time.</p>
-    <p>This would be a good place to add pagination.</p>
-  </script>
+        <div id="habits" class="ui-body-d ui-content">
+          <ul data-role="listview" data-inset="true">
+            <li><a href="#">
+              <span>Pipe Of Tobacco</span>
+              <span data-role="timer">1995-12-17T03:24:00</span>
+            </a></li>
+            <li><a href="#">
+              <span>Pipe Of Tobacco</span>
+              <span data-role="timer">1995-12-17T03:24:00</span>
+            </a></li>
+            <li><a href="#">
+              <span>Pipe Of Tobacco</span>
+              <span data-role="timer">1995-12-17T03:24:00</span>
+            </a></li>
+            <li><a href="#">
+              <span>Pipe Of Tobacco</span>
+              <span data-role="timer">1995-12-17T03:24:00</span>
+            </a></li>
+          </ul>
+        </div>
+        <div id="mood">
+          <ul data-role="listview" data-inset="true">
+            <li><a href="#">Acura</a></li>
+            <li><a href="#">Audi</a></li>
+            <li><a href="#">BMW</a></li>
+            <li><a href="#">Cadillac</a></li>
+            <li><a href="#">Ferrari</a></li>
+          </ul>
+        </div>
+        <div id="events">
+        </div>
+        <div id="stats">
+        </div>
+      </div>
+    </script>
 
-  <script src="script/timer.jquery" type="text/javascript"></script>
-  <script src="script/app.js" type="text/javascript"></script>
-  <script src="script/application.js" type="text/javascript"></script>
-  <script src="script/router.js" type="text/javascript"></script>
+    <!-- templates used by app.js -->
+    <script id="new-message" type="text/x-mustache" charset="utf-8">
+      <div class="avatar">
+        {{#gravatar_url}}<img src="{{gravatar_url}}"/>{{/gravatar_url}}
+        <div class="name">
+          {{name}}
+        </div>
+      </div>
+      <form id="create-message">
+        <label>New message from {{nickname}}: <input type="text" name="message" size=60 value=""></label>
+      </form>
+      <div style="clear:left;"></div>
+    </script>
+
+    <script id="recent-messages" type="text/x-mustache" charset="utf-8">
+      <h3>Recent Messages</h3>
+      <ul id="items">
+        {{#items}}
+          <li>
+            <div class="avatar">
+              {{#gravatar_url}}<img src="{{gravatar_url}}" alt="{{name}}"/>{{/gravatar_url}}
+              <div class="name">
+                {{nickname}}
+              </div>
+            </div>
+            <p>{{message}}</p>
+            <div style="clear:left;"></div>
+          </li>
+        {{/items}}
+      </ul>
+      <p><em>Protip:</em> If you setup continuous replication between this database and a remote one, this list will reflect remote changes in near real-time.</p>
+      <p>This would be a good place to add pagination.</p>
+    </script>
+
+    <!--
+    <script src="script/timer.jquery" type="text/javascript"></script>
+    <script src="script/app.js" type="text/javascript"></script>
+    -->
+    <script src="script/application.js" type="text/javascript"></script>
+    <script src="script/router.js" type="text/javascript"></script>
+
+    <script src="vendor/couchapp/jquery.mobile-1.4.2.js"></script>
 
   </body>
 </html>
