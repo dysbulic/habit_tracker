@@ -12,49 +12,52 @@
 
     <div id="profile"></div>
     <div id="content">
-      <div data-role="tabs" id="tabs">
-        <div data-role="navbar">
-          <ul>
-            <li><a href="#habits" data-ajax="false">Habits</a></li>
-            <li><a href="#mood" data-ajax="false">Mood</a></li>
-            <li><a href="#events" data-ajax="false">Events</a></li>
-            <li><a href="#stats" data-ajax="false">Stats</a></li>
-          </ul>
+
+      <script type="text/x-handlebars" data-template-name="habits">
+        <div data-role="tabs" id="tabs">
+          <div data-role="navbar">
+            <ul>
+              <li><a href="#habits" data-ajax="false">Habits</a></li>
+              <li><a href="#mood" data-ajax="false">Mood</a></li>
+              <li><a href="#events" data-ajax="false">Events</a></li>
+              <li><a href="#stats" data-ajax="false">Stats</a></li>
+            </ul>
+          </div>
+          <div id="habits" class="ui-body-d ui-content">
+            <ul data-role="listview" data-inset="true">
+              <li><a href="#">
+                <span>Pipe Of Tobacco</span>
+                <span data-role="timer">1995-12-17T03:24:00</span>
+              </a></li>
+              <li><a href="#">
+                <span>Pipe Of Tobacco</span>
+                <span data-role="timer">1995-12-17T03:24:00</span>
+              </a></li>
+              <li><a href="#">
+                <span>Pipe Of Tobacco</span>
+                <span data-role="timer">1995-12-17T03:24:00</span>
+              </a></li>
+              <li><a href="#">
+                <span>Pipe Of Tobacco</span>
+                <span data-role="timer">1995-12-17T03:24:00</span>
+              </a></li>
+            </ul>
+          </div>
+          <div id="mood">
+            <ul data-role="listview" data-inset="true">
+              <li><a href="#">Acura</a></li>
+              <li><a href="#">Audi</a></li>
+              <li><a href="#">BMW</a></li>
+              <li><a href="#">Cadillac</a></li>
+              <li><a href="#">Ferrari</a></li>
+            </ul>
+          </div>
+          <div id="events">
+          </div>
+          <div id="stats">
+          </div>
         </div>
-        <div id="habits" class="ui-body-d ui-content">
-          <ul data-role="listview" data-inset="true">
-            <li><a href="#">
-              <span>Pipe Of Tobacco</span>
-              <span data-role="timer">1995-12-17T03:24:00</span>
-            </a></li>
-            <li><a href="#">
-              <span>Pipe Of Tobacco</span>
-              <span data-role="timer">1995-12-17T03:24:00</span>
-            </a></li>
-            <li><a href="#">
-              <span>Pipe Of Tobacco</span>
-              <span data-role="timer">1995-12-17T03:24:00</span>
-            </a></li>
-            <li><a href="#">
-              <span>Pipe Of Tobacco</span>
-              <span data-role="timer">1995-12-17T03:24:00</span>
-            </a></li>
-          </ul>
-        </div>
-        <div id="mood">
-          <ul data-role="listview" data-inset="true">
-            <li><a href="#">Acura</a></li>
-            <li><a href="#">Audi</a></li>
-            <li><a href="#">BMW</a></li>
-            <li><a href="#">Cadillac</a></li>
-            <li><a href="#">Ferrari</a></li>
-          </ul>
-        </div>
-        <div id="events">
-        </div>
-        <div id="stats">
-        </div>
-      </div>
+      </script>
     </div>
 
     <div id="sidebar">
@@ -113,6 +116,8 @@
 
   <script src="script/timer.jquery" type="text/javascript"></script>
   <script src="script/app.js" type="text/javascript"></script>
+  <script src="script/application.js" type="text/javascript"></script>
+  <script src="script/router.js" type="text/javascript"></script>
 
   </body>
 </html>
