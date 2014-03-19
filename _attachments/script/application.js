@@ -1,2 +1,3 @@
 window.Habits = Ember.Application.create()
-// window.Habits.advanceReadiness()
+
+window.Habits.ApplicationAdapter = DS.FixtureAdapter.extend()

@@ -6,19 +6,6 @@
     <link rel="stylesheet" href="vendor/couchapp/jquery.mobile-1.4.2.css" type="text/css"/>
   </head>
   <body>
-    <div id="account"></div>
-
-    <h1>Habit Tracker</h1>
-
-    <div id="profile"></div>
-    <div id="content">
-
-    </div>
-
-    <div id="sidebar">
-      <p>Track your habits.</p>
-    </div>
-    
     <script src="/_utils/script/sha1.js"></script>
     <script src="/_utils/script/json2.js"></script>
     <script src="vendor/couchapp/jquery-1.8.3.js"></script>
@@ -35,6 +22,12 @@
     <script src="vendor/couchapp/sprintf.js"></script>
 
     <script type="text/x-handlebars" data-template-name="habits">
+      <div id="account"></div>
+      
+      <h1>Habit Tracker</h1>
+      
+      <div id="profile"></div>
+      
       <div data-role="page">
         <div data-role="tabs" id="tabs">
           <div data-role="navbar">
@@ -47,31 +40,17 @@
           </div>
           <div id="habits" class="ui-body-d ui-content">
             <ul data-role="listview" data-inset="true">
-              <li><a href="#">
-                <span>Pipe Of Tobacco</span>
-                <span data-role="timer">1995-12-17T03:24:00</span>
-              </a></li>
-              <li><a href="#">
-                <span>Pipe Of Tobacco</span>
-                <span data-role="timer">1995-12-17T03:24:00</span>
-              </a></li>
-              <li><a href="#">
-                <span>Pipe Of Tobacco</span>
-                <span data-role="timer">1995-12-17T03:24:00</span>
-              </a></li>
-              <li><a href="#">
-                <span>Pipe Of Tobacco</span>
-                <span data-role="timer">1995-12-17T03:24:00</span>
-              </a></li>
+              {{#each}}
+                <li><a href="#">
+                  <span>{{name}}</span>
+                  <span data-role="timer">2013-12-17T03:24:00</span>
+                </a></li>
+              {{/each}}
             </ul>
           </div>
           <div id="mood">
             <ul data-role="listview" data-inset="true">
               <li><a href="#">Acura</a></li>
-              <li><a href="#">Audi</a></li>
-              <li><a href="#">BMW</a></li>
-              <li><a href="#">Cadillac</a></li>
-              <li><a href="#">Ferrari</a></li>
             </ul>
           </div>
           <div id="events">
