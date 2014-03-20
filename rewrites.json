@@ -1,1 +1,6 @@
-[ { "from": "", "to": "index.html" } ]
+[
+    { "from": "", "to": "index.html" },
+    { "from": "style/*", "to": "style/*" },
+    { "from": "vendor/couchapp/*", "to": "vendor/couchapp/*" },
+    { "from": "script/*", "to": "script/*" }
+]
