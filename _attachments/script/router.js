@@ -1,11 +1,9 @@
-Habits.Router.map( function() {
-    this.resource( 'habits', { path: '/' } )
+App.Router.map( function() {
+    //this.route( 'habits', { path: "/" })
 } )
 
-/*
-Habits.HabitsRoute = Ember.Route.extend( {
+App.IndexRoute = Ember.Route.extend( {
     model: function() {
         return this.store.find( 'habit' )
     }
 } )
-*/

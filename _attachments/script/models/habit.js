@@ -1,22 +1,22 @@
-Habits.Habit = DS.Model.extend( {
+App.Habit = DS.Model.extend( {
     name: DS.attr( 'string' ),
-    isCompleted: DS.attr( 'boolean' )
+    isComplete: DS.attr( 'boolean' )
 } )
 
-Habits.Habit.FIXTURES = [
+App.Habit.FIXTURES = [
     {
         id: 1,
         name: 'Pipe of Tobacco',
-        isCompleted: true
+        isComplete: true
     },
     {
         id: 2,
         name: 'Pipe of Marijuana',
-        isCompleted: false
+        isComplete: false
     },
     {
         id: 3,
         name: '80mg Latuda',
-        isCompleted: false
+        isComplete: false
     }
 ]

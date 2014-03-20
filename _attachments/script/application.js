@@ -1,3 +1,9 @@
-window.Habits = Ember.Application.create()
+window.App = Ember.Application.create( {
+    LOG_TRANSITIONS: true
+} )
 
-window.Habits.ApplicationAdapter = DS.FixtureAdapter.extend()
+App.ApplicationAdapter = DS.FixtureAdapter.extend()
+
+App.Router.reopen( {
+    rootURL: '/habits/_design/habits/index.html'
+} )
