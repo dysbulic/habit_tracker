@@ -11,12 +11,12 @@ App.Habit.FIXTURES = [
     },
     {
         id: 2,
-        name: 'Pipe of Marijuana',
+        name: '10-Minute Meditation',
         isComplete: false
     },
     {
         id: 3,
-        name: '80mg Latuda',
+        name: '150mg Buoropion',
         isComplete: false
     }
 ]
