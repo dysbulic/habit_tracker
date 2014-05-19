@@ -2,33 +2,36 @@ App.Router.map( function() {
     //this.resource( 'readings', function() {
     //    this.resource( 'reading', { path: ':reading_id' } )
     //} )
-    this.resource( 'readings', { path: '/' } )
-    this.resource( 'reading', { path: '/reading/:reading_id' } )
-    this.resource( 'new_reading', { path: '/reading/new' } )
-    this.resource( 'wells' )
-    this.resource( 'well', { path: '/well/:well_id' } )
-    this.resource( 'new_well', { path: '/well/new' } )
+    this.resource( 'habits', { path: '/' } )
+    this.resource( 'habit', { path: '/habit/:habit_id' } )
+    this.resource( 'new_habit', { path: '/habit/new' } )
+    this.resource( 'events' )
+    this.resource( 'event', { path: '/event/:event_id' } )
+    this.resource( 'new_event', { path: '/event/new' } )
+    this.resource( 'mood', { path: '/mood' } )
+    this.resource( 'goals', { path: '/goals' } )
+    this.resource( 'stats', { path: '/stats' } )
     this.resource( 'login', { path: '/login' } )
 } )
 
-App.WellsRoute = Ember.Route.extend( {
+App.HabitsRoute = Ember.Route.extend( {
     model: function() {
-        return this.store.find( 'well' )
+        return this.store.find( 'habit' )
     }
 } )
 
-App.WellRoute = Ember.Route.extend( {
+App.HabitRoute = Ember.Route.extend( {
     model: function( params ) {
-        return this.store.find( 'well', params.well_id )
+        return this.store.find( 'habit', params.habit_id )
     }
 } )
 
-App.ReadingsRoute = Ember.Route.extend( {
+App.EventsRoute = Ember.Route.extend( {
     model: function() {
         var self = this
         return this.store
-            .findQuery( 'reading', {
-                designDoc: 'reading',
+            .findQuery( 'event', {
+                designDoc: 'event',
                 viewName: 'by_time',
                 options: {
                     descending: true,
@@ -43,87 +46,46 @@ App.ReadingsRoute = Ember.Route.extend( {
     }
 } )
 
-App.ReadingRoute = Ember.Route.extend( {
+App.EventRoute = Ember.Route.extend( {
     model: function() {
-        return typeof(params) !== 'undefined' && this.store.find( 'reading', params.reading_id )
+        return this.store.find( 'event', params.event_id )
     }
 } )
 
-var gpsCoordinate
-navigator.geolocation.getCurrentPosition( function( position ) {
-    gpsCoordinate = { x: position.coords.longitude, y: position.coords.latitude }
-} )
-
-App.NewReadingController = Ember.ObjectController.extend( {
-    init: function() {
-        this._super()
-        this.set( 'wells', Ember.ArrayProxy.createWithMixins( Ember.SortableMixin, {
-            content: this.get( 'store' ).find( 'well' ),
-            sortProperties: ['name'],
-            sortAscending: true,
-            orderBy: function( item1, item2 ) {
-                if( gpsCoordinate ) {
-                    function distance( p1, p2 ) {
-                        return Math.sqrt( Math.pow( p1.x - p2.x, 2 ) + Math.pow( p1.y - p2.y, 2 ) )
-                    }
-                    
-                    function toGPS( item ) {
-                        return distance(
-                            gpsCoordinate,
-                            {
-                                x: Ember.get( item, 'longitude' ),
-                                y: Ember.get( item, 'latitude' )
-                            }
-                        )
-                    }
-
-                    var offsets = [ toGPS( item1 ), toGPS( item2 ) ]
-                    
-                    return offsets[0] - offsets[1]
-                } else {
-                    return Ember.get( item1, 'name' ).localeCompare( Ember.get( item2, 'name' ) )
-                }
-            }
-        } ) )
-    },
+App.NewHabitController = Ember.ObjectController.extend( {
     actions: {
         save: function() {
             var self = this
             var store = this.get( 'store' )
-            store.find( 'well', $('#well').val() ).then( function( well ) {
-                var reading = store.createRecord( 'reading', {
-                    well: well,
-                    time: new Date(),
-                    mcf: $('#mcf').val(),
-                    line: $('#line').val(),
-                    tbg: $('#tbg').val(),
-                    csg: $('#csg').val()
-                } )
-                reading.save()
-
-                well.get( 'readings' ).then( function( readings ) {
-                    readings.pushObject( reading )
-                    well.save()
-                } )
-
-                self.transitionToRoute( 'readings' )
+            var habit = store.createRecord( 'habit', {
+                name: $('#name').val()
             } )
+            habit.save()
+            
+            self.transitionToRoute( 'habits' )
         }
     }
 } )
 
-App.NewWellController = Ember.ObjectController.extend( {
+App.NewEventController = Ember.ObjectController.extend( {
     actions: {
         save: function() {
             var self = this
             var store = this.get( 'store' )
-            var well = store.createRecord( 'well', {
-                asset_id: $('#asset-id').val(),
-                name: $('#name').val()
+            store.find( 'habit', $('#habit').val() ).then( function( habit ) {
+                var event = store.createRecord( 'event', {
+                    habit: habit,
+                    time: new Date()
+                } )
+                event.save()
+
+                habit.get( 'events' ).then( function( events ) {
+                    events.pushObject( event )
+                    habit.save()
+                } )
+
+                self.transitionToRoute( 'events' )
             } )
-            well.save()
-            
-            self.transitionToRoute( 'wells' )
         }
     }
 } )
@@ -141,7 +103,7 @@ App.LoginController = Ember.ObjectController.extend( {
                 } )
                 .then(
                     function( response ) {
-                        self.transitionToRoute( 'readings' )
+                        self.transitionToRoute( 'habits' )
                         return response
                     },
                     function() {
