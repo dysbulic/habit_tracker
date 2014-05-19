@@ -1,116 +1,179 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Habit Tracker</title>
-    <link rel="stylesheet" href="style/main.css" type="text/css"/>
-    <link rel="stylesheet" href="vendor/couchapp/jquery.mobile-1.4.2.css" type="text/css"/>
-  </head>
-  <body>
-    <script src="/_utils/script/sha1.js"></script>
-    <script src="/_utils/script/json2.js"></script>
-    <script src="vendor/couchapp/jquery-2.1.0.js"></script>
-    <!--
-    <script src="vendor/couchapp/jquery-1.8.3.js"></script>
-    <script src="/_utils/script/jquery.couch.js"></script>
-    <script src="vendor/couchapp/jquery.couchLogin.js"></script>
-    <script src="vendor/couchapp/jquery.couchProfile.js"></script>
-    <script src="vendor/couchapp/md5.js"></script>
-    <script src="vendor/couchapp/jquery.mustache.js"></script>
-    -->
-    <script src="vendor/couchapp/handlebars-1.0.0.js"></script>
-    <script src="vendor/couchapp/ember.js"></script>
-    <script src="vendor/couchapp/ember-states.js"></script>
-    <script src="vendor/couchapp/ember-data-latest.js"></script>
-    <!--<script src="vendor/couchapp/couchdb_adapter.js"></script>-->
-    <script src="vendor/couchapp/sprintf.js"></script>
+<head>
+  <title>Meter Reader</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="css/bootstrap-3.1.1.min.css"/>
+  <link rel="stylesheet" href="css/normalize.css"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <script type="text/x-handlebars">
+    <div class="container">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+          <div class="navbar-header pull-right">
+            {{#link-to 'new_habit' class="btn btn-default navbar-btn"}}<span class="glyphicon glyphicon-plus" />{{/link-to}}
+          </div>
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle pull-left" data-toggle="collapse" data-target="#nav-options">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Meter Reader</a>
+          </div>
+          
+          <div class="collapse navbar-collapse" id="nav-options">
+            <ul class="nav navbar-nav">
+              {{#link-to "habits" tagName="li" data-toggle="collapse" data-target="#nav-options"}}
+                <a {{bind-attr href="view.href"}}>Habits</a>
+              {{/link-to}}
+              {{#link-to "mood" tagName="li" data-toggle="collapse" data-target="#nav-options"}}
+                <a {{bind-attr href="view.href"}}>Mood</a>
+              {{/link-to}}
+              {{#link-to "events" tagName="li" data-toggle="collapse" data-target="#nav-options"}}
+                <a {{bind-attr href="view.href"}}>Events</a>
+              {{/link-to}}
+              {{#link-to "goals" tagName="li" data-toggle="collapse" data-target="#nav-options"}}
+                <a {{bind-attr href="view.href"}}>Goals</a>
+              {{/link-to}}
+              {{#link-to "stats" tagName="li" data-toggle="collapse" data-target="#nav-options"}}
+                <a {{bind-attr href="view.href"}}>Stats</a>
+              {{/link-to}}
+            </ul>
+          </div>
+        </div>
+      </nav>
 
-    <script type="text/x-handlebars" data-template-name="index">
-      <div id="account"></div>
-      
-      <h1>Habit Tracker</h1>
-      
-      <div id="profile"></div>
-    </script>
+      {{outlet}}
+    </div>
+  </script>
 
-    <div data-role="page">Loading&hellip;</div>
+  <script type="text/x-handlebars" id="habits">
+    <div id="habits">
+      {{#each}}
+        <div class="row">
+          {{#link-to 'habit' this}}
+            <div class="col-xs-2">{{name}}</div>
+            <div class="col-xs-10">{{timer-from last-time}}</div>
+          {{/link-to}}
+        </div>
+      {{/each}}
+    </div>
+  </script>
 
-    <script type="text/x-handlebars" data-template-name="habits">
-      <div data-role="tabs" id="tabs">
-        <div data-role="navbar">
-          <ul>
-            <li><a href="#habits" data-ajax="false">Habits</a></li>
-            <li><a href="#mood" data-ajax="false">Mood</a></li>
-            <li><a href="#events" data-ajax="false">Events</a></li>
-            <li><a href="#stats" data-ajax="false">Stats</a></li>
-          </ul>
+  <script type="text/x-handlebars" id="habit">
+    <div class="row"><h1>{{name}}</h1></div>
+    <div id="event-list">
+      {{#each event in model.events}}
+        <div class="row">
+          <div class="col-xs-12">{{#link-to 'event' event}}{{event.name}}{{/link-to}}</div>
         </div>
-        <div id="habits" class="ui-body-d ui-content">
-          <ul data-role="listview" data-inset="true">
-            {{#each}}
-              <li><a href="#">
-                <span>{{name}}</span>
-                <span data-role="timer">2013-12-17T03:24:00</span>
-              </a></li>
-            {{/each}}
-            <li><a href="#">
-              {{input type="text" id="new-habit" placeholder="New Habit" value=newName action="createHabit"}}
-            </a></li>
-          </ul>
-        </div>
-        <div id="mood">
-          <ul data-role="listview" data-inset="true">
-            <li><a href="#">Acura</a></li>
-          </ul>
-        </div>
-        <div id="events">
-        </div>
-        <div id="stats">
+      {{/each}}
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" id="events">
+    <div id="events">
+      {{#each model}}
+        {{#link-to 'event' this}}
+          <div class="row">
+            <div class="asset-id col-xs-9">{{habit.name}}</div>
+            <div class="col-xs-3">{{format-time-passed time}}</div>
+          </div>
+        {{/link-to}}
+      {{/each}}
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" id="event">
+    <div class="row">
+      <h1>{{#link-to 'habit' habit}}{{habit.name}}{{/link-to}}</h1>
+    </div>
+    <div class="row">
+      <div class="col-xs-3 prop">Time:</div>
+      <div class="col-xs-9">{{format-time-numeric time}}</div>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" id="edit_reading">
+    <form class="form-horizontal" role="form">
+      <div class="form-group">
+        <label for="title" class="col-xs-2 control-label">Habit</label>
+        <div class="col-xs-10">
+          {{view Ember.Select
+            id = "habit"
+            class = "form-control"
+            content = habits
+            optionValuePath = "content.id"
+            optionLabelPath = "content.name"}}
         </div>
       </div>
-    </script>
-
-    <!-- templates used by app.js -->
-    <script id="new-message" type="text/x-mustache" charset="utf-8">
-      <div class="avatar">
-        {{#gravatar_url}}<img src="{{gravatar_url}}"/>{{/gravatar_url}}
-        <div class="name">
-          {{name}}
+      <div class="form-group">
+        <label for="excerpt" class="col-xs-2 control-label">Time</label>
+        <div class="col-xs-10">
+          <input type="time" class="form-control" id="time" name="time" placeholder="Time"/>
         </div>
       </div>
-      <form id="create-message">
-        <label>New message from {{nickname}}: <input type="text" name="message" size=60 value=""></label>
-      </form>
-      <div style="clear:left;"></div>
-    </script>
+      <div class="form-group">
+        <div class="col-xs-offset-2 col-xs-10">
+          <button type="submit" class="btn btn-success" {{action 'save'}}>Save</button>
+        </div>
+      </div>
+    </form>
+  </script>
 
-    <script id="recent-messages" type="text/x-mustache" charset="utf-8">
-      <h3>Recent Messages</h3>
-      <ul id="items">
-        {{#items}}
-          <li>
-            <div class="avatar">
-              {{#gravatar_url}}<img src="{{gravatar_url}}" alt="{{name}}"/>{{/gravatar_url}}
-              <div class="name">
-                {{nickname}}
-              </div>
-            </div>
-            <p>{{message}}</p>
-            <div style="clear:left;"></div>
-          </li>
-        {{/items}}
-      </ul>
-      <p><em>Protip:</em> If you setup continuous replication between this database and a remote one, this list will reflect remote changes in near real-time.</p>
-      <p>This would be a good place to add pagination.</p>
-    </script>
+  <script type="text/x-handlebars" id="login">
+    <form class="form-horizontal" role="form">
+      <div class="form-group">
+        <label for="excerpt" class="col-xs-3 control-label">Username</label>
+        <div class="col-xs-9">
+          <input type="text" class="form-control" id="username" name="username"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="excerpt" class="col-xs-3 control-label">Password</label>
+        <div class="col-xs-9">
+          <input type="password" class="form-control" id="password" name="password"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-offset-2 col-xs-10">
+          <button type="submit" class="btn btn-success" {{action 'login'}}>Login</button>
+        </div>
+      </div>
+    </form>
+  </script>
 
-    <script src="script/timer.jquery" type="text/javascript"></script>
-    <!--<script src="script/app.js" type="text/javascript"></script>-->
-    <script src="script/application.js" type="text/javascript"></script>
-    <script src="script/router.js" type="text/javascript"></script>
-    <script src="script/models/habit.js" type="text/javascript"></script>
-    <script src="script/controllers/habits_controller.js" type="text/javascript"></script>
+  <script src="cordova.js"></script>
 
-    <script src="vendor/couchapp/jquery.mobile-1.4.2.js"></script>
+  <script src="/_utils/script/sha1.js"></script>
+  <script src="/_utils/script/json2.js"></script>
 
-  </body>
+  <script src="js/libs/jquery-1.10.2.js"></script>
+  <script src="js/libs/handlebars-1.1.2.js"></script>
+  <script src="js/libs/ember-1.5.1.js"></script>
+  <script src="js/libs/ember-states.js"></script>
+  <script src="js/libs/ember-data-latest.js"></script>
+
+  <script src="js/libs/ember-couchdb/kit.js"></script>
+  <script src="js/libs/ember-couchdb/attachment-adapter.js"></script>
+  <script src="js/libs/ember-couchdb/changes-feed.js"></script>
+  <script src="js/libs/ember-couchdb/document-adapter.js"></script>
+  <script src="js/libs/ember-couchdb/registry.js"></script>
+  <script src="js/libs/ember-couchdb/revs-adapter.js"></script>
+
+  <script src="js/libs/bootstrap-3.1.1.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
+  <script src="js/modules.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- to activate the test runner, add the "?test" query string parameter -->
+  <script src="tests/runner.js"></script>
+</body>
 </html>
