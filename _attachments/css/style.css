@@ -60,3 +60,7 @@ and (max-device-width : 480px) {
         padding: 0;
     }
 }
+
+.color {
+    height: 1em;
+}

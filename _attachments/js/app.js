@@ -7,7 +7,7 @@ App.Router.map( function() {
     this.resource( 'new_habit', { path: '/habit/new' } )
     this.resource( 'events' )
     this.resource( 'event', { path: '/event/:event_id' } )
-    this.resource( 'new_event', { path: '/event/new' } )
+    this.resource( 'new_event', { path: '/event/new/:habit_id' } )
     this.resource( 'mood', { path: '/mood' } )
     this.resource( 'goals', { path: '/goals' } )
     this.resource( 'stats', { path: '/stats' } )
@@ -54,11 +54,12 @@ App.EventRoute = Ember.Route.extend( {
 
 App.NewHabitController = Ember.ObjectController.extend( {
     actions: {
-        save: function() {
+        add: function() {
             var self = this
             var store = this.get( 'store' )
             var habit = store.createRecord( 'habit', {
-                name: $('#name').val()
+                name: $('#name').val(),
+                color: $('#color').val()
             } )
             habit.save()
             
@@ -129,6 +130,10 @@ Ember.Handlebars.registerBoundHelper( 'format-time-numeric', function( time ) {
 
 Ember.Handlebars.registerBoundHelper( 'two-digit-float', function( number ) {
     return Number( number ).toFixed( 2 )
+} )
+
+Ember.Handlebars.registerBoundHelper( 'timer-from', function( time ) {
+    return moment( time ).fromNow()
 } )
 
 Ember.LinkView.reopen( {

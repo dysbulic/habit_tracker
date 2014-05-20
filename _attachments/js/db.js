@@ -14,7 +14,11 @@ App.AttachmentSerializer = EmberCouchDBKit.AttachmentSerializer.extend()
 App.Habit = DS.Model.extend( {
     type: DS.attr('string', { defaultValue: 'habit' } ),
     name: DS.attr( 'string' ),
-    events: DS.hasMany( 'event', { async: true } )
+    color: DS.attr( 'string' ),
+    events: DS.hasMany( 'event', { async: true } ),
+    style: function() {
+        return 'background-color: %@'.fmt( this.get( 'color' ) )
+    }.property( 'color' ),
 } )
 
 App.Event = DS.Model.extend( {
