@@ -68,7 +68,20 @@ App.NewHabitController = Ember.ObjectController.extend( {
     }
 } )
 
+App.NewEventRoute = Ember.Route.extend( {
+    model: function(params) {
+        return this.store.find( 'habit', params.habit_id )
+    },
+    setupController: function( controller, model ) {
+        controller.set( 'content', model )
+    }
+} )
+
 App.NewEventController = Ember.ObjectController.extend( {
+    init: function() {
+        console.log( 'init', this.get( 'content' ) )
+    },
+    selectedHabit: null,
     actions: {
         save: function() {
             var self = this

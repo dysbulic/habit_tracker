@@ -19,6 +19,13 @@ App.Habit = DS.Model.extend( {
     style: function() {
         return 'background-color: %@'.fmt( this.get( 'color' ) )
     }.property( 'color' ),
+    lastTime: function() {
+        var events = this.get( 'events' )
+        var times = events.map( function( e ) {
+            return e.get( 'time' )
+        } )
+        return times.length == 0 ? undefined : times.sort()[0]
+    }.property( 'events' ),
 } )
 
 App.Event = DS.Model.extend( {
