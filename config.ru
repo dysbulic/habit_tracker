@@ -18,3 +18,6 @@ run lambda { |env|
     File.open('www/index.html', File::RDONLY)
   ]
 }
+
+# for realtime heroku logs
+$stdout.sync = true

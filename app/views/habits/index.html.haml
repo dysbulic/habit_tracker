@@ -1,0 +1,25 @@
+%h1 Habits
+
+%table
+  %tr
+    %th ID
+    %th Color
+    %th Name
+    %th Description
+    %th
+    %th
+    %th
+
+  - @habits.each do |habit|
+    %tr
+      %td= habit.id
+      %td= habit.color
+      %td= habit.name
+      %td= habit.description
+      %td= link_to 'Show', habit
+      %td= link_to 'Edit', edit_habit_path(habit)
+      %td= link_to 'Destroy', habit, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Habit', new_habit_path

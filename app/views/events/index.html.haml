@@ -1,0 +1,21 @@
+- if params[:layout] == 'table'
+  %h1 Listing Events
+
+  = render 'table'
+- else
+  #loading-modal.modal.fade{'aria-hidden' => false}
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %button.close{ data: { dismiss: 'modal' } } ×
+          %h3.modal-title Loading
+        .modal-body
+          = image_tag 'http://dhappy.org/.../image/icon/loading/', class: 'loading-icon'
+
+  #stats
+
+  #events
+
+%br
+
+= link_to 'New Event', new_event_path
