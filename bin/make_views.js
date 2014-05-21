@@ -2,7 +2,7 @@ var coax = require( 'coax' )
 var util = require( 'util' )
 
 var url = util.format( 'http://%s:%s@%s', process.env.COUCH_USER, process.env.COUCH_PASS, process.env.COUCH_HOST || 'localhost:5984' )
-var db = coax( [url, 'wells'] )
+var db = coax( [url, 'habits'] )
 
 console.log( url )
 
