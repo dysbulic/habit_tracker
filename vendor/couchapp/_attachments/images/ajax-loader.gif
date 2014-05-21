@@ -1,8 +1,0 @@
---2014-03-19 12:32:54--  https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&docid=Rp-fSr6GPepbuM&tbnid=TEdHzuhTyGgqsM:&ved=0CAYQjRw&url=http%3A%2F%2Fspeedandfunction.com%2F&ei=asYpU4zAA4vpkAe1nYGoBA&bvm=bv.62922401,d.eW0&psig=AFQjCNGcJhmIy1-bKb5k321mehNOIr-RTg&ust=1395333079994378
-Resolving www.google.com (www.google.com)... 74.125.196.103, 74.125.196.104, 74.125.196.105, ...
-Connecting to www.google.com (www.google.com)|74.125.196.103|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: unspecified [text/html]
-url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&docid=Rp-fSr6GPepbuM&tbnid=TEdHzuhTyGgqsM:&ved=0CAYQjRw&url=http:%2F%2Fspeedandfunction.com%2F&ei=asYpU4zAA4vpkAe1nYGoBA&bvm=bv.62922401,d.eW0&psig=AFQjCNGcJhmIy1-bKb5k321mehNOIr-RTg&ust=1395333079994378: File name too long
-
-Cannot write to ‘url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&docid=Rp-fSr6GPepbuM&tbnid=TEdHzuhTyGgqsM:&ved=0CAYQjRw&url=http:%2F%2Fspeedandfunction.com%2F&ei=asYpU4zAA4vpkAe1nYGoBA&bvm=bv.62922401,d.eW0&psig=AFQjCNGcJhmIy1-bKb5k321mehNOIr-RTg&ust=1395333079994378’ (Success).
