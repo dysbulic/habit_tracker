@@ -56,11 +56,11 @@
     <div id="habits">
       {{#each}}
         <div class="row">
-          {{#link-to 'new_event' this}}
+          <button {{action 'createEvent' _id}}>
             <div class="col-xs-1 color" {{bind-attr style=style}}></div>
             <div class="col-xs-8">{{name}}</div>
             <div class="col-xs-3" data-role="timer">{{lastTime}}</div>
-          {{/link-to}}
+          </button>
         </div>
       {{/each}}
     </div>

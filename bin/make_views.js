@@ -19,3 +19,25 @@ db.put( ['_design', 'habit'],
         }
       )
 
+db.put( ['_design', 'event'],
+        {
+            views: {
+                all: {
+                    map: function( doc ) { emit( doc.type, doc ) }.toString()
+                },
+                by_time: {
+                    map: function( doc ) {
+                        if( doc.type == 'reading' ) {
+                            d = new Date(doc.time)
+                            emit( [d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()], doc )
+                        }
+                    }.toString()
+                }
+
+            }
+        },
+        function( err, res ) {
+            console.log( err, res )
+        }
+      )
+

@@ -17,6 +17,25 @@ App.Router.map( function() {
 App.HabitsRoute = Ember.Route.extend( {
     model: function() {
         return this.store.find( 'habit' )
+    },
+    actions: {
+        createEvent: function( habitId ) {
+            var store = this.get( 'store' )
+            store.find( 'habit', habitId ).then( function( habit ) {
+                var event = store.createRecord( 'event', {
+                    habit: habit,
+                    time: new Date()
+                } )
+                event.save()
+
+                habit.get( 'events' ).then( function( events ) {
+                    events.pushObject( event )
+                    habit.save()
+                } )
+
+                self.transitionToRoute( 'events' )
+            } )
+        }
     }
 } )
 
