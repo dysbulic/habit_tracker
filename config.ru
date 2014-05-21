@@ -1,7 +1,7 @@
 require 'rack/reverse_proxy'
 
 use Rack::ReverseProxy do
-  reverse_proxy /^\/db\/?(.*)$/, 'https://doh.cloudant.com/$1'
+  reverse_proxy /^\/db\/?(.*)$/, 'https://app18538147.heroku:AwENYu7c3rGiTlrEeaiXPXh6@app18538147.heroku.cloudant.com/$1'
 end
 
 use Rack::Static,

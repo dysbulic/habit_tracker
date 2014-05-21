@@ -3,7 +3,6 @@ App = Ember.Application.create()
 App.ApplicationAdapter = DS.FixtureAdapter.extend()
 
 App.Host = window.location.origin + "/db"
-App.Host = 'http://localhost:5984'
 
 App.ApplicationAdapter = EmberCouchDBKit.DocumentAdapter.extend( { db: 'habits', host: App.Host } )
 App.ApplicationSerializer = EmberCouchDBKit.DocumentSerializer.extend()
