@@ -186,7 +186,6 @@
           url = url.substr(0, url.length - 1);
         }
         hash.url = url;
-          alert( url )
         hash.type = type;
         hash.dataType = 'json';
         hash.contentType = 'application/json; charset=utf-8';

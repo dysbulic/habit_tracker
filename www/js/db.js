@@ -2,7 +2,11 @@ App = Ember.Application.create()
 
 App.ApplicationAdapter = DS.FixtureAdapter.extend()
 
-App.Host = window.location.origin + "/db"
+if( window.location.host == 'localhost' ) {
+    App.Host = 'http://localhost:5984'
+} else {
+    App.Host = window.location.origin + "/db" // served from rack
+}
 
 App.ApplicationAdapter = EmberCouchDBKit.DocumentAdapter.extend( { db: 'habits', host: App.Host } )
 App.ApplicationSerializer = EmberCouchDBKit.DocumentSerializer.extend()

@@ -56,7 +56,7 @@
     <div id="habits">
       {{#each}}
         <div class="row">
-          <button {{action 'createEvent' _id}}>
+          <button {{action 'createEvent' id}}>
             <div class="col-xs-1 color" {{bind-attr style=style}}></div>
             <div class="col-xs-8">{{name}}</div>
             <div class="col-xs-3" data-role="timer">{{lastTime}}</div>
