@@ -20,20 +20,25 @@ App.HabitsRoute = Ember.Route.extend( {
     },
     actions: {
         createEvent: function( habitId ) {
+            var self = this
             var store = this.get( 'store' )
             store.find( 'habit', habitId ).then( function( habit ) {
                 var event = store.createRecord( 'event', {
                     habit: habit,
                     time: new Date()
                 } )
-                event.save()
-
-                habit.get( 'events' ).then( function( events ) {
-                    events.pushObject( event )
-                    habit.save()
+                event.save().then( function() {
+                    habit.get( 'events' ).then( function( events ) {
+                        if( ! events ) {
+                            events = []
+                            habit.set( 'events', events )
+                        }
+                        events.pushObject( event )
+                        habit.save().then( function() {
+                            self.transitionTo( 'events' )
+                        } )
+                    } )
                 } )
-
-                self.transitionToRoute( 'events' )
             } )
         }
     }
@@ -89,7 +94,6 @@ App.NewHabitController = Ember.ObjectController.extend( {
 
 App.NewEventRoute = Ember.Route.extend( {
     model: function(params) {
-        console.log( 'hid', params.habit_id )
         return this.store.find( 'habit', params.habit_id )
     },
     setupController: function( controller, model ) {

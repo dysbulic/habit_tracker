@@ -18,7 +18,7 @@ App.Habit = DS.Model.extend( {
     type: DS.attr('string', { defaultValue: 'habit' } ),
     name: DS.attr( 'string' ),
     color: DS.attr( 'string' ),
-    events: DS.hasMany( 'event', { async: true } ),
+    events: DS.hasMany( 'event', { async: true, defaultValue: [] } ),
     style: function() {
         return 'background-color: %@'.fmt( this.get( 'color' ) )
     }.property( 'color' ),
