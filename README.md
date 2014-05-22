@@ -10,13 +10,10 @@ My Ember skills are minimal and the application is shaping up to look like it wa
 
 # Live
 
-The [current test server](http://doh.cloudant.com/habits/_design/habits/index.html).
+The [current test server](http://hbit.herokuapp.com)
 
 # Running
 
-* `sudo apt-get install couchdb`
-* `sudo apt-get install python-setuptools`
-* `sudo easy_install pip`
-* `sudo apt-get install python-dev`
-* `sudo pip install couchapp`
-* `couchapp push . http://localhost:5984/habits`
+The application is currently set up to deploy to Heroku. Though the application is straight HTML/JS I am having issues passing credentials and cookies to ports other than 80. So, the Rack setup runs a reverse proxy — everything under `/db/` gets sent to the Couch server.
+
+Cordova support is in progress. 
