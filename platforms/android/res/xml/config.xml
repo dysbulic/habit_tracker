@@ -4,6 +4,10 @@
     <feature name="App">
         <param name="android-package" value="org.apache.cordova.App" />
     </feature>
+    <feature name="CBLite">
+        <param name="android-package" value="com.couchbase.cblite.phonegap.CBLite" />
+        <param name="onload" value="true" />
+    </feature>
     <name>Habit Tracker</name>
     <description>
         A sample Apache Cordova application that responds to the deviceready event.
@@ -13,8 +17,4 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
-    <feature name="CBLite">
-        <param name="android-package" value="com.couchbase.cblite.phonegap.CBLite" />
-        <param name="onload" value="true" />
-    </feature>
 </widget>
