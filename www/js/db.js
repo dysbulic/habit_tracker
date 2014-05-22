@@ -46,7 +46,7 @@ App.Event = DS.Model.extend( {
         } else {
             cblite.getURL( function( err, url ) {
                 var adapter = App.__container__.lookup('store:main').adapterFor( 'application' )
-                //url = url.substring( 0, url.length - 1 )
+                url = url.substring( 0, url.length - 1 )
                 alert( url )
                 Ember.set( adapter, 'host', url )
                 

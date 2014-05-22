@@ -42,15 +42,15 @@ App.Event = DS.Model.extend( {
 ;( function() {
     function checkURL() {
         if( ! window.cblite ) {
-            App.initialize()
+            App.advanceReadiness()
         } else {
             cblite.getURL( function( err, url ) {
                 var adapter = App.__container__.lookup('store:main').adapterFor( 'application' )
-                //url = url.substring( 0, url.length - 1 )
+                url = url.substring( 0, url.length - 1 )
                 alert( url )
                 Ember.set( adapter, 'host', url )
                 
-                App.initialize()
+                App.advanceReadiness()
 
                 var xmlHttp = new XMLHttpRequest()
                 xmlHttp.open( 'GET', url, false )
@@ -109,5 +109,6 @@ App.Event = DS.Model.extend( {
             } )
         }
     }
+    $(checkURL)
     document.addEventListener( 'deviceready', checkURL, false )
 } )()
