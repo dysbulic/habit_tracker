@@ -1,5 +1,7 @@
 App = Ember.Application.create()
 
+App.deferReadiness()
+
 App.ApplicationAdapter = DS.FixtureAdapter.extend()
 
 if( window.location.host == 'localhost' ) {
@@ -39,13 +41,17 @@ App.Event = DS.Model.extend( {
 
 ;( function() {
     function checkURL() {
-        if( window.cblite ) {
+        if( ! window.cblite ) {
+            App.initialize()
+        } else {
             cblite.getURL( function( err, url ) {
                 var adapter = App.__container__.lookup('store:main').adapterFor( 'application' )
                 //url = url.substring( 0, url.length - 1 )
                 alert( url )
                 Ember.set( adapter, 'host', url )
                 
+                App.initialize()
+
                 var xmlHttp = new XMLHttpRequest()
                 xmlHttp.open( 'GET', url, false )
                 xmlHttp.send( null )
