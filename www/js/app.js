@@ -23,22 +23,23 @@ App.HabitsRoute = Ember.Route.extend( {
             var self = this
             var store = this.get( 'store' )
             store.find( 'habit', habitId ).then( function( habit ) {
-                var event = store.createRecord( 'event', {
-                    habit: habit,
-                    time: new Date()
-                } )
-                event.save().then( function() {
-                    habit.get( 'events' ).then( function( events ) {
-                        if( ! events ) {
-                            events = []
-                            habit.set( 'events', events )
-                        }
-                        events.pushObject( event )
-                        habit.save().then( function() {
-                            self.transitionTo( 'events' )
+                store
+                    .createRecord( 'event', {
+                        habit: habit,
+                        time: new Date()
+                    } )
+                    .save().then( function( event ) {
+                        habit.get( 'events' ).then( function( events ) {
+                            if( ! events ) {
+                                events = []
+                                habit.set( 'events', events )
+                            }
+                            events.pushObject( event )
+                            habit.save().then( function() {
+                                self.transitionTo( 'events' )
+                            } )
                         } )
                     } )
-                } )
             } )
         }
     }
