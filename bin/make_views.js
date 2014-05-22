@@ -9,9 +9,10 @@ console.log( url )
 var habitDesign = db( ['_design', 'habit'] )
 
 habitDesign.get( function( err, doc ) {
-    if( err && err.reason != 'missing' ) {
+    if( err && err.error != 'not_found' ) {
         console.log( err )
     } else {
+        console.log( 'habit rev', doc._rev )
         habitDesign.put(
             {
                 views: {
@@ -31,9 +32,10 @@ habitDesign.get( function( err, doc ) {
 var eventDesign = db( ['_design', 'event'] )
 
 eventDesign.get( function( err, doc ) {
-    if( err && err.reason != 'missing' ) {
+    if( err && err.error != 'not_found' ) {
         console.log( err )
     } else {
+        console.log( 'event rev', doc._rev )
         eventDesign.put(
             {
                 views: {
@@ -47,9 +49,9 @@ eventDesign.get( function( err, doc ) {
                                 emit( [d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()], doc )
                             }
                         }.toString()
-                    },
-                    _rev: doc._rev
-                }
+                    }
+                },
+                _rev: doc._rev
             },
             function( err, res ) {
                 console.log( err, res )
