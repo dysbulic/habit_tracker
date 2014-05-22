@@ -51,12 +51,6 @@ App.Event = DS.Model.extend( {
                 xmlHttp.send( null )
                 alert( 'XMLHttpRequest get: ' +  xmlHttp.responseText )
 
-                var xmlHttp = new XMLHttpRequest()
-                xmlHttp.open( 'PUT', url + "wells", false )
-                xmlHttp.setRequestHeader( 'Accept', 'application/json,*/*;q=0.1' )
-                xmlHttp.send( null )
-                alert( 'XMLHttpRequest put: ' +  xmlHttp.responseText )
-
                 var coax = require( 'coax' )
                 var db = coax( [url, 'wells'] )
                 
@@ -95,7 +89,9 @@ App.Event = DS.Model.extend( {
                                                     alert( "gv:" + prop + " : " + err[prop] )
                                                 }
                                             } else {
-                                                alert( res )
+                                                for( prop in res ) {
+                                                    alert( "fv:" + prop + " : " + res[prop] )
+                                                }
                                             }
                                         } )
                                     }

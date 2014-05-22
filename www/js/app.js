@@ -16,7 +16,10 @@ App.Router.map( function() {
 
 App.HabitsRoute = Ember.Route.extend( {
     model: function() {
-        return this.store.find( 'habit' )
+        return this.store.find( 'habit' ).then( function( habit ) {
+            console.log( 'HabitRoute.model', habit )
+            return habit
+        } )
     },
     actions: {
         createEvent: function( habitId ) {
@@ -94,7 +97,7 @@ App.NewHabitController = Ember.ObjectController.extend( {
 } )
 
 App.NewEventRoute = Ember.Route.extend( {
-    model: function(params) {
+    model: function( params ) {
         return this.store.find( 'habit', params.habit_id )
     },
     setupController: function( controller, model ) {
