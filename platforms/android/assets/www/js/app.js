@@ -16,10 +16,16 @@ App.Router.map( function() {
 
 App.HabitsRoute = Ember.Route.extend( {
     model: function() {
-        return this.store.find( 'habit' ).then( function( habit ) {
-            console.log( 'HabitRoute.model', habit )
-            return habit
-        } )
+        return this.store.find( 'habit' ).then(
+            function( habit ) {
+                console.log( 'HabitRoute.model', habit )
+                return habit
+            },
+            function( err ) {
+                console.log( 'hr err', err )
+                return []
+            }
+        )
     },
     actions: {
         createEvent: function( habitId ) {
