@@ -42,23 +42,17 @@ App.Event = DS.Model.extend( {
 ;( function() {
     function checkURL() {
         if( ! window.cblite ) {
-            App.advanceReadiness()
+            console.error( 'couchbase lite not present' )
         } else {
             cblite.getURL( function( err, url ) {
                 var adapter = App.__container__.lookup('store:main').adapterFor( 'application' )
                 url = url.substring( 0, url.length - 1 )
-                alert( url )
                 Ember.set( adapter, 'host', url )
                 
                 App.advanceReadiness()
 
-                var xmlHttp = new XMLHttpRequest()
-                xmlHttp.open( 'GET', url, false )
-                xmlHttp.send( null )
-                alert( 'XMLHttpRequest get: ' +  xmlHttp.responseText )
-
                 var coax = require( 'coax' )
-                var db = coax( [url, 'wells'] )
+                var db = coax( [url, 'habits'] )
                 
                 db.put( function( err, res ) {
                     if( err && err.status != 412 ) {
@@ -66,19 +60,35 @@ App.Event = DS.Model.extend( {
                             alert( "ip:" + prop + " : " + err[prop] )
                         }
                     } else {
-                        alert( "ip: after" )
                         db.get( function( err, res ) {
                             if( err ) {
                                 alert( "ig:" + err )
                             } else {
-                                var design = "_design/reading"
+                                var design = ['_design', 'habit']
                                 var views = {
                                     views: {
+                                        all: {
+                                            map: function( doc ) { emit( doc.type, doc ) }.toString()
+                                        }
+                                    }
+                                }
+                                db.put( design, views, function( err, info ) {
+                                    if( err && err.status != 409 ) {
+                                        alert( "phv:" + err.status )
+                                    }
+                                } )
+
+                                design = ['_design', 'event']
+                                views = {
+                                    views: {
+                                        all: {
+                                            map: function( doc ) { emit( doc.type, doc ) }.toString()
+                                        },
                                         by_time: {
-                                            map: function(doc) {
-                                                if( doc.type == 'reading' ) {
-                                                    d = new Date(doc.time);
-                                                    emit([d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()], doc)
+                                            map: function( doc ) {
+                                                if( doc.type == 'event' ) {
+                                                    d = new Date(doc.time)
+                                                    emit( [d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()], doc )
                                                 }
                                             }.toString()
                                         }
@@ -86,22 +96,10 @@ App.Event = DS.Model.extend( {
                                 }
                                 db.put( design, views, function( err, info ) {
                                     if( err && err.status != 409 ) {
-                                        alert( "pv:" + err.status )
-                                    } else {
-                                        var view = db( [design, '_view'] )
-                                        view.get( 'by_time', function( err, res ) {
-                                            if( err ) {
-                                                for( prop in err ) {
-                                                    alert( "gv:" + prop + " : " + err[prop] )
-                                                }
-                                            } else {
-                                                for( prop in res ) {
-                                                    alert( "fv:" + prop + " : " + res[prop] )
-                                                }
-                                            }
-                                        } )
+                                        alert( "pev:" + err.status )
                                     }
                                 } )
+
                             }
                         } )
                     }
@@ -109,6 +107,9 @@ App.Event = DS.Model.extend( {
             } )
         }
     }
-    $(checkURL)
-    document.addEventListener( 'deviceready', checkURL, false )
+    if( ! window.cordova ) {
+        App.advanceReadiness()
+    } else {
+        document.addEventListener( 'deviceready', checkURL, false )
+    }
 } )()
