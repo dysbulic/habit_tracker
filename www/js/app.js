@@ -12,20 +12,12 @@ App.Router.map( function() {
     this.resource( 'goals', { path: '/goals' } )
     this.resource( 'stats', { path: '/stats' } )
     this.resource( 'login', { path: '/login' } )
+    this.resource( 'sync', { path: '/sync' } )
 } )
 
 App.HabitsRoute = Ember.Route.extend( {
     model: function() {
-        return this.store.find( 'habit' ).then(
-            function( habit ) {
-                console.log( 'HabitRoute.model', habit )
-                return habit
-            },
-            function( err ) {
-                console.log( 'hr err', err )
-                return []
-            }
-        )
+        return this.store.find( 'habit' )
     },
     actions: {
         createEvent: function( habitId ) {
@@ -108,6 +100,38 @@ App.NewEventRoute = Ember.Route.extend( {
     },
     setupController: function( controller, model ) {
         controller.set( 'selectedHabit', model )
+    }
+} )
+
+App.SyncRoute = Ember.Route.extend( {
+    actions: {
+        sync: function() {
+            var coax = require( 'coax' )
+            var db = coax( App.Host )
+
+            var host = $('#host').val()
+            var parts = host.split( '://' )
+            var source = "%@://%@:%@@%@".fmt( parts[0], $('#user').val(), $('#pass').val(), parts[1] )
+
+            console.log( 'source', source )
+
+            db.post(
+                '_replicate',
+                {
+                    source: source,
+                    target: App.Host + "/habits"
+                },
+                function() {
+                    console.log( 'repl', arguments )
+                }
+            )
+        }
+    }
+} )
+
+App.SyncController = Ember.ObjectController.extend( {
+    init: function() {
+        this.set( 'host', 'http://localhost:5984/habits' )
     }
 } )
 
