@@ -16,4 +16,4 @@ The [current test server](http://hbit.herokuapp.com)
 
 The application is currently set up to deploy to Heroku. Though the application is straight HTML/JS I am having issues passing credentials and cookies to ports other than 80. So, the Rack setup runs a reverse proxy — everything under `/db/` gets sent to the Couch server.
 
-Cordova support is in progress. 
+The application can also be built with Cordova to run on a mobile device. Simply execute `cordova run android` to run the app.
