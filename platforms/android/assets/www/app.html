@@ -43,6 +43,9 @@
               {{#link-to "stats" tagName="li" data-toggle="collapse" data-target="#nav-options"}}
                 <a {{bind-attr href="view.href"}}>Stats</a>
               {{/link-to}}
+              {{#link-to "sync" tagName="li" data-toggle="collapse" data-target="#nav-options"}}
+                <a {{bind-attr href="view.href"}}>Sync</a>
+              {{/link-to}}
             </ul>
           </div>
         </div>
@@ -115,6 +118,34 @@
       <div class="form-group">
         <div class="col-xs-offset-2 col-xs-10">
           <button type="submit" class="btn btn-success" {{action 'add'}}>Add</button>
+        </div>
+      </div>
+    </form>
+  </script>
+
+  <script type="text/x-handlebars" id="sync">
+    <form class="form-horizontal" role="form">
+      <div class="form-group">
+        <label for="excerpt" class="col-xs-2 control-label">Host</label>
+        <div class="col-xs-10">
+          <input type="text" class="form-control" id="host" name="host" placeholder="Host" {{bind-attr value=host}}/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="excerpt" class="col-xs-2 control-label">Username</label>
+        <div class="col-xs-10">
+          <input type="text" class="form-control" id="user" name="user" placeholder="Username"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="excerpt" class="col-xs-2 control-label">Password</label>
+        <div class="col-xs-10">
+          <input type="password" class="form-control" id="pass" name="pass" placeholder="Password"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-offset-2 col-xs-10">
+          <button type="submit" class="btn btn-success" {{action 'sync'}}>Sync</button>
         </div>
       </div>
     </form>
