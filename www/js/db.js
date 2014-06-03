@@ -20,19 +20,16 @@ App.Habit = DS.Model.extend( {
     type: DS.attr('string', { defaultValue: 'habit' } ),
     name: DS.attr( 'string' ),
     color: DS.attr( 'string' ),
-    events: DS.hasMany( 'event', { async: true, defaultValue: [] } ),
+    events: DS.hasMany( 'event', { async: false, defaultValue: [] } ),
     style: function() {
         return 'background-color: %@'.fmt( this.get( 'color' ) )
     }.property( 'color' ),
     lastTime: function() {
-        return this
-            .get( 'events' )
-            .then( function( events ) {
-                var times = events.map( function( e ) {
-                    return e.get( 'time' )
-                } )
-                return times.length == 0 ? undefined : new Date( times.sort()[0] )
-            } )
+        var events = this.get( 'events' )
+        var times = events.map( function( e ) {
+            return e.get( 'time' )
+        } )
+        return times.length == 0 ? undefined : times.sort()[0]
     }.property( 'events' ),
 } )
 
