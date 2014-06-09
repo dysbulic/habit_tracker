@@ -24,16 +24,17 @@ App.Habit = DS.Model.extend( {
     style: function() {
         return 'background-color: %@'.fmt( this.get( 'color' ) )
     }.property( 'color' ),
-    lastTime: function() {
-        return this
-            .get( 'events' )
-            .then( function( events ) {
-                var times = events.map( function( e ) {
-                    return e.get( 'time' )
-                } )
-                return times.length == 0 ? undefined : times.sort()[0]
-            } )
-    }.property( 'events' ),
+    lastTime: Ember.reduceComputed( 'events.@each.time', {
+        initialValue: -Infinity,
+        addedItem: function( accValue, event ) { 
+            return Math.max( accValue, event.get( 'time' ) )
+        },
+        removedItem: function( accValue, event ) { 
+            if( event.get( 'time' ) < accValue ) {
+                return accValue
+            }
+        }
+    } )
 } )
 
 App.Event = DS.Model.extend( {

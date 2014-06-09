@@ -196,6 +196,7 @@ Ember.Handlebars.registerBoundHelper( 'format-time-long', function( time ) {
 } )
 
 Ember.Handlebars.registerBoundHelper( 'format-time-numeric', function( time ) {
+    console.log( time )
     return moment( time ).format( 'YYYY/M/D @ H:mm' )
 } )
 
