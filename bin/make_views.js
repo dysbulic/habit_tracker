@@ -1,7 +1,8 @@
 var coax = require( 'coax' )
 var util = require( 'util' )
 
-var url = util.format( 'http://%s:%s@%s', process.env.COUCH_USER, process.env.COUCH_PASS, process.env.COUCH_HOST || 'localhost:5984' )
+var auth = util.format( '%s:%s', process.env.COUCH_USER || '', process.env.COUCH_PASS || '' ) 
+var url = util.format( 'http://%s%s', auth.length > 1 ? auth + '@' : '', process.env.COUCH_HOST || 'localhost:5984' )
 var db = coax( [url, 'habits'] )
 
 console.log( url )

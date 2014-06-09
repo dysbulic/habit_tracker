@@ -64,11 +64,28 @@ App.EventsRoute = Ember.Route.extend( {
                     limit: 100
                 }
             } )
-            .then( function( data ) { return data },
-                   function( err ) {
-                       alert( err.status + ": " + err.statusText )
-                       self.transitionTo( 'login' )
-                   } )
+        /*
+            .then(
+                function( data ) {
+                    var date = d3.time.format( '%Y-%m-%d' )
+                    console.log( arguments )
+                    console.log( data,
+                        d3.nest()
+                            .key( function( d ) { return date( d.time ) } )
+                            .rollup( function( d ) { return d } )
+                            .map( data )
+                    )
+                    return d3.nest()
+                        .key( function( d ) { return date( d.time ) } )
+                        .rollup( function( d ) { return d } )
+                        .map( data )
+                },
+                function( err ) {
+                    alert( err.status + ": " + err.statusText )
+                    self.transitionTo( 'login' )
+                }
+            )
+        */
     }
 } )
 
