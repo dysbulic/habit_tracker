@@ -79,21 +79,15 @@
   </script>
 
   <script type="text/x-handlebars" id="events">
-    {{#each model}}
-      {{#link-to 'event' this}}
-        <li><div class="row">
-          <div class="asset-id col-xs-9">{{habit.name}}</div>
-          <div class="col-xs-3">{{format-time-passed time}}</div>
-        </div></li>
-      {{/link-to}}
-    {{/each}}
-    {{!--
     <div id="events">
       <ol>
-        {{#each day in model}}
+        {{#each model}}
           <li>
+            <div class="row">
+              <div class="col-xs-12">{{date}}</div>
+            </div>
             <ol>
-              {{#each day}}
+              {{#each events}}
                 {{#link-to 'event' this}}
                   <li><div class="row">
                     <div class="asset-id col-xs-9">{{habit.name}}</div>
@@ -103,13 +97,8 @@
               {{/each}}
             </ol>
           </li>
-        </div>
-      {{/each}}
-      --}}
-      {{#each model}}
-          <div class="row">
-          </div>
-      {{/each}}
+        {{/each}}
+      </ol>
     </div>
   </script>
 

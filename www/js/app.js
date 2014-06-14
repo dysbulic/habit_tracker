@@ -64,28 +64,27 @@ App.EventsRoute = Ember.Route.extend( {
                     limit: 100
                 }
             } )
-        /*
             .then(
                 function( data ) {
                     var date = d3.time.format( '%Y-%m-%d' )
-                    console.log( arguments )
-                    console.log( data,
-                        d3.nest()
-                            .key( function( d ) { return date( d.time ) } )
-                            .rollup( function( d ) { return d } )
-                            .map( data )
-                    )
-                    return d3.nest()
-                        .key( function( d ) { return date( d.time ) } )
+                    var nested = d3.nest()
+                        .key( function( d ) { return date( d.get( 'time' ) ) } )
                         .rollup( function( d ) { return d } )
-                        .map( data )
+                        .map( data.content )
+                    var arr = []
+                    for( date in nested ) {
+                        arr.push( {
+                            date: date,
+                            events: nested[date]
+                        } )
+                    }
+                    return arr
                 },
                 function( err ) {
                     alert( err.status + ": " + err.statusText )
                     self.transitionTo( 'login' )
                 }
             )
-        */
     }
 } )
 
