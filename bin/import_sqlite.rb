@@ -22,12 +22,14 @@ res.each do |row|
     habit = {
       type: 'habit',
       name: row[1],
-      color: row[2]
+      color: row[2],
+      events: []
     }
 
     save_response = couch.set( key, habit )
   end
   
+  habit[:key] = key
   habits[row[0]] = habit
 end
 
@@ -35,8 +37,17 @@ puts habits
 
 res = sql.prepare('SELECT * FROM event').execute 
 res.each do |row|
-  if habits[row[1]]
-    key = "event:#{habits[row[1]]['name'].downcase}:#{Time.at row[2]}"
-    puts key
+  if habit = habits[row[1]]
+    time = Time.at row[2]
+    key = "event:#{habit['name'].downcase}:#{time}"
+
+    puts "Creating event in Couch: #{key}"
+
+    event = {
+      habit: habit[:key],
+      time: time
+    }
+
+    save_response = couch.set( key, event )
   end
 end

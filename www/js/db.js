@@ -6,6 +6,8 @@ App.ApplicationAdapter = DS.FixtureAdapter.extend()
 
 if( window.location.host == 'localhost' ) {
     App.Host = 'http://localhost:5984'
+    App.Host = 'http://localhost:8092'
+    App.Host = 'http://localhost:4984'
 } else {
     App.Host = window.location.origin + "/db" // served from rack
 }
