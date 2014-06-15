@@ -148,6 +148,36 @@ class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.i(TAG, "Beginning network synchronization: " + lastSyncTime);
 
         try {
+            String state = Environment.getExternalStorageState();
+            if (state.equals(Environment.MEDIA_MOUNTED)) {
+                File root = Environment.getExternalStorageDirectory();
+                File destination = new File(root, "org.dhappy.habits.db");
+
+                FileChannel source = null;
+                FileChannel copy = null;
+                try {
+                    String db = (new HabitDatabaseHelper(mContext)).getWritableDatabase().getPath();
+                    Log.i(TAG, "Copying Database: " + db);
+                    source = new FileInputStream(new File(db)).getChannel();
+                    copy = new FileOutputStream(destination).getChannel();
+                    copy.transferFrom(source, 0, source.size());
+                } finally {
+                    if (source != null) {
+                        source.close();
+                    }
+                    if (copy != null) {
+                        copy.close();
+                    }
+                }
+            }
+        } catch(IOException e) {
+        }
+        
+        if(true) {
+        	return;
+        }
+        
+        try {
         	AccountManager mAccountManager = AccountManager.get(getContext());
         	AccountManagerFuture<Bundle> future = mAccountManager.getAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, null, false, null, null);
         	String authToken = mAccountManager.blockingGetAuthToken(account, AuthenticationService.AUTHTOKEN_TYPE, true);
