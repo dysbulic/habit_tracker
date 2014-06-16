@@ -44,6 +44,7 @@ res.each do |row|
     puts "Creating event in Couch: #{key}"
 
     event = {
+      type: 'event',
       habit: habit[:key],
       time: time
     }
