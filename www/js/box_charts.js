@@ -7,7 +7,7 @@ $( function() {
                        .filter( function( d ) { return d.key == 'habit' } )
                        .forEach( function( d ) {
                            habits[d.id] = d.value
-                           habits[d.id].events ||= []
+                           habits[d.id].events = habits[d.id].events || []
                        } )
 
                    data.rows
