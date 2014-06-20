@@ -17,7 +17,7 @@ App.Router.map( function() {
 
 App.HabitsRoute = Ember.Route.extend( {
     model: function() {
-        return this.store.find( 'habit' ).then( function( d ) { console.log( d.content[0].get( 'name' ) ); return d } )
+        return this.store.find( 'habit' ).then( function( d ) { console.log( d.content[0].data ); return d } )
     },
     actions: {
         createEvent: function( habitId ) {

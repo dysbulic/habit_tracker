@@ -8,6 +8,7 @@
 (function() {
   EmberCouchDBKit.DocumentSerializer = DS.RESTSerializer.extend({
     primaryKey: '_id',
+    containerKey: 'value', // 'doc' used by CouchDB, 'value' by Couchbase
     normalize: function(type, hash, prop) {
       this.normalizeId(hash);
       this.normalizeAttachments(hash["_attachments"], type.typeKey, hash);
@@ -298,7 +299,7 @@
           var json,
             _this = this;
           json = {};
-          json[Ember.String.pluralize(type.typeKey)] = data.rows.getEach('doc').map(function(doc) {
+          json[Ember.String.pluralize(type.typeKey)] = data.rows.getEach().map(function(doc) {
             return _this._normalizeRevision(doc);
           });
           return json;
@@ -319,7 +320,7 @@
         var json,
           _this = this;
         json = {};
-        json[designDoc] = data.rows.getEach('doc').map(function(doc) {
+        json[designDoc] = data.rows.getEach('value').map(function(doc) {
           return _this._normalizeRevision(doc);
         });
         return json;
@@ -338,9 +339,10 @@
         var json,
           _this = this;
         json = {};
-        json[[Ember.String.pluralize(type.typeKey)]] = data.rows.getEach('doc').map(function(doc) {
+        json[[Ember.String.pluralize(type.typeKey)]] = data.rows.getEach('value').map(function(doc) {
           return _this._normalizeRevision(doc);
         });
+          console.log( 'find', data, json )
         return json;
       };
       data = {
