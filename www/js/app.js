@@ -94,6 +94,13 @@ App.EventRoute = Ember.Route.extend( {
     }
 } )
 
+App.StatsRoute = Ember.Route.extend( {
+    model: function() {
+        var self = this
+        return this.store.find( 'habit' )
+    }
+} )
+
 App.NewHabitController = Ember.ObjectController.extend( {
     actions: {
         add: function() {
