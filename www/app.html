@@ -84,14 +84,14 @@
         {{#each model}}
           <li>
             <div class="row">
-              <div class="col-xs-12">{{date}}</div>
+              <div class="col-xs-12">{{format-date date}}</div>
             </div>
             <ol>
               {{#each events}}
                 {{#link-to 'event' this}}
                   <li><div class="row">
                     <div class="asset-id col-xs-9">{{habit.name}}</div>
-                    <div class="col-xs-3">{{format-time-passed time}}</div>
+                    <div class="col-xs-3">{{format-time time}}</div>
                   </div></li>
                 {{/link-to}}
               {{/each}}

@@ -211,9 +211,20 @@ Ember.Handlebars.registerBoundHelper( 'format-time-long', function( time ) {
     return moment( time ).format( 'LLL' )
 } )
 
+Ember.Handlebars.registerBoundHelper( 'format-time-long', function( time ) {
+    return moment( time ).format( 'LLL' )
+} )
+
 Ember.Handlebars.registerBoundHelper( 'format-time-numeric', function( time ) {
-    console.log( time )
-    return moment( time ).format( 'YYYY/M/D @ H:mm' )
+    return moment( time ).format( 'YYYY/MM/DD HH:mm' )
+} )
+
+Ember.Handlebars.registerBoundHelper( 'format-time', function( time ) {
+    return moment( time ).format( 'H:mm' )
+} )
+
+Ember.Handlebars.registerBoundHelper( 'format-date', function( time ) {
+    return moment( time ).format( 'D MMM YYYY' )
 } )
 
 Ember.Handlebars.registerBoundHelper( 'two-digit-float', function( number ) {
