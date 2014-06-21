@@ -220,6 +220,8 @@
       });
     },
     _normalizeRevision: function(json) {
+      json = json.meta && json.json ? $.extend( json.json, json.meta ) : json // Load Couchbase data
+
       if (json && json._rev) {
         json.rev = json._rev;
         delete json._rev;
@@ -299,9 +301,10 @@
           var json,
             _this = this;
           json = {};
-          json[Ember.String.pluralize(type.typeKey)] = data.rows.getEach().map(function(doc) {
+          json[Ember.String.pluralize(type.typeKey)] = data.rows.getEach('doc').map(function(doc) {
             return _this._normalizeRevision(doc);
           });
+            console.log( 'findMany', json )
           return json;
         };
         return this.ajax('_all_docs?include_docs=true', 'POST', normalizeResponce, {
@@ -320,7 +323,7 @@
         var json,
           _this = this;
         json = {};
-        json[designDoc] = data.rows.getEach('value').map(function(doc) {
+        json[designDoc] = data.rows.getEach('doc').map(function(doc) {
           return _this._normalizeRevision(doc);
         });
         return json;
@@ -339,7 +342,7 @@
         var json,
           _this = this;
         json = {};
-        json[[Ember.String.pluralize(type.typeKey)]] = data.rows.getEach('value').map(function(doc) {
+        json[[Ember.String.pluralize(type.typeKey)]] = data.rows.getEach('doc').map(function(doc) {
           return _this._normalizeRevision(doc);
         });
           console.log( 'find', data, json )

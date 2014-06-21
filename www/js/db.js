@@ -87,7 +87,7 @@ App.Event = DS.Model.extend( {
                                         by_time: {
                                             map: function( doc ) {
                                                 if( doc.type == 'event' ) {
-                                                    d = new Date(doc.time)
+                                                    d = new Date( doc.time )
                                                     emit( [d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()], doc )
                                                 }
                                             }.toString()

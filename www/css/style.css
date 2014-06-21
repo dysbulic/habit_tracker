@@ -64,3 +64,18 @@ and (max-device-width : 480px) {
 .color {
     height: 1em;
 }
+
+#events ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#events li {
+    margin: 0;
+    padding: .5em 1em;
+}
+
+#events li li:hover {
+    background-color: yellow;
+}
