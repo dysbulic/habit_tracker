@@ -113,6 +113,8 @@ App.StatsView = Ember.View.extend( {
             var events = model.content
 
             var year = d3.time.format( '%Y' )
+            var month = d3.time.format( '%m' )
+            var monthName = d3.time.format( '%B' )
             var week = d3.time.format( '%U' )
 
             var by_year = d3.nest()
@@ -129,42 +131,66 @@ App.StatsView = Ember.View.extend( {
                     .append( 'h1' )
                     .text( year )
                 
+                var bounds = d3.extent( events, function( d ) { return d.get( 'time' ) } )
+
                 var by_week = d3.nest()
-                .key( function( d ) { return week( d.get( 'time' ) ) } )
-                .rollup( function( d ) { return d } )
-                .map( events )
+                    .key( function( d ) { return week( d.get( 'time' ) ) } )
+                    .rollup( function( d ) { return d } )
+                    .map( events )
 
-                Object.keys( by_week ).sort().forEach( function( week ) {
-                    var events = by_week[week]
+                d3.time.weeks( bounds[0], bounds[1] ).forEach( function( start, index ) {
+                    var events = by_week[ week( start ) ]
+                    if( events ) {
+                        var end = d3.time.day.floor( new Date( ( new Date( start ) ).setDate( start.getDate() + 7 ) ) )
 
-                    console.log( week, events )
-                    
-                    var scale = d3.time.scale.domain( events.map(
-                        function( d ) { return d.get( 'time' ) }
-                    ) )
-                    var xAxis = d3.svg.axis()
-                        .scale( scale )
-                        .orient( 'bottom' )
-                        .ticks( d3.time.days, 1 )
-                        .tickFormat( d3.time.format( '%a %d' ) )
-                        .tickPadding(8);
+                        console.log( month( start ), month( end ), month( start ) != month( end ) )
 
-                    d3.select( '#stats' )
-                        .append( 'svg' )
-                        .attr( {
-                            viewBox: "0 0 " + width + " " + height,
-                            width: '100%',
-                            height: height
-                        } )
-                        .data( events )
-                        .enter()
-                        .append( 'rect' )
-                        .attr( {
-                            x: function( d ) { return scale( d.get( 'time' ) ) },
-                            y: height,
-                            width: .01 * width,
-                            height: height / 2
-                        } )
+                        if( index == 0 || month( start ) != month( end ) ) {
+                            d3.select( '#stats' )
+                                .append( 'h2' )
+                                .text( monthName( end ) )
+                        }
+                        
+                        var scale = d3.time.scale()
+                            .domain( [start, end] )
+                            .rangeRound( [0, width] )
+
+                        var xAxis = d3.svg.axis()
+                            .scale( scale )
+                            .orient( 'bottom' )
+                            .ticks( d3.time.days, 1 )
+                            .tickFormat( d3.time.format( '%a %d' ) )
+
+                        var svg = d3.select( '#stats' )
+                            .append( 'svg' )
+                            .attr( {
+                                viewBox: "0 0 " + width + " " + height,
+                                width: '100%',
+                                height: height
+                            } )
+
+                        svg.selectAll( 'rect' )
+                            .data( events )
+                            .enter()
+                            .append( 'rect' )
+                            .attr( {
+                                x: function( d ) { return scale( d.get( 'time' ) ) },
+                                y: 0,
+                                width: .005 * width,
+                                height: height - 35
+                            } )
+                            .style( {
+                                //fill: function( d ) { return d.get( 'habit' ).then( function( h ) { return h.get( 'color' ) } ) }
+                                fill: 'red'
+                            } )
+
+                        svg.append('g')
+                            .attr( {
+                                class: 'x-axis',
+                                transform: "translate(0," + ( height - 30 ) + ")"
+                            } )
+                            .call(xAxis);
+                    }
                 } )
             }
         }
