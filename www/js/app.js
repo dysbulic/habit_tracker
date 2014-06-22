@@ -101,26 +101,74 @@ App.StatsRoute = Ember.Route.extend( {
 } )
 
 App.StatsView = Ember.View.extend( {
+    didInsertElement: function() {
+        console.log( 'i', this.get( 'controller.model' ) )
+        this.buildChart( this.get( 'controller.model' ) )
+    },
     workspaceChanged: function() {
-        var events = this.get( 'controller.model' ).content
+        this.buildChart( this.get( 'controller.model' ) )
+    }.observes('controller.model'),
+    buildChart: function( model ) {
+        if( model && $('#stats').size() > 0 ) {
+            var events = model.content
 
-        var year = d3.time.format( '%Y' )
+            var year = d3.time.format( '%Y' )
+            var week = d3.time.format( '%U' )
 
-        var by_year = d3.nest()
-            .key( function( d ) { return year( d.get( 'time' ) ) } )
-            .rollup( function( d ) { return d } )
-            .map( events )
+            var by_year = d3.nest()
+                .key( function( d ) { return year( d.get( 'time' ) ) } )
+                .rollup( function( d ) { return d } )
+                .map( events )
+            
+            var width = 500, height = 100
 
-        for( year in by_year ) {
-            console.log( year )
-            d3.select( '#stats' )
-                .append( 'svg' )
-                .append( 'text' )
-                .text( by_year[year] )
+            for( year in by_year ) {
+                var events = by_year[year]
+
+                d3.select( '#stats' )
+                    .append( 'h1' )
+                    .text( year )
+                
+                var by_week = d3.nest()
+                .key( function( d ) { return week( d.get( 'time' ) ) } )
+                .rollup( function( d ) { return d } )
+                .map( events )
+
+                Object.keys( by_week ).sort().forEach( function( week ) {
+                    var events = by_week[week]
+
+                    console.log( week, events )
+                    
+                    var scale = d3.time.scale.domain( events.map(
+                        function( d ) { return d.get( 'time' ) }
+                    ) )
+                    var xAxis = d3.svg.axis()
+                        .scale( scale )
+                        .orient( 'bottom' )
+                        .ticks( d3.time.days, 1 )
+                        .tickFormat( d3.time.format( '%a %d' ) )
+                        .tickPadding(8);
+
+                    d3.select( '#stats' )
+                        .append( 'svg' )
+                        .attr( {
+                            viewBox: "0 0 " + width + " " + height,
+                            width: '100%',
+                            height: height
+                        } )
+                        .data( events )
+                        .enter()
+                        .append( 'rect' )
+                        .attr( {
+                            x: function( d ) { return scale( d.get( 'time' ) ) },
+                            y: height,
+                            width: .01 * width,
+                            height: height / 2
+                        } )
+                } )
+            }
         }
-        
-        
-    }.observes('controller.model')
+    }
 } )
 
 App.NewHabitController = Ember.ObjectController.extend( {
