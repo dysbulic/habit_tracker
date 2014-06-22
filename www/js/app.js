@@ -96,9 +96,16 @@ App.EventRoute = Ember.Route.extend( {
 
 App.StatsRoute = Ember.Route.extend( {
     model: function() {
-        var self = this
         return this.store.find( 'habit' )
     }
+} )
+
+App.StatsView = Ember.View.extend( {
+    workspaceChanged: function() {
+        var model = this.get( 'controller.model' )
+        var habit = model.content.find( function( d ) { return d._id = 'habit:150mg buoropion' } )
+        habit.get( 'events' ).then( function( d ) { console.log( 'workspaceChanged', d.content ) } )
+    }.observes('controller.model')
 } )
 
 App.NewHabitController = Ember.ObjectController.extend( {
