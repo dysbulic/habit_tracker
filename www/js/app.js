@@ -96,15 +96,30 @@ App.EventRoute = Ember.Route.extend( {
 
 App.StatsRoute = Ember.Route.extend( {
     model: function() {
-        return this.store.find( 'habit' )
+        return this.store.find( 'event' )
     }
 } )
 
 App.StatsView = Ember.View.extend( {
     workspaceChanged: function() {
-        var model = this.get( 'controller.model' )
-        var habit = model.content.find( function( d ) { return d._id = 'habit:150mg buoropion' } )
-        habit.get( 'events' ).then( function( d ) { console.log( 'workspaceChanged', d.content ) } )
+        var events = this.get( 'controller.model' ).content
+
+        var year = d3.time.format( '%Y' )
+
+        var by_year = d3.nest()
+            .key( function( d ) { return year( d.get( 'time' ) ) } )
+            .rollup( function( d ) { return d } )
+            .map( events )
+
+        for( year in by_year ) {
+            console.log( year )
+            d3.select( '#stats' )
+                .append( 'svg' )
+                .append( 'text' )
+                .text( by_year[year] )
+        }
+        
+        
     }.observes('controller.model')
 } )
 
@@ -166,10 +181,6 @@ App.SyncController = Ember.ObjectController.extend( {
 } )
 
 App.NewEventController = Ember.ObjectController.extend( {
-    init: function() {
-        console.log( 'init', this.get( 'selectedHabit' ) )
-    },
-    selectedHabit: null,
     actions: {
         save: function() {
             var self = this
