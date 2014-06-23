@@ -673,11 +673,17 @@
       this.style.removeProperty(name);
     }
     function styleConstant() {
-      this.style.setProperty(name, value, priority);
+        var self = this
+        $.when( value ).then( function( value ) { self.style.setProperty(name, value, priority) } );
     }
     function styleFunction() {
       var x = value.apply(this, arguments);
-      if (x == null) this.style.removeProperty(name); else this.style.setProperty(name, x, priority);
+      var self = this
+      $.when( x ).then( function( x ) {
+          console.log( x )
+        if (x == null) self.style.removeProperty(name);
+        else self.style.setProperty(name, x, priority);
+      } )
     }
     return value == null ? styleNull : typeof value === "function" ? styleFunction : styleConstant;
   }

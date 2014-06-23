@@ -70,7 +70,7 @@
   <script type="text/x-handlebars" id="habit">
     <div class="row"><h1>{{name}}</h1></div>
     <div id="event-list">
-      {{#each day in model.events}}
+      {{#each event in model.events}}
         <div class="row">
           <div class="col-xs-12">{{#link-to 'event' event}}{{event.time}}{{/link-to}}</div>
         </div>

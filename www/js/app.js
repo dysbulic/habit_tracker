@@ -122,7 +122,7 @@ App.StatsView = Ember.View.extend( {
                 .rollup( function( d ) { return d } )
                 .map( events )
             
-            var width = 500, height = 100
+            var width = 1000, height = 100
 
             for( year in by_year ) {
                 var events = by_year[year]
@@ -142,8 +142,6 @@ App.StatsView = Ember.View.extend( {
                     var events = by_week[ week( start ) ]
                     if( events ) {
                         var end = d3.time.day.floor( new Date( ( new Date( start ) ).setDate( start.getDate() + 7 ) ) )
-
-                        console.log( month( start ), month( end ), month( start ) != month( end ) )
 
                         if( index == 0 || month( start ) != month( end ) ) {
                             d3.select( '#stats' )
@@ -172,16 +170,18 @@ App.StatsView = Ember.View.extend( {
                         svg.selectAll( 'rect' )
                             .data( events )
                             .enter()
+                            .append( 'a' )
+                            .attr( { 'xlink:href': function( d ) { return "#/event/" + d.get( 'id' ) } } )
                             .append( 'rect' )
                             .attr( {
                                 x: function( d ) { return scale( d.get( 'time' ) ) },
                                 y: 0,
-                                width: .005 * width,
+                                width: .0025 * width,
                                 height: height - 35
                             } )
                             .style( {
-                                //fill: function( d ) { return d.get( 'habit' ).then( function( h ) { return h.get( 'color' ) } ) }
-                                fill: 'red'
+                                fill: function( d ) { return d.get( 'habit' ).get( 'color' ) }
+                                //fill: 'red'
                             } )
 
                         svg.append('g')

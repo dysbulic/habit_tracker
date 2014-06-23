@@ -29,7 +29,8 @@ res.each do |row|
     save_response = couch.set( key, habit )
   end
   
-  habit[:key] = key
+  habit[:events] ||= []
+  habit[:id] = key
   habits[row[0]] = habit
 end
 
@@ -45,10 +46,15 @@ res.each do |row|
 
     event = {
       type: 'event',
-      habit: habit[:key],
+      habit: habit[:id],
       time: time
     }
+    habit[:events].push key
 
     save_response = couch.set( key, event )
   end
+end
+
+habits.each do |id, habit|
+  save_response = couch.set( habit[:id], habit )
 end
