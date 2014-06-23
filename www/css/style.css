@@ -1,0 +1,81 @@
+#readings {
+    display: table;
+    width: 100%;
+}
+
+#readings .row {
+    display: table-row;
+}
+
+#readings .col-xs-3, #readings .col-xs-9 {
+    display: table-cell;
+    float: none;
+    border: 1px solid black;
+    border-style: solid none;
+}
+
+#readings a {
+    color: black;
+}
+
+#readings a:hover {
+    text-decoration: none;
+}
+
+#readings .row:hover .asset-id {
+    background-color: #DDD;
+}
+
+#readings .asset-id {
+    font-size: 150%;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #EEE;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+.prop {
+    text-align: right;
+}
+
+#reading-list a, #wells a {
+    display: block;
+}
+
+#reading-list .row, #wells .row {
+    font-size: 125%;
+    border: 1px solid black;
+    border-style: solid none;
+    padding: .25em 0;
+    padding-left: .25em;
+}    
+
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+    .container {
+        padding: 0;
+    }
+}
+
+.color {
+    height: 1em;
+}
+
+#events ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#events li {
+    margin: 0;
+    padding: .5em 1em;
+}
+
+#events li li:hover {
+    background-color: yellow;
+}
