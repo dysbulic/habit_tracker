@@ -34,8 +34,6 @@ res.each do |row|
   habits[row[0]] = habit
 end
 
-puts habits
-
 res = sql.prepare('SELECT * FROM event').execute 
 res.each do |row|
   if habit = habits[row[1]]
@@ -57,4 +55,53 @@ end
 
 habits.each do |id, habit|
   save_response = couch.set( habit[:id], habit )
+end
+
+res = sql.prepare('SELECT * FROM descriptor').execute 
+
+moods = {}
+
+res.each do |row|
+  key = "descriptor:#{row[1].downcase}"
+  mood = couch.get( key, quiet: true )
+
+  if not mood
+    puts "Creating mood in Couch: #{key}"
+    mood = {
+      'type' => 'descriptor',
+      'name' => row[1],
+      'color' => row[2],
+      'readings' => []
+    }
+
+    save_response = couch.set( key, mood )
+  end
+  
+  mood['readings'] ||= []
+  mood[:id] = key
+  moods[row[0]] = mood
+end
+
+res = sql.prepare('SELECT * FROM reading').execute 
+res.each do |row|
+  if mood = moods[row[1]]
+    time = Time.at row[2]
+    key = "reading:#{mood['name'].downcase}:#{time}"
+
+    puts "Creating reading in Couch: #{key}"
+
+    event = {
+      'type' => 'reading',
+      'habit' => mood[:id],
+      'time' => time,
+      'weight' => row[3]
+    }
+    mood['readings'].push key
+
+    save_response = couch.set( key, event )
+  end
+end
+
+moods.each do |id, mood|
+  save_response = couch.set( mood[:id], mood )
 end
