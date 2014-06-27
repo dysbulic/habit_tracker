@@ -12,8 +12,8 @@ App.ApplicationSerializer = EmberCouchDBKit.DocumentSerializer.extend()
 App.AttachmentAdapter = EmberCouchDBKit.AttachmentAdapter.extend( { db: 'habits', host: App.Host } )
 App.AttachmentSerializer = EmberCouchDBKit.AttachmentSerializer.extend()
 
-App.Habit = DS.Model.extend( {
-    type: DS.attr('string', { defaultValue: 'habit' } ),
+App.Selectable = DS.Model.extend( {
+    id: DS.attr( 'string' ),
     name: DS.attr( 'string' ),
     color: DS.attr( 'string' ),
     events: DS.hasMany( 'event', { async: true, defaultValue: [] } ),
@@ -30,13 +30,35 @@ App.Habit = DS.Model.extend( {
                 return accValue
             }
         }
-    } )
+    } ),
+    maxTime: function() {
+        return this.store
+            .findQuery( 'event', {
+                designDoc: 'event',
+                viewName: 'by_origin',
+                options: {
+                    key: this.get( 'id' ),
+                    descending: true,
+                    limit: 1
+                }
+            } )
+
+    }
+} )
+
+App.Habit = App.Selectable.extend( {
+    type: DS.attr('string', { defaultValue: 'habit' } ),
+} )
+
+App.Descriptor = App.Selectable.extend( {
+    type: DS.attr('string', { defaultValue: 'descriptor' } ),
 } )
 
 App.Event = DS.Model.extend( {
     type: DS.attr('string', { defaultValue: 'event' } ),
     time: DS.attr( 'date' ),
-    habit: DS.belongsTo( 'habit' )
+    weight: DS.attr( 'number' ),
+    origin: DS.belongsTo( 'selectable' )
 } )
 
 ;( function() {
@@ -87,11 +109,21 @@ App.Event = DS.Model.extend( {
                                         by_time: {
                                             map: function( doc ) {
                                                 if( doc.type == 'event' ) {
-                                                    d = new Date( doc.time )
+                                                    var d = new Date( doc.time )
                                                     emit( [d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()], doc )
                                                 }
                                             }.toString()
-                                        }
+                                        },
+                                        by_origin: {
+                                            map: function( doc ) {
+                                                if( doc.type == 'event' ) {
+                                                    function pad2( num ) {
+                                                        return ( num < 10 ? '0' : '' ) + num
+                                                    }
+                                                    var d = new Date( doc.time )
+                                                    emit( [d.origin, d.getFullYear() + "-" + pad2( d.getMonth() ) + "-" + pad2( d.getDate() ) + "T" + pad2( d.getHours() ) + ":" + pad2( d.getMinutes() + "Z" )], null )
+                                                }
+                                            }.toString()
                                     }
                                 }
                                 db.put( design, views, function( err, info ) {

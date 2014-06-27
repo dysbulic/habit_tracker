@@ -44,8 +44,9 @@ res.each do |row|
 
     event = {
       type: 'event',
-      habit: habit[:id],
-      time: time
+      origin: habit[:id],
+      time: time,
+      weight: 1
     }
     habit[:events].push key
 
@@ -71,13 +72,13 @@ res.each do |row|
       'type' => 'descriptor',
       'name' => row[1],
       'color' => row[2],
-      'readings' => []
+      'events' => []
     }
 
     save_response = couch.set( key, mood )
   end
   
-  mood['readings'] ||= []
+  mood['events'] ||= []
   mood[:id] = key
   moods[row[0]] = mood
 end
@@ -91,12 +92,12 @@ res.each do |row|
     puts "Creating reading in Couch: #{key}"
 
     event = {
-      'type' => 'reading',
-      'habit' => mood[:id],
+      'type' => 'event',
+      'origin' => mood[:id],
       'time' => time,
       'weight' => row[3]
     }
-    mood['readings'].push key
+    mood['events'].push key
 
     save_response = couch.set( key, event )
   end

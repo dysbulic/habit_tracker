@@ -94,6 +94,12 @@ App.EventRoute = Ember.Route.extend( {
     }
 } )
 
+App.MoodRoute = Ember.Route.extend( {
+    model: function() {
+        return this.store.find( 'descriptor' )
+    }
+} )
+
 App.StatsRoute = Ember.Route.extend( {
     model: function() {
         return this.store.find( 'event' )
