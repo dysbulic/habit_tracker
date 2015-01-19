@@ -1,12 +1,7 @@
 Habit Tracker
 =============
 
-This is a rewrite of an [android app](https://play.google.com/store/apps/details?id=org.dhappy.habits) in Ember.js backed by Couchbase..
-
-Get Paid To Work On This App
-============================
-
-My Ember skills are minimal and the application is shaping up to look like it was written by a beginner. I'd really like the assistance of an experienced developer and I have bitcoins to pay. Just [contact me](mailto:will@dhappy.org).
+This is a rewrite of an [android app](https://play.google.com/store/apps/details?id=org.dhappy.habits) in Ember.js backed by Couchbase.
 
 # Live
 
